@@ -6,7 +6,11 @@ If you like this framework, I appreciate any donations on my [PayPal account](ht
 
 ## Usage
 
-### 1. Implement the ITraversable<T> interface
+### Install the nuget package
+
+See [https://www.nuget.org/packages/Bertiooo.Traversal/](https://www.nuget.org/packages/Bertiooo.Traversal/)
+
+### Implement the ITraversable<T> interface
 
 In order to use the extension methods, you need a node class implementing the `ITraversable<T>` interface.
 ```
@@ -20,7 +24,7 @@ Sometimes you will find it difficult to implement this interface, either because
 or because the collection type of the children property differs from `IEnumerable<T>`. In this case, it is recommended to use 
 an adapter as described in [How to adapt to ITraversable](https://github.com/bertiooo/Bertiooo.Traversal/wiki/How-to-adapt-to-ITraversable).
 
-### 2. Use the extension methods
+### Use the extension methods
 
 Here are some examples:
 
