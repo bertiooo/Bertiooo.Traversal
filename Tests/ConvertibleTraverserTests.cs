@@ -118,17 +118,20 @@ namespace Tests
 			var child = root.Children.First();
 			var secondChild = root.Children.ElementAt(1);
 
+			Assert.False(child is DerivativeConvertible);
+
 			var numberOfNodes = root.WithDescendants().Count();
+			var numberOfDerivatives = root.WithDescendants().OfType<DerivativeConvertible>().Count();
 
 			var numberOfCallbacks = 0;
 
 			root.Traverse()
 				.DisableCallbacksFor(child)
-				.DisableCallbacksFor(x => x.Equals(secondChild))
+				.DisableCallbacksFor<DerivativeConvertible>()
 				.WithAction(() => numberOfCallbacks++)
 				.Execute();
 
-			Assert.Equal(numberOfNodes - 2, numberOfCallbacks);
+			Assert.Equal(numberOfNodes - numberOfDerivatives - 1, numberOfCallbacks);
 		}
 
 		[Fact]
@@ -138,23 +141,25 @@ namespace Tests
 			var child = root.Children.First();
 			var secondChild = root.Children.ElementAt(1);
 
+			Assert.False(child is DerivativeConvertible);
+
 			var numberOfNodes = root.WithDescendants().Count();
+			var numberOfDerivatives = root.WithDescendants().OfType<DerivativeConvertible>().Count();
 
 			var numberOfCallbacks = 0;
 
 			var expectedNodes = new List<Convertible>() { root };
 			expectedNodes.AddRange(child.Children);
-			expectedNodes.AddRange(secondChild.Children);
 
 			var nodes = root.Traverse()
 				.Use(TraversalMode.BreadthFirst)
 				.Ignore(child)
-				.Ignore(x => x.Equals(secondChild))
+				.Ignore<DerivativeConvertible>()
 				.WithAction(() => numberOfCallbacks++)
 				.GetNodes()
 				.ToList();
 
-			Assert.Equal(numberOfNodes - 2, numberOfCallbacks);
+			Assert.Equal(numberOfNodes - numberOfDerivatives - 1, numberOfCallbacks);
 			Assert.Equal(expectedNodes, nodes);
 		}
 

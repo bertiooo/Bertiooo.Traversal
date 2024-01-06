@@ -143,7 +143,7 @@ namespace Bertiooo.Traversal.Traverser
 				{
 					var handled = this.FailureCallback?.Invoke(e);
 
-					if (handled == false)
+					if (handled.HasValue == false || handled.Value == false)
 						throw;
 				}
 
