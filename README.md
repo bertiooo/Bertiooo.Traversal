@@ -2,6 +2,8 @@
 
 This library provides extension methods to traverse hierarchy structures. It may work for other graph types as well.
 
+It targets .Net Standard 2.0, which means you can use it with .NET Core and .NET Framework.
+
 If you like this framework, I appreciate any donations on my [PayPal account](https://paypal.me/puigrodr).
 
 ## Usage
