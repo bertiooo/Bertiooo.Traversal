@@ -157,5 +157,11 @@ namespace Bertiooo.Traversal.Traverser
 		/// The action will be called each time a node is visited.
 		/// </summary>
 		ITraverser<TNode> WithAction(Action<TNode> action);
+
+		/// <summary>
+		/// The action will be called each time a node of the specified type is visited.
+		/// </summary>
+		ITraverser<TNode> WithAction<T>(Action<T> action)
+			where T : class, TNode;
 	}
 }

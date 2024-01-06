@@ -206,6 +206,29 @@ namespace Tests
 		}
 
 		[Fact]
+		public void TraverserCallsDerivativeAction()
+		{
+			var root = this.fixture.Root;
+
+			var expectedCalls = root.WithDescendants().OfType<DerivativeConvertible>().Count();
+			Assert.True(expectedCalls > 0);
+
+			var expectedTotalCalls = root.WithDescendants().Count();
+			Assert.True(expectedTotalCalls > 0);
+
+			var actualCalls = 0;
+			var actualTotalCalls = 0;			
+
+			root.Traverse()
+				.WithAction(x => actualTotalCalls++)
+				.WithAction<DerivativeConvertible>(x => actualCalls++)
+				.Execute();
+
+			Assert.Equal(expectedCalls, actualCalls);
+			Assert.Equal(expectedTotalCalls, actualTotalCalls);
+		}
+
+		[Fact]
 		public void TraverserUsesCancellationTokenAndThrowsException()
 		{
 			var root = this.fixture.Root;

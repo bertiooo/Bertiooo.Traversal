@@ -205,5 +205,21 @@ namespace Bertiooo.Traversal.Traverser
 
 			return this;
 		}
+
+		public IAdapterTraverser<TAdapter, TConvertible> WithAction<T>(Action<T> action)
+			where T : class, TConvertible
+		{
+			Action<TConvertible> wrapper = node =>
+			{
+				var derivative = node as T;
+
+				if (derivative != null)
+				{
+					action.Invoke(derivative);
+				}
+			};
+
+			return this.WithAction(wrapper);
+		}
 	}
 }

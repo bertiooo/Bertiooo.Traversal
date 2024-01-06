@@ -23,7 +23,19 @@ namespace Tests.Fixtures
 
                 for (var j = 0; j < 2; j++)
                 {
-                    var leaf = new Convertible() { Parent = inner, Name = "Leaf " + (i*2+j+1) };
+                    var name = "Leaf " + (i * 2 + j + 1);
+
+                    Convertible leaf;
+
+                    if(i == 0)
+                    {
+						leaf = new DerivativeConvertible() { Parent = inner, Name = name };
+					}
+                    else
+                    {
+						leaf = new Convertible() { Parent = inner, Name = name };
+					}
+
                     innerChildren.Add(leaf);
                 }
             }

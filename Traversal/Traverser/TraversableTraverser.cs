@@ -122,33 +122,8 @@ namespace Bertiooo.Traversal.Traverser
 
 		public void Execute()
 		{
-			try
-			{
-				this.PrepareTraversal();
-
-				while (this.Selector.HasItems)
-				{
-					var node = this.Selector.Next();
-
-					if (this.CheckForCancellation(node))
-						break;
-
-					this.VisitNode(node);
-				}
-
-				this.SuccessCallback?.Invoke();
-			}
-			catch (Exception e)
-			{
-				var handled = this.FailureCallback?.Invoke(e);
-
-				if (handled.HasValue == false || handled.Value == false)
-					throw;
-			}
-			finally
-			{
-				this.FinishTraversal();
-			}
+			var enumerator = this.GetNodes().GetEnumerator();
+			while (enumerator.MoveNext());
 		}
 
 		public Task ExecuteAsync()
@@ -189,7 +164,7 @@ namespace Bertiooo.Traversal.Traverser
 					{
 						var handled = this.FailureCallback?.Invoke(e);
 
-						if (handled == false)
+						if (handled.HasValue == false || handled.Value == false)
 							throw;
 					}
 
@@ -400,6 +375,22 @@ namespace Bertiooo.Traversal.Traverser
 		{
 			this.Callbacks += action;
 			return this;
+		}
+
+		public ITraverser<TNode> WithAction<T>(Action<T> action) 
+			where T : class, TNode
+		{
+			Action<TNode> wrapper = node =>
+			{
+				var derivative = node as T;
+
+				if(derivative != null)
+				{
+					action.Invoke(derivative);
+				}
+			};
+			
+			return this.WithAction(wrapper);
 		}
 
 		public ITraverser<TNode> Prepare(Action action)

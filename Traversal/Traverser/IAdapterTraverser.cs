@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Bertiooo.Traversal.Traverser
 {
@@ -88,5 +89,9 @@ namespace Bertiooo.Traversal.Traverser
 
 		/// <inheritdoc cref="ITraverser{TAdapter}.WithAction(Action{TAdapter})" />
 		IAdapterTraverser<TAdapter, TConvertible> WithAction(Action<TConvertible> action);
+
+		/// <inheritdoc cref="ITraverser{TAdapter}.WithAction{T}(Action{T})" />
+		IAdapterTraverser<TAdapter, TConvertible> WithAction<T>(Action<T> action)
+			where T : class, TConvertible;
 	}
 }
