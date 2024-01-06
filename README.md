@@ -93,7 +93,7 @@ CancellationToken token;
 await node.TraverseAsync(action, cancellationToken: token);
 ```
 
-### 3. Use the fluent API
+### Use the fluent API
 
 For further control over the traversal process, use the fluent API. 
 
@@ -125,6 +125,7 @@ await traverser.ExecuteAsync();
 
 // be careful: Invoking GetNodes() alone won't cause the traverser to perform the traversal.
 // You need to iterate the nodes in order to proceed with the traversal.
+// In order to get the nodes consider using ToList() after GetNodes()
 IEnumerable<Node> nodes = traverser.GetNodes();
 
 // The async method in contrast will turn the enumerable into a list by full traversal.
