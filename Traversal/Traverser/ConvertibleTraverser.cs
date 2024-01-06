@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Bertiooo.Traversal.Traverser
 {
 	internal class ConvertibleTraverser<TAdapter, TConvertible> : AbstractAdapterTraverser<TAdapter, TConvertible>
-		where TAdapter : IInstanceProvider<TConvertible>, ITraversable<TAdapter>
+		where TAdapter : class, IInstanceProvider<TConvertible>, ITraversable<TAdapter>
 		where TConvertible : ITraversalConvertible<TAdapter, TConvertible>
 	{
 		public ConvertibleTraverser(TAdapter root) : base(root)

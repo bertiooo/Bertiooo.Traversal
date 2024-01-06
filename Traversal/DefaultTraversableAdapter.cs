@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
 
 namespace Bertiooo.Traversal
 {
@@ -11,12 +7,12 @@ namespace Bertiooo.Traversal
 		: AbstractTraversableAdapter<DefaultTraversableAdapter<TConvertible>, TConvertible>
 		where TConvertible : class
 	{
-		private readonly Func<TConvertible, TConvertible?> getParentFunc;
+		private readonly Func<TConvertible, TConvertible> getParentFunc;
 		private readonly Func<TConvertible, IEnumerable<TConvertible>> getChildrenFunc;
 
 		public DefaultTraversableAdapter(
 			TConvertible convertible,
-			Func<TConvertible, TConvertible?> getParentFunc,
+			Func<TConvertible, TConvertible> getParentFunc,
 			Func<TConvertible, IEnumerable<TConvertible>> getChildrenFunc)
 			: base(convertible)
 		{
@@ -24,7 +20,7 @@ namespace Bertiooo.Traversal
 			this.getChildrenFunc = getChildrenFunc;
 		}
 
-		protected override TConvertible? ParentInstance => getParentFunc.Invoke(this.Instance);
+		protected override TConvertible ParentInstance => getParentFunc.Invoke(this.Instance);
 
 		protected override IEnumerable<TConvertible> ChildInstances => getChildrenFunc.Invoke(this.Instance);
 

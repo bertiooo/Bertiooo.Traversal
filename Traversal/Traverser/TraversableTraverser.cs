@@ -1,9 +1,14 @@
-﻿using Bertiooo.Traversal.Selectors;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Threading;
+using System;
+using Bertiooo.Traversal.Selectors;
+using System.Linq;
 
 namespace Bertiooo.Traversal.Traverser
 {
 	internal class TraversableTraverser<TNode> : ITraverser<TNode>
-		where TNode : ITraversable<TNode>
+		where TNode : class, ITraversable<TNode>
 	{
 		private readonly TNode root;
 
@@ -16,35 +21,35 @@ namespace Bertiooo.Traversal.Traverser
 
 		protected TNode Root => root;
 
-		protected Action? Preparation { get; set; }
+		protected Action Preparation { get; set; }
 
-		protected Action? Finalization { get; set; }
+		protected Action Finalization { get; set; }
 
-		protected Action? CanceledCallback { get; set; }
+		protected Action CanceledCallback { get; set; }
 
-		protected Func<Exception, bool>? FailureCallback { get; set; }
+		protected Func<Exception, bool> FailureCallback { get; set; }
 
-		protected Action? SuccessCallback { get; set; }
+		protected Action SuccessCallback { get; set; }
 
-		protected Action<TNode>? Callbacks { get; set; }
+		protected Action<TNode> Callbacks { get; set; }
 
 		protected bool ThrowIfCancellationRequested { get; set; }
 
 		protected CancellationToken CancellationToken { get; set; } = CancellationToken.None;
 
-		protected IList<Func<TNode, bool>>? CancelPredicates { get; set; }
+		protected IList<Func<TNode, bool>> CancelPredicates { get; set; }
 
-		protected IList<TNode>? SkipNodes { get; set; }
+		protected IList<TNode> SkipNodes { get; set; }
 
-		protected IList<Func<TNode, bool>>? SkipPredicates { get; set; }
+		protected IList<Func<TNode, bool>> SkipPredicates { get; set; }
 
-		protected IList<TNode>? DisabledNodes { get; set; }
+		protected IList<TNode> DisabledNodes { get; set; }
 
-		protected IList<Func<TNode, bool>>? DisabledPredicates { get; set; }
+		protected IList<Func<TNode, bool>> DisabledPredicates { get; set; }
 
-		protected IList<TNode>? ExcludeNodes { get; set; }
+		protected IList<TNode> ExcludeNodes { get; set; }
 
-		protected IList<Func<TNode, bool>>? ExcludePredicates { get; set; }
+		protected IList<Func<TNode, bool>> ExcludePredicates { get; set; }
 
 		protected ICandidateSelector<TNode> Selector { get; set; } = new DepthFirstSelector<TNode>();
 
@@ -169,7 +174,7 @@ namespace Bertiooo.Traversal.Traverser
 
 				while (this.Selector.HasItems)
 				{
-					TNode? node = default;
+					TNode node = null;
 
 					try
 					{

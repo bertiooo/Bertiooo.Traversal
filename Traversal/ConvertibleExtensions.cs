@@ -1,5 +1,10 @@
 ﻿using Bertiooo.Traversal.Selectors;
 using Bertiooo.Traversal.Traverser;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Bertiooo.Traversal
 {
@@ -52,7 +57,7 @@ namespace Bertiooo.Traversal
 
 		/// <inheritdoc cref="TraversableExtensions.GetMaxDepth{TNode}(TNode)"/>
 		public static int GetMaxDepth<TAdapter, TConvertible>(this ITraversalConvertible<TAdapter, TConvertible> convertible)
-			where TAdapter : ITraversable<TAdapter>, IInstanceProvider<TConvertible>
+			where TAdapter : class, ITraversable<TAdapter>, IInstanceProvider<TConvertible>
 		{
 			return convertible.AsTraversable().GetMaxDepth();
 		}
@@ -125,25 +130,25 @@ namespace Bertiooo.Traversal
 		}
 
 		public static IEnumerable<TConvertible> Descendants<TAdapter, TConvertible>(this ITraversalConvertible<TAdapter, TConvertible> convertible, TraversalMode traversalMode = TraversalMode.DepthFirst)
-			where TAdapter : ITraversable<TAdapter>, IInstanceProvider<TConvertible>
+			where TAdapter : class, ITraversable<TAdapter>, IInstanceProvider<TConvertible>
 		{
 			return convertible.AsTraversable().Descendants(traversalMode).Select(x => x.Instance);
 		}
 
 		public static IEnumerable<TConvertible> Descendants<TAdapter, TConvertible>(this ITraversalConvertible<TAdapter, TConvertible> convertible, ICandidateSelector<TAdapter> candidateSelector)
-			where TAdapter : ITraversable<TAdapter>, IInstanceProvider<TConvertible>
+			where TAdapter : class, ITraversable<TAdapter>, IInstanceProvider<TConvertible>
 		{
 			return convertible.AsTraversable().Descendants(candidateSelector).Select(x => x.Instance);
 		}
 
 		public static IEnumerable<TConvertible> WithDescendants<TAdapter, TConvertible>(this ITraversalConvertible<TAdapter, TConvertible> convertible, TraversalMode traversalMode = TraversalMode.DepthFirst)
-			where TAdapter : ITraversable<TAdapter>, IInstanceProvider<TConvertible>
+			where TAdapter : class, ITraversable<TAdapter>, IInstanceProvider<TConvertible>
 		{
 			return convertible.AsTraversable().WithDescendants(traversalMode).Select(x => x.Instance);
 		}
 
 		public static IEnumerable<TConvertible> WithDescendants<TAdapter, TConvertible>(this ITraversalConvertible<TAdapter, TConvertible> convertible, ICandidateSelector<TAdapter> candidateSelector)
-			where TAdapter : ITraversable<TAdapter>, IInstanceProvider<TConvertible>
+			where TAdapter : class, ITraversable<TAdapter>, IInstanceProvider<TConvertible>
 		{
 			return convertible.AsTraversable().WithDescendants(candidateSelector).Select(x => x.Instance);
 		}
@@ -167,7 +172,7 @@ namespace Bertiooo.Traversal
 		/// <inheritdoc cref="TraversableExtensions.Traverse{TNode}(TNode)"/>
 		public static IAdapterTraverser<TAdapter, TConvertible> Traverse<TAdapter, TConvertible>(
 			this ITraversalConvertible<TAdapter, TConvertible> convertible)
-			where TAdapter : ITraversable<TAdapter>, IInstanceProvider<TConvertible>
+			where TAdapter : class, ITraversable<TAdapter>, IInstanceProvider<TConvertible>
 			where TConvertible : ITraversalConvertible<TAdapter, TConvertible>
 		{
 			var adapter = convertible.AsTraversable();
@@ -178,7 +183,7 @@ namespace Bertiooo.Traversal
 			this ITraversalConvertible<TAdapter, TConvertible> convertible,
 			Action<TConvertible> callback,
 			TraversalMode traversalMode = TraversalMode.DepthFirst)
-			where TAdapter : ITraversable<TAdapter>, IInstanceProvider<TConvertible>
+			where TAdapter : class, ITraversable<TAdapter>, IInstanceProvider<TConvertible>
 		{
 			convertible.AsTraversable().Traverse(x => callback.Invoke(x.Instance), traversalMode);
 		}
@@ -187,7 +192,7 @@ namespace Bertiooo.Traversal
 			this ITraversalConvertible<TAdapter, TConvertible> convertible,
 			Action<TConvertible> callback,
 			ICandidateSelector<TAdapter> candidateSelector)
-			where TAdapter : ITraversable<TAdapter>, IInstanceProvider<TConvertible>
+			where TAdapter : class, ITraversable<TAdapter>, IInstanceProvider<TConvertible>
 		{
 			convertible.AsTraversable().Traverse(x => callback.Invoke(x.Instance), candidateSelector);
 		}
@@ -196,8 +201,8 @@ namespace Bertiooo.Traversal
 			this ITraversalConvertible<TAdapter, TConvertible> convertible,
 			Action<TConvertible> callback,
 			TraversalMode traversalMode = TraversalMode.DepthFirst,
-			CancellationToken? cancellationToken = null)
-			where TAdapter : ITraversable<TAdapter>, IInstanceProvider<TConvertible>
+			CancellationToken cancellationToken = default)
+			where TAdapter : class, ITraversable<TAdapter>, IInstanceProvider<TConvertible>
 		{
 			return convertible.AsTraversable().TraverseAsync(x => callback.Invoke(x.Instance), traversalMode, cancellationToken);
 		}
@@ -206,8 +211,8 @@ namespace Bertiooo.Traversal
 			this ITraversalConvertible<TAdapter, TConvertible> convertible,
 			Action<TConvertible> callback,
 			ICandidateSelector<TAdapter> candidateSelector,
-			CancellationToken? cancellationToken = null)
-			where TAdapter : ITraversable<TAdapter>, IInstanceProvider<TConvertible>
+			CancellationToken cancellationToken = default)
+			where TAdapter : class, ITraversable<TAdapter>, IInstanceProvider<TConvertible>
 		{
 			return convertible.AsTraversable().TraverseAsync(x => callback.Invoke(x.Instance), candidateSelector, cancellationToken);
 		}

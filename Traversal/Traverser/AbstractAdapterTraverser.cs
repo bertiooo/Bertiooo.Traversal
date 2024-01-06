@@ -1,10 +1,14 @@
 ﻿using Bertiooo.Traversal.Selectors;
-using System.Xml.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Bertiooo.Traversal.Traverser
 {
 	internal abstract class AbstractAdapterTraverser<TAdapter, TConvertible> : IAdapterTraverser<TAdapter, TConvertible>
-		where TAdapter : IInstanceProvider<TConvertible>, ITraversable<TAdapter>
+		where TAdapter : class, IInstanceProvider<TConvertible>, ITraversable<TAdapter>
 	{
 		private readonly ITraverser<TAdapter> _traverser;
 

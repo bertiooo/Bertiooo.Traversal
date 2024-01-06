@@ -1,6 +1,10 @@
 ﻿using Bertiooo.Traversal.Selectors;
 using Bertiooo.Traversal.Traverser;
+using System.Collections.Generic;
+using System.Linq;
+using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Bertiooo.Traversal
 {
@@ -66,7 +70,7 @@ namespace Bertiooo.Traversal
 		/// in order to figure out the maximum depth.
 		/// </remarks>
 		public static int GetMaxDepth<TNode>(this TNode node)
-			where TNode : ITraversable<TNode>
+			where TNode : class, ITraversable<TNode>
 		{
 			var maxLevel = 0;
 			node.Traverse(x => maxLevel = Math.Max(maxLevel, x.GetLevel()));
@@ -182,25 +186,25 @@ namespace Bertiooo.Traversal
 		}
 
 		public static IEnumerable<TNode> Descendants<TNode>(this TNode node, TraversalMode traversalMode = TraversalMode.DepthFirst)
-			where TNode : ITraversable<TNode>
+			where TNode : class, ITraversable<TNode>
 		{
 			return node.Traverse().Use(traversalMode).Exclude(node).GetNodes();
 		}
 
 		public static IEnumerable<TNode> Descendants<TNode>(this TNode node, ICandidateSelector<TNode> candidateSelector)
-			where TNode : ITraversable<TNode>
+			where TNode : class, ITraversable<TNode>
 		{
 			return node.Traverse().Use(candidateSelector).Exclude(node).GetNodes();
 		}
 
 		public static IEnumerable<TNode> WithDescendants<TNode>(this TNode node, TraversalMode traversalMode = TraversalMode.DepthFirst)
-			where TNode : ITraversable<TNode>
+			where TNode : class, ITraversable<TNode>
 		{
 			return node.Traverse().Use(traversalMode).GetNodes();
 		}
 
 		public static IEnumerable<TNode> WithDescendants<TNode>(this TNode node, ICandidateSelector<TNode> candidateSelector)
-			where TNode : ITraversable<TNode>
+			where TNode : class, ITraversable<TNode>
 		{
 			return node.Traverse().Use(candidateSelector).GetNodes();
 		}
@@ -235,7 +239,7 @@ namespace Bertiooo.Traversal
 		/// </summary>
 		public static ITraverser<TNode> Traverse<TNode>(
 			this TNode node)
-			where TNode : ITraversable<TNode>
+			where TNode : class, ITraversable<TNode>
 		{
 			return new TraversableTraverser<TNode>(node);
 		}
@@ -244,7 +248,7 @@ namespace Bertiooo.Traversal
 			this TNode node,
 			Action<TNode> callback,
 			TraversalMode traversalMode = TraversalMode.DepthFirst)
-			where TNode : ITraversable<TNode>
+			where TNode : class, ITraversable<TNode>
 		{
 			node.Traverse()
 				.Use(traversalMode)
@@ -256,7 +260,7 @@ namespace Bertiooo.Traversal
 			this TNode node,
 			Action<TNode> callback,
 			ICandidateSelector<TNode> candidateSelector)
-			where TNode : ITraversable<TNode>
+			where TNode : class, ITraversable<TNode>
 		{
 			node.Traverse()
 				.Use(candidateSelector)
@@ -268,20 +272,20 @@ namespace Bertiooo.Traversal
 			this TNode node,
 			Action<TNode> callback,
 			TraversalMode traversalMode = TraversalMode.DepthFirst,
-			CancellationToken? cancellationToken = null)
-			where TNode : ITraversable<TNode>
+			CancellationToken cancellationToken = default)
+			where TNode : class, ITraversable<TNode>
 		{
-			return Task.Factory.StartNew(() => node.Traverse(callback, traversalMode), cancellationToken ?? CancellationToken.None);
+			return Task.Factory.StartNew(() => node.Traverse(callback, traversalMode), cancellationToken);
 		}
 
 		public static Task TraverseAsync<TNode>(
 			this TNode node,
 			Action<TNode> callback,
 			ICandidateSelector<TNode> candidateSelector,
-			CancellationToken? cancellationToken = null)
-			where TNode : ITraversable<TNode>
+			CancellationToken cancellationToken = default)
+			where TNode : class, ITraversable<TNode>
 		{
-			return Task.Factory.StartNew(() => node.Traverse(callback, candidateSelector), cancellationToken ?? CancellationToken.None);
+			return Task.Factory.StartNew(() => node.Traverse(callback, candidateSelector), cancellationToken);
 		}
 
 		#endregion

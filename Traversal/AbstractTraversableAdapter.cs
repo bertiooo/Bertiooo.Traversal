@@ -19,7 +19,7 @@ namespace Bertiooo.Traversal
 		private readonly TConvertible convertible;
 
 		// cached adapters
-		private TAdapter? parentAdapter;
+		private TAdapter parentAdapter;
 		private IList<TAdapter> childAdapters = new List<TAdapter>();
 
 		protected AbstractTraversableAdapter(TConvertible convertible) 
@@ -29,7 +29,7 @@ namespace Bertiooo.Traversal
 
 		public TConvertible Instance => this.convertible;
 
-		public TAdapter? Parent 
+		public TAdapter Parent 
 		{
 			get
 			{
@@ -93,13 +93,13 @@ namespace Bertiooo.Traversal
 			}
 		}
 
-		protected abstract TConvertible? ParentInstance { get; }
+		protected abstract TConvertible ParentInstance { get; }
 
 		protected abstract IEnumerable<TConvertible> ChildInstances { get; }
 
 		protected abstract TAdapter CreateAdapter(TConvertible convertible);
 
-		public override bool Equals(object? obj)
+		public override bool Equals(object obj)
 		{
 			var adapter = obj as AbstractTraversableAdapter<TAdapter, TConvertible>;
 

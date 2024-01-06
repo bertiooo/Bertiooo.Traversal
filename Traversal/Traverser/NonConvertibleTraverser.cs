@@ -1,13 +1,10 @@
-﻿using System;
+﻿using Bertiooo.Traversal.NonConvertible;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Bertiooo.Traversal.NonConvertible;
 
 namespace Bertiooo.Traversal.Traverser
 {
-    internal class NonConvertibleTraverser<TConvertible> : AbstractAdapterTraverser<DefaultTraversableAdapter<TConvertible>, TConvertible>
+	internal class NonConvertibleTraverser<TConvertible> : AbstractAdapterTraverser<DefaultTraversableAdapter<TConvertible>, TConvertible>
 		where TConvertible : class
 	{
 		private readonly Func<TConvertible, IEnumerable<TConvertible>> getChildrenFunc;
