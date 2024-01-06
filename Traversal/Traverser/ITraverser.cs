@@ -14,6 +14,13 @@ namespace Bertiooo.Traversal.Traverser
 		ITraverser<TNode> CancelIf(Func<TNode, bool> predicate);
 
 		/// <summary>
+		/// Cancels the complete traversal if the predicate returns true. 
+		/// Will be called each time a node of the specified type gets visited.
+		/// </summary>
+		ITraverser<TNode> CancelIf<T>(Func<T, bool> predicate)
+			where T : class, TNode;
+
+		/// <summary>
 		/// With this method you can define nodes for which the callbacks installed with <see cref="WithAction(Action)"/> won't be invoked. 
 		/// Still, the nodes will be traversed and be included in the <see cref="IEnumerable{TNode}"/> returned by <see cref="GetNodes"/>.
 		/// </summary>
@@ -32,6 +39,20 @@ namespace Bertiooo.Traversal.Traverser
 		ITraverser<TNode> DisableCallbacksFor(Func<TNode, bool> predicate);
 
 		/// <summary>
+		/// With this method you can define nodes for which the callbacks installed with <see cref="WithAction(Action)"/> won't be invoked. 
+		/// Still, the nodes will be traversed and be included in the <see cref="IEnumerable{TNode}"/> returned by <see cref="GetNodes"/>.
+		/// </summary>
+		ITraverser<TNode> DisableCallbacksFor<T>()
+			where T : class, TNode;
+
+		/// <summary>
+		/// With this method you can define nodes for which the callbacks installed with <see cref="WithAction(Action)"/> won't be invoked. 
+		/// Still, the nodes will be traversed and be included in the <see cref="IEnumerable{TNode}"/> returned by <see cref="GetNodes"/>.
+		/// </summary>
+		ITraverser<TNode> DisableCallbacksFor<T>(Func<T, bool> predicate)
+			where T : class, TNode;
+
+		/// <summary>
 		/// This method will cause the defined nodes not to be included in the <see cref="IEnumerable{TNode}"/> returned by <see cref="GetNodes"/>. 
 		/// But the traversal still continues on the node's descendants and also the callbacks will be invoked.
 		/// </summary>
@@ -48,6 +69,18 @@ namespace Bertiooo.Traversal.Traverser
 		/// But the traversal still continues on the node's descendants and also the callbacks will be invoked.
 		/// </summary>
 		ITraverser<TNode> Exclude(Func<TNode, bool> predicate);
+
+		/// <summary>
+		/// This method will cause the defined nodes of the specified type not to be included in the <see cref="IEnumerable{TNode}"/> returned by <see cref="GetNodes"/>. 
+		/// But the traversal still continues on the node's descendants and also the callbacks will be invoked.
+		/// </summary>
+		ITraverser<TNode> Exclude<T>() where T : class, TNode;
+
+		/// <summary>
+		/// This method will cause the defined nodes of the specified type not to be included in the <see cref="IEnumerable{TNode}"/> returned by <see cref="GetNodes"/>. 
+		/// But the traversal still continues on the node's descendants and also the callbacks will be invoked.
+		/// </summary>
+		ITraverser<TNode> Exclude<T>(Func<T, bool> predicate) where T : class, TNode;
 
 		void Execute();
 
@@ -89,6 +122,20 @@ namespace Bertiooo.Traversal.Traverser
 		/// and no callbacks will be invoked for them.
 		/// </summary>
 		ITraverser<TNode> Ignore(Func<TNode, bool> predicate);
+
+		/// <summary>
+		/// This method combines <see cref="Exclude{T}()"/> and <see cref="DisableCallbacksFor{T}()"/>. 
+		/// Thus, the defined nodes won't be included in the <see cref="IEnumerable{TNode}"/> returned by <see cref="GetNodes"/>
+		/// and no callbacks will be invoked for them.
+		/// </summary>
+		ITraverser<TNode> Ignore<T>() where T : class, TNode;
+
+		/// <summary>
+		/// This method combines <see cref="Exclude{T}(Func{T, bool})"/> and <see cref="DisableCallbacksFor{T}(Func{T, bool})"/>. 
+		/// Thus, the defined nodes won't be included in the <see cref="IEnumerable{TNode}"/> returned by <see cref="GetNodes"/>
+		/// and no callbacks will be invoked for them.
+		/// </summary>
+		ITraverser<TNode> Ignore<T>(Func<T, bool> predicate) where T : class, TNode;
 
 		/// <summary>
 		/// The specified callback will be invoked when the operation is canceled via cancellation token defined with <see cref="Use(CancellationToken, bool)"/> 
@@ -133,6 +180,20 @@ namespace Bertiooo.Traversal.Traverser
 		/// Thus, there will be no callbacks for the node and its descendants and <see cref="GetNodes"/> won't return those nodes.
 		/// </summary>
 		ITraverser<TNode> Skip(Func<TNode, bool> predicate);
+
+		/// <summary>
+		/// When a node is specified to be skipped, then the node doesn't get added to the candidate selector, 
+		/// i.e. the node itself and its descendants won't be traversed at all.
+		/// Thus, there will be no callbacks for the node and its descendants and <see cref="GetNodes"/> won't return those nodes.
+		/// </summary>
+		ITraverser<TNode> Skip<T>() where T : class, TNode;
+
+		/// <summary>
+		/// When a node is specified to be skipped, then the node doesn't get added to the candidate selector, 
+		/// i.e. the node itself and its descendants won't be traversed at all.
+		/// Thus, there will be no callbacks for the node and its descendants and <see cref="GetNodes"/> won't return those nodes.
+		/// </summary>
+		ITraverser<TNode> Skip<T>(Func<T, bool> predicate) where T : class, TNode;
 
 		ITraverser<TNode> Use(ICandidateSelector<TNode> selector);
 

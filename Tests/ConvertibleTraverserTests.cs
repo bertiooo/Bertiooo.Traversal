@@ -56,6 +56,9 @@ namespace Tests
 			var root = this.fixture.Root;
 			var child = root.Children.First();
 
+			var secondChild = root.Children.ElementAt(1) as DerivativeConvertible;
+			Assert.NotNull(secondChild);
+
 			var nodes = root.Traverse().Skip(child).GetNodes();
 
 			Assert.True(nodes.Any());
@@ -67,6 +70,14 @@ namespace Tests
 			Assert.True(nodes.Any());
 			Assert.True(nodes.Contains(child) == false);
 			Assert.True(child.Children.All(x => nodes.Contains(x)) == false);
+
+			nodes = root.Traverse().Skip<DerivativeConvertible>().GetNodes();
+
+			var numberOfNodes = root.WithDescendants().Count();
+			var numberOfDerivatives = root.WithDescendants().OfType<DerivativeConvertible>().Count();
+
+			Assert.True(nodes.Any());
+			Assert.Equal(numberOfNodes - numberOfDerivatives, nodes.Count());
 		}
 
 		[Fact]
@@ -74,6 +85,9 @@ namespace Tests
 		{
 			var root = this.fixture.Root;
 			var child = root.Children.First();
+
+			var secondChild = root.Children.ElementAt(1) as DerivativeConvertible;
+			Assert.NotNull(secondChild);
 
 			var nodes = root.Traverse().Exclude(child).GetNodes();
 
@@ -90,6 +104,11 @@ namespace Tests
 
 			// child nodes still are traversed
 			Assert.True(child.Children.All(x => nodes.Contains(x)));
+
+			nodes = root.Traverse().Exclude<DerivativeConvertible>(x => x.Equals(secondChild)).GetNodes();
+
+			Assert.True(nodes.Any());
+			Assert.Equal(root.WithDescendants().Count() - 1, nodes.Count());
 		}
 
 		[Fact]
@@ -298,6 +317,28 @@ namespace Tests
 				.Execute();
 
 			Assert.True(canceledInvoked);
+		}
+
+		[Fact]
+		public void TraverserCancelsOnDerivativePredicate()
+		{
+			var root = this.fixture.Root;
+
+			var secondChild = root.Children.ElementAt(1) as DerivativeConvertible;
+			Assert.NotNull(secondChild);
+
+			var numberOfVisitedNodes = 0;
+			var canceledInvoked = false;
+
+			root.Traverse()
+				.Use(TraversalMode.BreadthFirst)
+				.WithAction(() => numberOfVisitedNodes++)
+				.CancelIf<DerivativeConvertible>(x => x.Equals(secondChild))
+				.OnCanceled(() => canceledInvoked = true)
+				.Execute();
+
+			Assert.True(canceledInvoked);
+			Assert.Equal(2, numberOfVisitedNodes); // root and first child
 		}
 
 		[Fact]

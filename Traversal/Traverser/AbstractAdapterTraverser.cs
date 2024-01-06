@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Bertiooo.Traversal.Traverser
 {
@@ -25,6 +26,24 @@ namespace Bertiooo.Traversal.Traverser
 			_traverser.CancelIf(wrapper);
 
 			return this;
+		}
+
+		public IAdapterTraverser<TAdapter, TConvertible> CancelIf<T>(Func<T, bool> predicate)
+			where T : class, TConvertible
+		{
+			Func<TConvertible, bool> wrapper = node =>
+			{
+				var derivative = node as T;
+
+				if (derivative != null)
+				{
+					return predicate.Invoke(derivative);
+				}
+
+				return false;
+			};
+
+			return this.CancelIf(wrapper);
 		}
 
 		public IAdapterTraverser<TAdapter, TConvertible> DisableCallbacksFor(TConvertible node)
@@ -51,6 +70,29 @@ namespace Bertiooo.Traversal.Traverser
 			return this;
 		}
 
+		public IAdapterTraverser<TAdapter, TConvertible> DisableCallbacksFor<T>() where T : class, TConvertible
+		{
+			return this.DisableCallbacksFor(x => x is T);
+		}
+
+		public IAdapterTraverser<TAdapter, TConvertible> DisableCallbacksFor<T>(Func<T, bool> predicate)
+			where T : class, TConvertible
+		{
+			Func<TConvertible, bool> wrapper = node =>
+			{
+				var derivative = node as T;
+
+				if (derivative != null)
+				{
+					return predicate.Invoke(derivative);
+				}
+
+				return false;
+			};
+
+			return this.DisableCallbacksFor(wrapper);
+		}
+
 		public IAdapterTraverser<TAdapter, TConvertible> Exclude(TConvertible node)
 		{
 			var adapter = this.GetAdapter(node);
@@ -73,6 +115,29 @@ namespace Bertiooo.Traversal.Traverser
 			_traverser.Exclude(wrapper);
 
 			return this;
+		}
+
+		public IAdapterTraverser<TAdapter, TConvertible> Exclude<T>() where T : class, TConvertible
+		{
+			return this.Exclude(x => x is T);
+		}
+
+		public IAdapterTraverser<TAdapter, TConvertible> Exclude<T>(Func<T, bool> predicate)
+			where T : class, TConvertible
+		{
+			Func<TConvertible, bool> wrapper = node =>
+			{
+				var derivative = node as T;
+
+				if (derivative != null)
+				{
+					return predicate.Invoke(derivative);
+				}
+
+				return false;
+			};
+
+			return this.Exclude(wrapper);
 		}
 
 		public void Execute()
@@ -126,6 +191,29 @@ namespace Bertiooo.Traversal.Traverser
 			return this;
 		}
 
+		public IAdapterTraverser<TAdapter, TConvertible> Ignore<T>() where T : class, TConvertible
+		{
+			return this.Ignore(x => x is T);
+		}
+
+		public IAdapterTraverser<TAdapter, TConvertible> Ignore<T>(Func<T, bool> predicate)
+			where T : class, TConvertible
+		{
+			Func<TConvertible, bool> wrapper = node =>
+			{
+				var derivative = node as T;
+
+				if (derivative != null)
+				{
+					return predicate.Invoke(derivative);
+				}
+
+				return false;
+			};
+
+			return this.Ignore(wrapper);
+		}
+
 		public IAdapterTraverser<TAdapter, TConvertible> OnCanceled(Action action)
 		{
 			_traverser.OnCanceled(action);
@@ -172,6 +260,29 @@ namespace Bertiooo.Traversal.Traverser
 			_traverser.Skip(wrapper);
 
 			return this;
+		}
+
+		public IAdapterTraverser<TAdapter, TConvertible> Skip<T>() where T : class, TConvertible
+		{
+			return this.Skip(x => x is T);
+		}
+
+		public IAdapterTraverser<TAdapter, TConvertible> Skip<T>(Func<T, bool> predicate)
+			where T : class, TConvertible
+		{
+			Func<TConvertible, bool> wrapper = node =>
+			{
+				var derivative = node as T;
+
+				if (derivative != null)
+				{
+					return predicate.Invoke(derivative);
+				}
+
+				return false;
+			};
+
+			return this.Skip(wrapper);
 		}
 
 		public IAdapterTraverser<TAdapter, TConvertible> Use(ICandidateSelector<TAdapter> selector)

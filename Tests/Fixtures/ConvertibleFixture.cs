@@ -1,4 +1,5 @@
-﻿using Tests.Model;
+﻿using System.Xml.Linq;
+using Tests.Model;
 
 namespace Tests.Fixtures
 {
@@ -13,9 +14,23 @@ namespace Tests.Fixtures
 			var rootChildren = new List<Convertible>();
             root.Children = rootChildren;
 
+            string name;
+
             for (var i = 0; i < 2; i++)
             {
-                var inner = new Convertible() { Parent = root, Name = "Inner " + (i+1) };
+				name = "Inner " + (i + 1);
+
+                Convertible inner;
+
+				if (i == 0)
+				{
+					inner = new Convertible() { Parent = root, Name = name };
+				}
+				else
+				{
+					inner = new DerivativeConvertible() { Parent = root, Name = name };
+				}
+
                 rootChildren.Add(inner);
 
                 var innerChildren = new List<Convertible>();
@@ -23,17 +38,17 @@ namespace Tests.Fixtures
 
                 for (var j = 0; j < 2; j++)
                 {
-                    var name = "Leaf " + (i * 2 + j + 1);
+                    name = "Leaf " + (i * 2 + j + 1);
 
                     Convertible leaf;
 
                     if(i == 0)
                     {
-						leaf = new DerivativeConvertible() { Parent = inner, Name = name };
+						leaf = new Convertible() { Parent = inner, Name = name };
 					}
                     else
                     {
-						leaf = new Convertible() { Parent = inner, Name = name };
+						leaf = new DerivativeConvertible() { Parent = inner, Name = name };
 					}
 
                     innerChildren.Add(leaf);

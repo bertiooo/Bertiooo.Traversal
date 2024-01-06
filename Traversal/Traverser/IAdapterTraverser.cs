@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Bertiooo.Traversal.Traverser
 {
@@ -12,6 +11,9 @@ namespace Bertiooo.Traversal.Traverser
 	{
 		/// <inheritdoc cref="ITraverser{TAdapter}.CancelIf(Func{TAdapter, bool})" />
 		IAdapterTraverser<TAdapter, TConvertible> CancelIf(Func<TConvertible, bool> predicate);
+
+		/// <inheritdoc cref="ITraverser{TAdapter}.CancelIf{T}(Func{T, bool})" />
+		IAdapterTraverser<TAdapter, TConvertible> CancelIf<T>(Func<T, bool> predicate) where T : class, TConvertible;
 
 		/// <inheritdoc cref="ITraverser{TAdapter}.DisableCallbacksFor(TAdapter)" />
 		IAdapterTraverser<TAdapter, TConvertible> DisableCallbacksFor(TConvertible node);
@@ -22,6 +24,12 @@ namespace Bertiooo.Traversal.Traverser
 		/// <inheritdoc cref="ITraverser{TAdapter}.DisableCallbacksFor(Func{TAdapter, bool})" />
 		IAdapterTraverser<TAdapter, TConvertible> DisableCallbacksFor(Func<TConvertible, bool> predicate);
 
+		/// <inheritdoc cref="ITraverser{TAdapter}.DisableCallbacksFor{T}()" />
+		IAdapterTraverser<TAdapter, TConvertible> DisableCallbacksFor<T>() where T : class, TConvertible;
+
+		/// <inheritdoc cref="ITraverser{TAdapter}.DisableCallbacksFor{T}(Func{T, bool})" />
+		IAdapterTraverser<TAdapter, TConvertible> DisableCallbacksFor<T>(Func<T, bool> predicate) where T : class, TConvertible;
+
 		/// <inheritdoc cref="ITraverser{TAdapter}.Exclude(TAdapter)" />
 		IAdapterTraverser<TAdapter, TConvertible> Exclude(TConvertible node);
 
@@ -30,6 +38,13 @@ namespace Bertiooo.Traversal.Traverser
 
 		/// <inheritdoc cref="ITraverser{TAdapter}.Exclude(Func{TAdapter, bool})" />
 		IAdapterTraverser<TAdapter, TConvertible> Exclude(Func<TConvertible, bool> predicate);
+
+		/// <inheritdoc cref="ITraverser{TAdapter}.Exclude{T}()" />
+		IAdapterTraverser<TAdapter, TConvertible> Exclude<T>() where T : class, TConvertible;
+
+		/// <inheritdoc cref="ITraverser{TAdapter}.Exclude{T}(Func{T, bool})" />
+		IAdapterTraverser<TAdapter, TConvertible> Exclude<T>(Func<T, bool> predicate) where T : class, TConvertible;
+
 		void Execute();
 
 		/// <inheritdoc cref="ITraverser{TAdapter}.ExecuteAsync" />
@@ -53,6 +68,12 @@ namespace Bertiooo.Traversal.Traverser
 		/// <inheritdoc cref="ITraverser{TAdapter}.Ignore(Func{TAdapter, bool})" />
 		IAdapterTraverser<TAdapter, TConvertible> Ignore(Func<TConvertible, bool> predicate);
 
+		/// <inheritdoc cref="ITraverser{TAdapter}.Ignore{T}()" />
+		IAdapterTraverser<TAdapter, TConvertible> Ignore<T>() where T : class, TConvertible;
+
+		/// <inheritdoc cref="ITraverser{TAdapter}.Ignore{T}(Func{T, bool})" />
+		IAdapterTraverser<TAdapter, TConvertible> Ignore<T>(Func<T, bool> predicate) where T : class, TConvertible;
+
 		/// <inheritdoc cref="ITraverser{TAdapter}.OnCanceled(Action)" />
 		IAdapterTraverser<TAdapter, TConvertible> OnCanceled(Action action);
 
@@ -74,6 +95,12 @@ namespace Bertiooo.Traversal.Traverser
 
 		/// <inheritdoc cref="ITraverser{TAdapter}.Skip(Func{TAdapter, bool})" />
 		IAdapterTraverser<TAdapter, TConvertible> Skip(Func<TConvertible, bool> predicate);
+
+		/// <inheritdoc cref="ITraverser{TAdapter}.Skip{T}()" />
+		IAdapterTraverser<TAdapter, TConvertible> Skip<T>() where T : class, TConvertible;
+
+		/// <inheritdoc cref="ITraverser{TAdapter}.Skip{T}(Func{T, bool})" />
+		IAdapterTraverser<TAdapter, TConvertible> Skip<T>(Func<T, bool> predicate) where T : class, TConvertible;
 
 		/// <inheritdoc cref="ITraverser{TAdapter}.Use(ICandidateSelector{TAdapter})" />
 		IAdapterTraverser<TAdapter, TConvertible> Use(ICandidateSelector<TAdapter> selector);

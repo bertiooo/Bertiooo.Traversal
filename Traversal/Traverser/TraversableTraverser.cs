@@ -226,6 +226,29 @@ namespace Bertiooo.Traversal.Traverser
 			return this;
 		}
 
+		public ITraverser<TNode> DisableCallbacksFor<T>() where T : class, TNode
+		{
+			return this.DisableCallbacksFor(x => x is T);
+		}
+
+		public ITraverser<TNode> DisableCallbacksFor<T>(Func<T, bool> predicate)
+			where T : class, TNode
+		{
+			Func<TNode, bool> wrapper = node =>
+			{
+				var derivative = node as T;
+
+				if(derivative != null)
+				{
+					return predicate.Invoke(derivative);
+				}
+
+				return false;
+			};
+
+			return this.DisableCallbacksFor(wrapper);
+		}
+
 		public ITraverser<TNode> Exclude(TNode node)
 		{
 			if(this.ExcludeNodes == null)
@@ -263,6 +286,28 @@ namespace Bertiooo.Traversal.Traverser
 			return this;
 		}
 
+		public ITraverser<TNode> Exclude<T>() where T : class, TNode
+		{
+			return this.Exclude(x => x is T);
+		}
+
+		public ITraverser<TNode> Exclude<T>(Func<T, bool> predicate) where T : class, TNode
+		{
+			Func<TNode, bool> wrapper = node =>
+			{
+				var derivative = node as T;
+
+				if (derivative != null)
+				{
+					return predicate.Invoke(derivative);
+				}
+
+				return false;
+			};
+
+			return this.Exclude(wrapper);
+		}
+
 		public ITraverser<TNode> Finish(Action action)
 		{
 			this.Finalization += action;
@@ -286,6 +331,22 @@ namespace Bertiooo.Traversal.Traverser
 		}
 
 		public ITraverser<TNode> Ignore(Func<TNode, bool> predicate)
+		{
+			this.DisableCallbacksFor(predicate);
+			this.Exclude(predicate);
+
+			return this;
+		}
+
+		public ITraverser<TNode> Ignore<T>() where T : class, TNode
+		{
+			this.DisableCallbacksFor<T>();
+			this.Exclude<T>();
+
+			return this;
+		}
+
+		public ITraverser<TNode> Ignore<T>(Func<T, bool> predicate) where T : class, TNode
 		{
 			this.DisableCallbacksFor(predicate);
 			this.Exclude(predicate);
@@ -328,6 +389,28 @@ namespace Bertiooo.Traversal.Traverser
 
 			this.SkipPredicates.Add(predicate);
 			return this;
+		}
+
+		public ITraverser<TNode> Skip<T>() where T : class, TNode
+		{
+			return this.Skip(x => x is T);
+		}
+
+		public ITraverser<TNode> Skip<T>(Func<T, bool> predicate) where T : class, TNode
+		{
+			Func<TNode, bool> wrapper = node =>
+			{
+				var derivative = node as T;
+
+				if (derivative != null)
+				{
+					return predicate.Invoke(derivative);
+				}
+
+				return false;
+			};
+
+			return this.Skip(wrapper);
 		}
 
 		public ITraverser<TNode> Use(ICandidateSelector<TNode> selector)
@@ -435,6 +518,23 @@ namespace Bertiooo.Traversal.Traverser
 
 			this.CancelPredicates.Add(predicate);
 			return this;
+		}
+
+		public ITraverser<TNode> CancelIf<T>(Func<T, bool> predicate) where T : class, TNode
+		{
+			Func<TNode, bool> wrapper = node =>
+			{
+				var derivative = node as T;
+
+				if(derivative != null)
+				{
+					return predicate.Invoke(derivative);
+				}
+
+				return false;
+			};
+
+			return this.CancelIf(wrapper);
 		}
 
 		#endregion
