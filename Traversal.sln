@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34018.315
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Traversal", "Traversal\Traversal.csproj", "{BF213227-7DB2-43BF-881B-E729BB4B785D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{EBA809CC-D8E5-4C80-B651-0A6EB45C5C95}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BF213227-7DB2-43BF-881B-E729BB4B785D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF213227-7DB2-43BF-881B-E729BB4B785D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF213227-7DB2-43BF-881B-E729BB4B785D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF213227-7DB2-43BF-881B-E729BB4B785D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBA809CC-D8E5-4C80-B651-0A6EB45C5C95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBA809CC-D8E5-4C80-B651-0A6EB45C5C95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBA809CC-D8E5-4C80-B651-0A6EB45C5C95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBA809CC-D8E5-4C80-B651-0A6EB45C5C95}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D42A362A-70C7-4579-9284-47600AB617C5}
+	EndGlobalSection
+EndGlobal

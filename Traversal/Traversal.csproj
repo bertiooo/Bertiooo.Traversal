@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>Bertiooo.$(MSBuildProjectName)</AssemblyName>
+    <RootNamespace>Bertiooo.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+    <Title>Bertiooo's Traversal Library</Title>
+    <Authors>bertiooo</Authors>
+    <Description>This library provides extension methods to traverse hierarchy structures. It may work for other graph types as well.</Description>
+    <PackageTags>traversal</PackageTags>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE.txt">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>
