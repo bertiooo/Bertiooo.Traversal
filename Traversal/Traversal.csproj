@@ -9,13 +9,19 @@
     <Title>Bertiooo's Traversal Library</Title>
     <Authors>bertiooo</Authors>
     <Description>This library provides extension methods to traverse hierarchy structures. It may work for other graph types as well.</Description>
-    <PackageTags>traversal</PackageTags>
+    <PackageTags>traversal; hierarchy; tree</PackageTags>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/bertiooo/Bertiooo.Traversal/</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="..\LICENSE.txt">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
