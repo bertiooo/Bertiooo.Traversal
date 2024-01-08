@@ -21,6 +21,12 @@ namespace Bertiooo.Traversal.Traverser
 
 		protected abstract TAdapter GetAdapter(TConvertible convertible);
 
+		public IAdapterTraverser<TAdapter, TConvertible> CancelIf(Func<bool> predicate)
+		{
+			_traverser.CancelIf(predicate);
+			return this;
+		}
+
 		public IAdapterTraverser<TAdapter, TConvertible> CancelIf(Func<TConvertible, bool> predicate)
 		{
 			if (predicate == null)

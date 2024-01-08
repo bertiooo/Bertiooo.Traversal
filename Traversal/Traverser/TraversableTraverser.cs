@@ -548,6 +548,15 @@ namespace Bertiooo.Traversal.Traverser
 			return this;
 		}
 
+		public ITraverser<TNode> CancelIf(Func<bool> predicate)
+		{
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
+			Func<TNode, bool> wrapper = node => predicate.Invoke();
+			return this.CancelIf(wrapper);
+		}
+
 		public ITraverser<TNode> CancelIf(Func<TNode, bool> predicate)
 		{
 			if (predicate == null)

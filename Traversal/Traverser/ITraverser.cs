@@ -11,6 +11,11 @@ namespace Bertiooo.Traversal.Traverser
 		/// <summary>
 		/// Cancels the complete traversal if the predicate returns true. Will be called each time a node gets visited.
 		/// </summary>
+		ITraverser<TNode> CancelIf(Func<bool> predicate);
+
+		/// <summary>
+		/// Cancels the complete traversal if the predicate returns true. Will be called each time a node gets visited.
+		/// </summary>
 		ITraverser<TNode> CancelIf(Func<TNode, bool> predicate);
 
 		/// <summary>

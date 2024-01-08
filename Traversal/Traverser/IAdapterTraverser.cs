@@ -9,6 +9,9 @@ namespace Bertiooo.Traversal.Traverser
 	public interface IAdapterTraverser<TAdapter, TConvertible>
 		where TAdapter : IInstanceProvider<TConvertible>
 	{
+		/// <inheritdoc cref="ITraverser{TAdapter}.CancelIf(Func{bool})" />
+		IAdapterTraverser<TAdapter, TConvertible> CancelIf(Func<bool> predicate);
+
 		/// <inheritdoc cref="ITraverser{TAdapter}.CancelIf(Func{TAdapter, bool})" />
 		IAdapterTraverser<TAdapter, TConvertible> CancelIf(Func<TConvertible, bool> predicate);
 

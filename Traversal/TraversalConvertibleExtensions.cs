@@ -5,7 +5,6 @@ using System.Threading;
 using System;
 using Bertiooo.Traversal.Selectors;
 using Bertiooo.Traversal.Traverser;
-using System.Xml.Linq;
 
 namespace Bertiooo.Traversal
 {
