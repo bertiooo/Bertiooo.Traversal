@@ -9,11 +9,6 @@ using System.Xml.Linq;
 
 namespace Bertiooo.Traversal
 {
-    /// <remarks>
-    /// Since these are extensions for any class, the code editor will suggest these extensions on any class,
-    /// which can be sort of annoying. Putting them into a separate namespace will only make them available
-    /// if they are really needed.
-    /// </remarks>
     public static class TraversalConvertibleExtensions
     {
         #region Node Analysis
