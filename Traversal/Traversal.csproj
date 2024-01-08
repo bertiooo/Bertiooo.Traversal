@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -12,7 +12,13 @@
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/bertiooo/Bertiooo.Traversal/</RepositoryUrl>
-    <VersionPrefix>1.0.4</VersionPrefix>
+    <VersionPrefix>1.0.5</VersionPrefix>
+    <PackageReleaseNotes>+ Applied generic constraint empty ITraversalConvertible for extension methods
++ Moved NonConvertibleExtensions (now TraversalConvertibleExtensions) to common namespace
++ Divided ITraversable into IParentProvider and IChildrenProvider and modified extensions accordingly
++ regard exclude predicates in Traverser in OnFailure()
++ added NullReference checks</PackageReleaseNotes>
+    <Copyright>Copyright 2024 Alberto Puig Rodríguez</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

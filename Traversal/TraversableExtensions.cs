@@ -13,31 +13,31 @@ namespace Bertiooo.Traversal
 		#region Node Analysis
 
 		public static bool IsRoot<TNode>(this TNode node)
-			where TNode : ITraversable<TNode>
+			where TNode : IParentProvider<TNode>
 		{
 			return node.HasParent() == false;
 		}
 
 		public static bool IsInnerNode<TNode>(this TNode node)
-			where TNode : ITraversable<TNode>
+			where TNode : IChildrenProvider<TNode>
 		{
 			return node.HasChildren();
 		}
 
 		public static bool IsLeaf<TNode>(this TNode node)
-			where TNode : ITraversable<TNode>
+			where TNode : IChildrenProvider<TNode>
 		{
 			return node.HasChildren() == false;
 		}
 
 		public static bool HasParent<TNode>(this TNode node)
-			where TNode : ITraversable<TNode>
+			where TNode : IParentProvider<TNode>
 		{
 			return node.Parent != null;
 		}
 
 		public static bool HasChildren<TNode>(this TNode node)
-			where TNode : ITraversable<TNode>
+			where TNode : IChildrenProvider<TNode>
 		{
 			return node.Children != null && node.Children.Any();
 		}
@@ -56,7 +56,7 @@ namespace Bertiooo.Traversal
 		/// E.g. the root node level would be 0, its children would have level 1, its grandchildren level 2, etc.
 		/// </summary>
 		public static int GetLevel<TNode>(this TNode node)
-			where TNode : ITraversable<TNode>
+			where TNode : IParentProvider<TNode>
 		{
 			return node.Ancestors().Count();
 		}
@@ -79,7 +79,7 @@ namespace Bertiooo.Traversal
 		}
 
 		public static bool IsChildOf<TNode>(this TNode node, TNode other)
-			where TNode : ITraversable<TNode>
+			where TNode : IParentProvider<TNode>
 		{
 			if (node.Parent == null)
 				return false;
@@ -88,8 +88,11 @@ namespace Bertiooo.Traversal
 		}
 
 		public static bool IsParentOf<TNode>(this TNode node, TNode other)
-			where TNode : ITraversable<TNode>
+			where TNode : IParentProvider<TNode>
 		{
+			if (other == null)
+				throw new ArgumentNullException(nameof(other));
+
 			if (other.Parent == null)
 				return false;
 
@@ -97,8 +100,11 @@ namespace Bertiooo.Traversal
 		}
 
 		public static bool IsSiblingOf<TNode>(this TNode node, TNode other)
-			where TNode : ITraversable<TNode>
+			where TNode : IParentProvider<TNode>
 		{
+			if (other == null)
+				throw new ArgumentNullException(nameof(other));
+
 			if (node.Parent == null || other.Parent == null)
 				return false;
 
@@ -106,13 +112,13 @@ namespace Bertiooo.Traversal
 		}
 
 		public static bool IsDescendantOf<TNode>(this TNode node, TNode other)
-			where TNode : ITraversable<TNode>
+			where TNode : IParentProvider<TNode>
 		{
 			return node.Ancestors().Any(x => Equals(other, x));
 		}
 
 		public static bool IsAncestorOf<TNode>(this TNode node, TNode other)
-			where TNode : ITraversable<TNode>
+			where TNode : IParentProvider<TNode>
 		{
 			return other.Ancestors().Any(x => Equals(node, x));
 		}
@@ -122,7 +128,7 @@ namespace Bertiooo.Traversal
 		#region Related Nodes Retrieval
 
 		public static TNode GetRoot<TNode>(this TNode node)
-			where TNode : ITraversable<TNode>
+			where TNode : IParentProvider<TNode>
 		{
 			var tmpNode = node;
 
@@ -139,7 +145,7 @@ namespace Bertiooo.Traversal
 		/// the method only returns an enumerable with the node itself.
 		/// </remarks>
 		public static IEnumerable<TNode> WithParent<TNode>(this TNode node)
-			where TNode : ITraversable<TNode>
+			where TNode : IParentProvider<TNode>
 		{
 			yield return node;
 
@@ -152,7 +158,7 @@ namespace Bertiooo.Traversal
 		/// the method only returns an enumerable with the node itself.
 		/// </remarks>
 		public static IEnumerable<TNode> WithChildren<TNode>(this TNode node)
-			where TNode : ITraversable<TNode>
+			where TNode : IChildrenProvider<TNode>
 		{
 			yield return node;
 
@@ -186,31 +192,31 @@ namespace Bertiooo.Traversal
 		}
 
 		public static IEnumerable<TNode> Descendants<TNode>(this TNode node, TraversalMode traversalMode = TraversalMode.DepthFirst)
-			where TNode : class, ITraversable<TNode>
+			where TNode : class, IChildrenProvider<TNode>
 		{
 			return node.Traverse().Use(traversalMode).Exclude(node).GetNodes();
 		}
 
 		public static IEnumerable<TNode> Descendants<TNode>(this TNode node, ICandidateSelector<TNode> candidateSelector)
-			where TNode : class, ITraversable<TNode>
+			where TNode : class, IChildrenProvider<TNode>
 		{
 			return node.Traverse().Use(candidateSelector).Exclude(node).GetNodes();
 		}
 
 		public static IEnumerable<TNode> WithDescendants<TNode>(this TNode node, TraversalMode traversalMode = TraversalMode.DepthFirst)
-			where TNode : class, ITraversable<TNode>
+			where TNode : class, IChildrenProvider<TNode>
 		{
 			return node.Traverse().Use(traversalMode).GetNodes();
 		}
 
 		public static IEnumerable<TNode> WithDescendants<TNode>(this TNode node, ICandidateSelector<TNode> candidateSelector)
-			where TNode : class, ITraversable<TNode>
+			where TNode : class, IChildrenProvider<TNode>
 		{
 			return node.Traverse().Use(candidateSelector).GetNodes();
 		}
 
 		public static IEnumerable<TNode> Ancestors<TNode>(this TNode node)
-			where TNode : ITraversable<TNode>
+			where TNode : IParentProvider<TNode>
 		{
 			var tmpNode = node.Parent;
 
@@ -222,7 +228,7 @@ namespace Bertiooo.Traversal
 		}
 
 		public static IEnumerable<TNode> WithAncestors<TNode>(this TNode node)
-			where TNode : ITraversable<TNode>
+			where TNode : IParentProvider<TNode>
 		{
 			yield return node;
 
@@ -239,7 +245,7 @@ namespace Bertiooo.Traversal
 		/// </summary>
 		public static ITraverser<TNode> Traverse<TNode>(
 			this TNode node)
-			where TNode : class, ITraversable<TNode>
+			where TNode : class, IChildrenProvider<TNode>
 		{
 			return new TraversableTraverser<TNode>(node);
 		}
@@ -248,7 +254,7 @@ namespace Bertiooo.Traversal
 			this TNode node,
 			Action<TNode> callback,
 			TraversalMode traversalMode = TraversalMode.DepthFirst)
-			where TNode : class, ITraversable<TNode>
+			where TNode : class, IChildrenProvider<TNode>
 		{
 			node.Traverse()
 				.Use(traversalMode)
@@ -260,7 +266,7 @@ namespace Bertiooo.Traversal
 			this TNode node,
 			Action<TNode> callback,
 			ICandidateSelector<TNode> candidateSelector)
-			where TNode : class, ITraversable<TNode>
+			where TNode : class, IChildrenProvider<TNode>
 		{
 			node.Traverse()
 				.Use(candidateSelector)
@@ -273,7 +279,7 @@ namespace Bertiooo.Traversal
 			Action<TNode> callback,
 			TraversalMode traversalMode = TraversalMode.DepthFirst,
 			CancellationToken cancellationToken = default)
-			where TNode : class, ITraversable<TNode>
+			where TNode : class, IChildrenProvider<TNode>
 		{
 			return Task.Factory.StartNew(() => node.Traverse(callback, traversalMode), cancellationToken);
 		}
@@ -283,7 +289,7 @@ namespace Bertiooo.Traversal
 			Action<TNode> callback,
 			ICandidateSelector<TNode> candidateSelector,
 			CancellationToken cancellationToken = default)
-			where TNode : class, ITraversable<TNode>
+			where TNode : class, IChildrenProvider<TNode>
 		{
 			return Task.Factory.StartNew(() => node.Traverse(callback, candidateSelector), cancellationToken);
 		}

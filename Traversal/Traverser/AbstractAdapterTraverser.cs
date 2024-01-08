@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -22,6 +23,9 @@ namespace Bertiooo.Traversal.Traverser
 
 		public IAdapterTraverser<TAdapter, TConvertible> CancelIf(Func<TConvertible, bool> predicate)
 		{
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
 			Func<TAdapter, bool> wrapper = adapter => predicate.Invoke(adapter.Instance);
 			_traverser.CancelIf(wrapper);
 
@@ -31,6 +35,9 @@ namespace Bertiooo.Traversal.Traverser
 		public IAdapterTraverser<TAdapter, TConvertible> CancelIf<T>(Func<T, bool> predicate)
 			where T : class, TConvertible
 		{
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
 			Func<TConvertible, bool> wrapper = node =>
 			{
 				var derivative = node as T;
@@ -56,6 +63,9 @@ namespace Bertiooo.Traversal.Traverser
 
 		public IAdapterTraverser<TAdapter, TConvertible> DisableCallbacksFor(IEnumerable<TConvertible> nodes)
 		{
+			if (nodes == null)
+				throw new ArgumentNullException(nameof(nodes));
+
 			var adapters = nodes.Select(this.GetAdapter);
 			_traverser.DisableCallbacksFor(adapters);
 
@@ -64,6 +74,9 @@ namespace Bertiooo.Traversal.Traverser
 
 		public IAdapterTraverser<TAdapter, TConvertible> DisableCallbacksFor(Func<TConvertible, bool> predicate)
 		{
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
 			Func<TAdapter, bool> wrapper = adapter => predicate.Invoke(adapter.Instance);
 			_traverser.DisableCallbacksFor(wrapper);
 
@@ -78,6 +91,9 @@ namespace Bertiooo.Traversal.Traverser
 		public IAdapterTraverser<TAdapter, TConvertible> DisableCallbacksFor<T>(Func<T, bool> predicate)
 			where T : class, TConvertible
 		{
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
 			Func<TConvertible, bool> wrapper = node =>
 			{
 				var derivative = node as T;
@@ -103,6 +119,9 @@ namespace Bertiooo.Traversal.Traverser
 
 		public IAdapterTraverser<TAdapter, TConvertible> Exclude(IEnumerable<TConvertible> nodes)
 		{
+			if (nodes == null)
+				throw new ArgumentNullException(nameof(nodes));
+
 			var adapters = nodes.Select(this.GetAdapter);
 			_traverser.Exclude(adapters);
 
@@ -111,6 +130,9 @@ namespace Bertiooo.Traversal.Traverser
 
 		public IAdapterTraverser<TAdapter, TConvertible> Exclude(Func<TConvertible, bool> predicate)
 		{
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
 			Func<TAdapter, bool> wrapper = adapter => predicate.Invoke(adapter.Instance);
 			_traverser.Exclude(wrapper);
 
@@ -125,6 +147,9 @@ namespace Bertiooo.Traversal.Traverser
 		public IAdapterTraverser<TAdapter, TConvertible> Exclude<T>(Func<T, bool> predicate)
 			where T : class, TConvertible
 		{
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
 			Func<TConvertible, bool> wrapper = node =>
 			{
 				var derivative = node as T;
@@ -177,6 +202,9 @@ namespace Bertiooo.Traversal.Traverser
 
 		public IAdapterTraverser<TAdapter, TConvertible> Ignore(IEnumerable<TConvertible> nodes)
 		{
+			if (nodes == null)
+				throw new ArgumentNullException(nameof(nodes));
+
 			var adapters = nodes.Select(this.GetAdapter);
 			_traverser.Ignore(adapters);
 
@@ -185,6 +213,9 @@ namespace Bertiooo.Traversal.Traverser
 
 		public IAdapterTraverser<TAdapter, TConvertible> Ignore(Func<TConvertible, bool> predicate)
 		{
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
 			Func<TAdapter, bool> wrapper = adapter => predicate.Invoke(adapter.Instance);
 			_traverser.Ignore(wrapper);
 
@@ -199,6 +230,9 @@ namespace Bertiooo.Traversal.Traverser
 		public IAdapterTraverser<TAdapter, TConvertible> Ignore<T>(Func<T, bool> predicate)
 			where T : class, TConvertible
 		{
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
 			Func<TConvertible, bool> wrapper = node =>
 			{
 				var derivative = node as T;
@@ -222,7 +256,7 @@ namespace Bertiooo.Traversal.Traverser
 
 		public IAdapterTraverser<TAdapter, TConvertible> OnFailure<T>(Func<T, bool> action) where T : Exception
 		{
-			_traverser.OnFailure<T>(action);
+			_traverser.OnFailure(action);
 			return this;
 		}
 
@@ -248,6 +282,9 @@ namespace Bertiooo.Traversal.Traverser
 
 		public IAdapterTraverser<TAdapter, TConvertible> Skip(IEnumerable<TConvertible> nodes)
 		{
+			if (nodes == null)
+				throw new ArgumentNullException(nameof(nodes));
+
 			var adapters = nodes.Select(this.GetAdapter);
 			_traverser.Skip(adapters);
 
@@ -256,6 +293,9 @@ namespace Bertiooo.Traversal.Traverser
 
 		public IAdapterTraverser<TAdapter, TConvertible> Skip(Func<TConvertible, bool> predicate)
 		{
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
 			Func<TAdapter, bool> wrapper = adapter => predicate.Invoke(adapter.Instance);
 			_traverser.Skip(wrapper);
 
@@ -270,6 +310,9 @@ namespace Bertiooo.Traversal.Traverser
 		public IAdapterTraverser<TAdapter, TConvertible> Skip<T>(Func<T, bool> predicate)
 			where T : class, TConvertible
 		{
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
 			Func<TConvertible, bool> wrapper = node =>
 			{
 				var derivative = node as T;
@@ -311,6 +354,9 @@ namespace Bertiooo.Traversal.Traverser
 
 		public IAdapterTraverser<TAdapter, TConvertible> WithAction(Action<TConvertible> action)
 		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
 			Action<TAdapter> wrapper = adapter => action.Invoke(adapter.Instance);
 			_traverser.WithAction(wrapper);
 
@@ -320,6 +366,9 @@ namespace Bertiooo.Traversal.Traverser
 		public IAdapterTraverser<TAdapter, TConvertible> WithAction<T>(Action<T> action)
 			where T : class, TConvertible
 		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
 			Action<TConvertible> wrapper = node =>
 			{
 				var derivative = node as T;

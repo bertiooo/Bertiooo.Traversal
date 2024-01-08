@@ -88,7 +88,9 @@ node.Traverse(action, TraversalMode.BreadthFirst);
 
 ICandidateSelector<Node> customSelector = new CustomCandidateSelector();
 node.Traverse(action, customSelector);
-
+```
+See [How to implement a custom candidate selector](https://github.com/bertiooo/Bertiooo.Traversal/wiki/How-to-implement-a-custom-candidate-selector) for more details about how to influence the order in which the nodes will be traversed.
+```
 CancellationToken token;
 await node.TraverseAsync(action, cancellationToken: token);
 ```
@@ -112,7 +114,7 @@ ITraverser<Node> traverser = node.Traverse()
 	.OnFailure<InvalidOperationException>(e => Debug(e))
 	.OnCanceled(action)
 	.OnSuccess(action)
-	.Finalize(action);
+	.Finish(action);
 ```
 
 See [Difference between Skip, Exclude, Ignore and DisableCallbacksFor](https://github.com/bertiooo/Bertiooo.Traversal/wiki/Difference-between-Skip,-Exclude,-Ignore-and-DisableCallbacksFor) for more information about those methods.
@@ -124,15 +126,14 @@ Then you have different options to execute the traversal:
 traverser.Execute();
 await traverser.ExecuteAsync();
 
-// be careful: Invoking GetNodes() alone won't cause the traverser to perform the traversal.
+// Be careful: Invoking GetNodes() alone won't cause the traverser to perform the traversal.
 // You need to iterate the nodes in order to proceed with the traversal.
-// In order to get the nodes consider using ToList() after GetNodes()
+// In order to execute the complete traversal consider using ToList() after GetNodes()
 IEnumerable<Node> nodes = traverser.GetNodes();
 
 // The async method in contrast will turn the enumerable into a list by full traversal.
 IList<Node> nodes = await traverser.GetNodesAsync();
 ```
-
 
 
 	

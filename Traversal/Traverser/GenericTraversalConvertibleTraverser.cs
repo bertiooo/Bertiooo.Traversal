@@ -1,21 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bertiooo.Traversal.Traverser
 {
-	internal class ConvertibleTraverser<TAdapter, TConvertible> : AbstractAdapterTraverser<TAdapter, TConvertible>
+	internal class GenericTraversalConvertibleTraverser<TAdapter, TConvertible> : AbstractAdapterTraverser<TAdapter, TConvertible>
 		where TAdapter : class, IInstanceProvider<TConvertible>, ITraversable<TAdapter>
 		where TConvertible : ITraversalConvertible<TAdapter, TConvertible>
 	{
-		public ConvertibleTraverser(TAdapter root) : base(root)
+		public GenericTraversalConvertibleTraverser(TAdapter root) : base(root)
 		{
 		}
 
 		protected override TAdapter GetAdapter(TConvertible convertible)
 		{
+			if (convertible == null)
+				throw new ArgumentNullException(nameof(convertible));
+
 			return convertible.AsTraversable();
 		}
 	}

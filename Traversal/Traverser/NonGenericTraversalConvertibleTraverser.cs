@@ -1,24 +1,26 @@
-﻿using Bertiooo.Traversal.NonConvertible;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Bertiooo.Traversal.Traverser
 {
-	internal class NonConvertibleTraverser<TConvertible> : AbstractAdapterTraverser<DefaultTraversableAdapter<TConvertible>, TConvertible>
-		where TConvertible : class
+    internal class NonGenericTraversalConvertibleTraverser<TConvertible> : AbstractAdapterTraverser<DefaultTraversableAdapter<TConvertible>, TConvertible>
+		where TConvertible : class, ITraversalConvertible
 	{
 		private readonly Func<TConvertible, IEnumerable<TConvertible>> getChildrenFunc;
 
-		public NonConvertibleTraverser(
-			DefaultTraversableAdapter<TConvertible> root,
+		public NonGenericTraversalConvertibleTraverser(
+			TConvertible root,
 			Func<TConvertible, IEnumerable<TConvertible>> getChildrenFunc) 
-			: base(root)
+			: base(root.AsTraversable(x => null, getChildrenFunc))
 		{
 			this.getChildrenFunc = getChildrenFunc;
 		}
 
 		protected override DefaultTraversableAdapter<TConvertible> GetAdapter(TConvertible convertible)
 		{
+			if (convertible == null)
+				throw new ArgumentNullException(nameof(convertible));
+
 			return convertible.AsTraversable(x => null, this.getChildrenFunc);
 		}
 	}

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Bertiooo.Traversal
 {
-	public static class ConvertibleExtensions
+	public static class GenericTraversalConvertibleExtensions
 	{
 		#region Node Analysis
 
@@ -65,30 +65,45 @@ namespace Bertiooo.Traversal
 		public static bool IsChildOf<TAdapter, TConvertible>(this ITraversalConvertible<TAdapter, TConvertible> convertible, ITraversalConvertible<TAdapter, TConvertible> other)
 			where TAdapter : ITraversable<TAdapter>, IInstanceProvider<TConvertible>
 		{
+			if (other == null)
+				throw new ArgumentNullException(nameof(other));
+
 			return convertible.AsTraversable().IsChildOf(other.AsTraversable());
 		}
 
 		public static bool IsParentOf<TAdapter, TConvertible>(this ITraversalConvertible<TAdapter, TConvertible> convertible, ITraversalConvertible<TAdapter, TConvertible> other)
 			where TAdapter : ITraversable<TAdapter>, IInstanceProvider<TConvertible>
 		{
+			if (other == null)
+				throw new ArgumentNullException(nameof(other));
+
 			return convertible.AsTraversable().IsParentOf(other.AsTraversable());
 		}
 
 		public static bool IsSiblingOf<TAdapter, TConvertible>(this ITraversalConvertible<TAdapter, TConvertible> convertible, ITraversalConvertible<TAdapter, TConvertible> other)
 			where TAdapter : ITraversable<TAdapter>, IInstanceProvider<TConvertible>
 		{
+			if (other == null)
+				throw new ArgumentNullException(nameof(other));
+
 			return convertible.AsTraversable().IsSiblingOf(other.AsTraversable());
 		}
 
 		public static bool IsDescendantOf<TAdapter, TConvertible>(this ITraversalConvertible<TAdapter, TConvertible> convertible, ITraversalConvertible<TAdapter, TConvertible> other)
 			where TAdapter : ITraversable<TAdapter>, IInstanceProvider<TConvertible>
 		{
+			if (other == null)
+				throw new ArgumentNullException(nameof(other));
+
 			return convertible.AsTraversable().IsDescendantOf(other.AsTraversable());
 		}
 
 		public static bool IsAncestorOf<TAdapter, TConvertible>(this ITraversalConvertible<TAdapter, TConvertible> convertible, ITraversalConvertible<TAdapter, TConvertible> other)
 			where TAdapter : ITraversable<TAdapter>, IInstanceProvider<TConvertible>
 		{
+			if (other == null)
+				throw new ArgumentNullException(nameof(other));
+
 			return convertible.AsTraversable().IsAncestorOf(other.AsTraversable());
 		}
 
@@ -176,7 +191,7 @@ namespace Bertiooo.Traversal
 			where TConvertible : ITraversalConvertible<TAdapter, TConvertible>
 		{
 			var adapter = convertible.AsTraversable();
-			return new ConvertibleTraverser<TAdapter, TConvertible>(adapter);
+			return new GenericTraversalConvertibleTraverser<TAdapter, TConvertible>(adapter);
 		}
 
 		public static void Traverse<TAdapter, TConvertible>(

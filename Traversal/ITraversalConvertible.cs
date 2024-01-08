@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace Bertiooo.Traversal
 {
+	public interface ITraversalConvertible
+	{
+	}
+
 	public interface ITraversalConvertible<out TAdapter, out TConvertible>
 		where TAdapter : ITraversable<TAdapter>, IInstanceProvider<TConvertible>
 	{

@@ -16,6 +16,12 @@ namespace Bertiooo.Traversal
 			Func<TConvertible, IEnumerable<TConvertible>> getChildrenFunc)
 			: base(convertible)
 		{
+			if (getParentFunc == null)
+				throw new ArgumentNullException(nameof(getParentFunc));
+
+			if (getChildrenFunc == null)
+				throw new ArgumentNullException(nameof(getChildrenFunc));
+
 			this.getParentFunc = getParentFunc;
 			this.getChildrenFunc = getChildrenFunc;
 		}

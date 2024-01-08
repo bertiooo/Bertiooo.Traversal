@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tests.Model
 {
-	public class DerivativeConvertible : Convertible
+	public class DerivativeGenericConvertible : GenericConvertible
 	{
 	}
 }

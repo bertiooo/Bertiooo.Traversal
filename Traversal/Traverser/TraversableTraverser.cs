@@ -4,11 +4,12 @@ using System.Threading;
 using System;
 using Bertiooo.Traversal.Selectors;
 using System.Linq;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Bertiooo.Traversal.Traverser
 {
 	internal class TraversableTraverser<TNode> : ITraverser<TNode>
-		where TNode : class, ITraversable<TNode>
+		where TNode : class, IChildrenProvider<TNode>
 	{
 		private readonly TNode root;
 
@@ -150,6 +151,7 @@ namespace Bertiooo.Traversal.Traverser
 				while (this.Selector.HasItems)
 				{
 					TNode node = null;
+					bool includeNode = true;
 
 					try
 					{
@@ -159,6 +161,9 @@ namespace Bertiooo.Traversal.Traverser
 							break;
 
 						this.VisitNode(node);
+
+						includeNode = (this.ExcludeNodes == null || this.ExcludeNodes.Contains(node) == false) &&
+							(this.ExcludePredicates == null || this.ExcludePredicates.Any(x => x.Invoke(node)) == false);
 					}
 					catch (Exception e)
 					{
@@ -168,9 +173,7 @@ namespace Bertiooo.Traversal.Traverser
 							throw;
 					}
 
-					if (node != null &&
-						(this.ExcludeNodes == null || this.ExcludeNodes.Contains(node) == false) &&
-						(this.ExcludePredicates == null || this.ExcludePredicates.Any(x => x.Invoke(node)) == false))
+					if (includeNode)
 					{
 						yield return node;
 					}
@@ -217,7 +220,10 @@ namespace Bertiooo.Traversal.Traverser
 
 		public ITraverser<TNode> DisableCallbacksFor(Func<TNode, bool> predicate)
 		{
-			if(this.DisabledPredicates == null)
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
+			if (this.DisabledPredicates == null)
 			{
 				this.DisabledPredicates = new List<Func<TNode, bool>>();
 			}
@@ -234,6 +240,9 @@ namespace Bertiooo.Traversal.Traverser
 		public ITraverser<TNode> DisableCallbacksFor<T>(Func<T, bool> predicate)
 			where T : class, TNode
 		{
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
 			Func<TNode, bool> wrapper = node =>
 			{
 				var derivative = node as T;
@@ -277,7 +286,10 @@ namespace Bertiooo.Traversal.Traverser
 
 		public ITraverser<TNode> Exclude(Func<TNode, bool> predicate)
 		{
-			if(this.ExcludePredicates == null)
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
+			if (this.ExcludePredicates == null)
 			{
 				this.ExcludePredicates = new List<Func<TNode, bool>>();
 			}
@@ -293,6 +305,9 @@ namespace Bertiooo.Traversal.Traverser
 
 		public ITraverser<TNode> Exclude<T>(Func<T, bool> predicate) where T : class, TNode
 		{
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
 			Func<TNode, bool> wrapper = node =>
 			{
 				var derivative = node as T;
@@ -332,6 +347,9 @@ namespace Bertiooo.Traversal.Traverser
 
 		public ITraverser<TNode> Ignore(Func<TNode, bool> predicate)
 		{
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
 			this.DisableCallbacksFor(predicate);
 			this.Exclude(predicate);
 
@@ -348,6 +366,9 @@ namespace Bertiooo.Traversal.Traverser
 
 		public ITraverser<TNode> Ignore<T>(Func<T, bool> predicate) where T : class, TNode
 		{
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
 			this.DisableCallbacksFor(predicate);
 			this.Exclude(predicate);
 
@@ -382,7 +403,10 @@ namespace Bertiooo.Traversal.Traverser
 
 		public ITraverser<TNode> Skip(Func<TNode, bool> predicate)
 		{
-			if(this.SkipPredicates == null)
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
+			if (this.SkipPredicates == null)
 			{
 				this.SkipPredicates = new List<Func<TNode, bool>>();
 			}
@@ -398,6 +422,9 @@ namespace Bertiooo.Traversal.Traverser
 
 		public ITraverser<TNode> Skip<T>(Func<T, bool> predicate) where T : class, TNode
 		{
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
 			Func<TNode, bool> wrapper = node =>
 			{
 				var derivative = node as T;
@@ -415,6 +442,9 @@ namespace Bertiooo.Traversal.Traverser
 
 		public ITraverser<TNode> Use(ICandidateSelector<TNode> selector)
 		{
+			if (selector == null)
+				throw new ArgumentNullException(nameof(selector));
+
 			this.Selector = selector;
 			return this;
 		}
@@ -450,6 +480,9 @@ namespace Bertiooo.Traversal.Traverser
 
 		public ITraverser<TNode> WithAction(Action action)
 		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
 			Action<TNode> wrapper = node => action.Invoke();
 			return this.WithAction(wrapper);
 		}
@@ -463,6 +496,9 @@ namespace Bertiooo.Traversal.Traverser
 		public ITraverser<TNode> WithAction<T>(Action<T> action) 
 			where T : class, TNode
 		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
 			Action<TNode> wrapper = node =>
 			{
 				var derivative = node as T;
@@ -496,6 +532,9 @@ namespace Bertiooo.Traversal.Traverser
 
 		public ITraverser<TNode> OnFailure<T>(Func<T, bool> action) where T : Exception
 		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
 			this.FailureCallback += (Exception e) =>
 			{
 				var derivation = e as T;
@@ -511,7 +550,10 @@ namespace Bertiooo.Traversal.Traverser
 
 		public ITraverser<TNode> CancelIf(Func<TNode, bool> predicate)
 		{
-			if(this.CancelPredicates == null)
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
+			if (this.CancelPredicates == null)
 			{
 				this.CancelPredicates = new List<Func<TNode, bool>>();
 			}
@@ -522,6 +564,9 @@ namespace Bertiooo.Traversal.Traverser
 
 		public ITraverser<TNode> CancelIf<T>(Func<T, bool> predicate) where T : class, TNode
 		{
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
 			Func<TNode, bool> wrapper = node =>
 			{
 				var derivative = node as T;
