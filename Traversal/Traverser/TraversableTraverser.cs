@@ -156,13 +156,13 @@ namespace Bertiooo.Traversal.Traverser
 					{
 						node = this.Selector.Next();
 
+						includeNode = (this.ExcludeNodes == null || this.ExcludeNodes.Contains(node) == false) &&
+							(this.ExcludePredicates == null || this.ExcludePredicates.Any(x => x.Invoke(node)) == false);
+
 						if (this.CheckForCancellation(node))
 							break;
 
 						this.VisitNode(node);
-
-						includeNode = (this.ExcludeNodes == null || this.ExcludeNodes.Contains(node) == false) &&
-							(this.ExcludePredicates == null || this.ExcludePredicates.Any(x => x.Invoke(node)) == false);
 					}
 					catch (Exception e)
 					{
