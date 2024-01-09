@@ -4,7 +4,6 @@ using System.Threading;
 using System;
 using Bertiooo.Traversal.Selectors;
 using System.Linq;
-using static System.Collections.Specialized.BitVector32;
 
 namespace Bertiooo.Traversal.Traverser
 {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Bertiooo.Traversal
 {
 	public class DefaultTraversableAdapter<TConvertible> 
-		: AbstractTraversableAdapter<DefaultTraversableAdapter<TConvertible>, TConvertible>
+		: AbstractTraversableAdapter<TConvertible>
 		where TConvertible : class
 	{
 		private readonly Func<TConvertible, TConvertible> getParentFunc;
@@ -30,7 +30,7 @@ namespace Bertiooo.Traversal
 
 		protected override IEnumerable<TConvertible> ChildInstances => getChildrenFunc.Invoke(this.Instance);
 
-		protected override DefaultTraversableAdapter<TConvertible> CreateAdapter(TConvertible convertible)
+		protected override AbstractTraversableAdapter<TConvertible> CreateAdapter(TConvertible convertible)
 		{
 			return new DefaultTraversableAdapter<TConvertible>(convertible, getParentFunc, getChildrenFunc);
 		}

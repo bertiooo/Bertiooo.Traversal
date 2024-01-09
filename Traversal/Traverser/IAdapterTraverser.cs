@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace Bertiooo.Traversal.Traverser
 {
+	public interface IAdapterTraverser<TConvertible> : IAdapterTraverser<AbstractTraversableAdapter<TConvertible>, TConvertible>
+		where TConvertible : class
+	{
+	}
+
 	public interface IAdapterTraverser<TAdapter, TConvertible>
 		where TAdapter : IInstanceProvider<TConvertible>
 	{

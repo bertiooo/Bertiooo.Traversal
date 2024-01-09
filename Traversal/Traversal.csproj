@@ -13,7 +13,8 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/bertiooo/Bertiooo.Traversal/</RepositoryUrl>
     <VersionPrefix>1.0.6</VersionPrefix>
-    <PackageReleaseNotes>+ Added CancelIf to Traverser without argument</PackageReleaseNotes>
+    <PackageReleaseNotes>+ Added CancelIf to Traverser without argument
++ Created ITraversalConvertible and AbstractTraversalAdapter with only one generic type parameter</PackageReleaseNotes>
     <Copyright>Copyright 2024 Alberto Puig Rodríguez</Copyright>
   </PropertyGroup>
 

@@ -9,8 +9,17 @@ using System.Xml.Linq;
 
 namespace Bertiooo.Traversal.Traverser
 {
+	internal abstract class AbstractAdapterTraverser<TConvertible>
+		: AbstractAdapterTraverser<AbstractTraversableAdapter<TConvertible>, TConvertible>
+		where TConvertible : class
+	{
+		protected AbstractAdapterTraverser(AbstractTraversableAdapter<TConvertible> root) : base(root)
+		{
+		}
+	}
+
 	internal abstract class AbstractAdapterTraverser<TAdapter, TConvertible> : IAdapterTraverser<TAdapter, TConvertible>
-		where TAdapter : class, IInstanceProvider<TConvertible>, ITraversable<TAdapter>
+		where TAdapter : class, IInstanceProvider<TConvertible>, IChildrenProvider<TAdapter>
 	{
 		private readonly ITraverser<TAdapter> _traverser;
 

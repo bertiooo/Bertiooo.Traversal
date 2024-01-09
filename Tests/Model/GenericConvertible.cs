@@ -2,15 +2,9 @@
 
 namespace Tests.Model
 {
-	public class GenericConvertible : ITraversalConvertible<DefaultTraversableAdapter<GenericConvertible>, GenericConvertible>
+	public class GenericConvertible : ITraversalConvertible<GenericConvertible?>
 	{
-		private readonly Lazy<DefaultTraversableAdapter<GenericConvertible>> lazyAdapter;
-
-		public GenericConvertible()
-		{
-			lazyAdapter = new Lazy<DefaultTraversableAdapter<GenericConvertible>>(
-				() => new DefaultTraversableAdapter<GenericConvertible>(this, x => x.Parent, x => x.Children));
-		}
+		private AbstractTraversableAdapter<GenericConvertible?>? adapter;
 
 		public string? Name { get; set; }
 
@@ -18,9 +12,15 @@ namespace Tests.Model
 
 		public IList<GenericConvertible> Children { get; set; } = new List<GenericConvertible>();
 
-		public DefaultTraversableAdapter<GenericConvertible> AsTraversable()
+		public AbstractTraversableAdapter<GenericConvertible?> AsTraversable()
 		{
-			return lazyAdapter.Value;
+			// lazy instantiation
+			if(adapter == null)
+			{
+				adapter = new DefaultTraversableAdapter<GenericConvertible?>(this, x => x?.Parent, x => x?.Children);
+			}
+
+			return adapter;
 		}
 	}
 }

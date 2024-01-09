@@ -155,7 +155,7 @@ namespace Bertiooo.Traversal
             return node.AsChildrenProvider(selectChildren).Descendants(traversalMode).Select(x => x.Instance);
         }
 
-        public static IEnumerable<TNode> Descendants<TNode>(this TNode node, Func<TNode, IEnumerable<TNode>> selectChildren, ICandidateSelector<DefaultTraversableAdapter<TNode>> candidateSelector)
+        public static IEnumerable<TNode> Descendants<TNode>(this TNode node, Func<TNode, IEnumerable<TNode>> selectChildren, ICandidateSelector<AbstractTraversableAdapter<TNode>> candidateSelector)
             where TNode : class, ITraversalConvertible
         {
             return node.AsChildrenProvider(selectChildren).Descendants(candidateSelector).Select(x => x.Instance);
@@ -167,7 +167,7 @@ namespace Bertiooo.Traversal
             return node.AsChildrenProvider(selectChildren).WithDescendants(traversalMode).Select(x => x.Instance);
         }
 
-        public static IEnumerable<TNode> WithDescendants<TNode>(this TNode node, Func<TNode, IEnumerable<TNode>> selectChildren, ICandidateSelector<DefaultTraversableAdapter<TNode>> candidateSelector)
+        public static IEnumerable<TNode> WithDescendants<TNode>(this TNode node, Func<TNode, IEnumerable<TNode>> selectChildren, ICandidateSelector<AbstractTraversableAdapter<TNode>> candidateSelector)
             where TNode : class, ITraversalConvertible
         {
             return node.AsChildrenProvider(selectChildren).WithDescendants(candidateSelector).Select(x => x.Instance);
@@ -188,7 +188,8 @@ namespace Bertiooo.Traversal
         #endregion
 
         #region Traverse Methods
-        public static IAdapterTraverser<DefaultTraversableAdapter<TNode>, TNode> Traverse<TNode>(
+
+        public static IAdapterTraverser<TNode> Traverse<TNode>(
             this TNode node,
             Func<TNode, IEnumerable<TNode>> selectChildren)
             where TNode : class, ITraversalConvertible
@@ -210,7 +211,7 @@ namespace Bertiooo.Traversal
             this TNode node,
             Action<TNode> callback,
             Func<TNode, IEnumerable<TNode>> selectChildren,
-            ICandidateSelector<DefaultTraversableAdapter<TNode>> candidateSelector)
+            ICandidateSelector<AbstractTraversableAdapter<TNode>> candidateSelector)
             where TNode : class, ITraversalConvertible
         {
 			node.AsChildrenProvider(selectChildren).Traverse(x => callback.Invoke(x.Instance), candidateSelector);
@@ -232,7 +233,7 @@ namespace Bertiooo.Traversal
             this TNode node,
             Action<TNode> callback,
             Func<TNode, IEnumerable<TNode>> selectChildren,
-            ICandidateSelector<DefaultTraversableAdapter<TNode>> candidateSelector,
+            ICandidateSelector<AbstractTraversableAdapter<TNode>> candidateSelector,
             CancellationToken cancellationToken = default)
             where TNode : class, ITraversalConvertible
         {
@@ -244,7 +245,7 @@ namespace Bertiooo.Traversal
 
         #region Conversion Methods
 
-        public static DefaultTraversableAdapter<TConvertible> AsTraversable<TConvertible>(
+        public static AbstractTraversableAdapter<TConvertible> AsTraversable<TConvertible>(
             this TConvertible convertible,
             Func<TConvertible, TConvertible> getParentFunc,
             Func<TConvertible, IEnumerable<TConvertible>> getChildrenFunc)
@@ -253,7 +254,7 @@ namespace Bertiooo.Traversal
             return new DefaultTraversableAdapter<TConvertible>(convertible, getParentFunc, getChildrenFunc);
         }
 
-		public static DefaultTraversableAdapter<TConvertible> AsParentProvider<TConvertible>(
+		public static AbstractTraversableAdapter<TConvertible> AsParentProvider<TConvertible>(
 			this TConvertible convertible,
 			Func<TConvertible, TConvertible> getParentFunc)
 			where TConvertible : class, ITraversalConvertible
@@ -261,7 +262,7 @@ namespace Bertiooo.Traversal
 			return new DefaultTraversableAdapter<TConvertible>(convertible, getParentFunc, x => Enumerable.Empty<TConvertible>());
 		}
 
-		public static DefaultTraversableAdapter<TConvertible> AsChildrenProvider<TConvertible>(
+		public static AbstractTraversableAdapter<TConvertible> AsChildrenProvider<TConvertible>(
 			this TConvertible convertible,
 			Func<TConvertible, IEnumerable<TConvertible>> selectChildren)
 			where TConvertible : class, ITraversalConvertible

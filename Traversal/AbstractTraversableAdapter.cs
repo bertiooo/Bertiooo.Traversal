@@ -3,6 +3,16 @@ using System.Linq;
 
 namespace Bertiooo.Traversal
 {
+	public abstract class AbstractTraversableAdapter<TConvertible>
+		: AbstractTraversableAdapter<AbstractTraversableAdapter<TConvertible>, TConvertible>
+		where TConvertible : class
+	{
+		protected AbstractTraversableAdapter(TConvertible convertible) 
+			: base(convertible)
+		{
+		}
+	}
+
 	/// <remarks>
 	/// Two adapters are equal if their instances are equal.
 	/// Adapters created for parent and children are cached, thus will not be created
@@ -75,17 +85,13 @@ namespace Bertiooo.Traversal
 				{
 					var adapter = this.childAdapters.FirstOrDefault(x => Equals(x.Instance, childInstance));
 
-					if (adapter != null)
-					{
-						yield return adapter;
-					}
-					else
+					if(adapter == null)
 					{
 						adapter = this.CreateAdapter(childInstance);
 						this.childAdapters.Add(adapter);
-
-						yield return adapter;
 					}
+
+					yield return adapter;
 				}
 			}
 		}
