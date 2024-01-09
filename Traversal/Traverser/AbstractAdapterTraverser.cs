@@ -269,6 +269,12 @@ namespace Bertiooo.Traversal.Traverser
 			return this;
 		}
 
+		public IAdapterTraverser<TAdapter, TConvertible> OnFailure<T>(Action<T> action) where T : Exception
+		{
+			_traverser.OnFailure(action);
+			return this;
+		}
+
 		public IAdapterTraverser<TAdapter, TConvertible> OnFailure<T>(Func<T, bool> action) where T : Exception
 		{
 			_traverser.OnFailure(action);

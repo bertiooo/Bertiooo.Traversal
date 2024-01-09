@@ -85,6 +85,9 @@ namespace Bertiooo.Traversal.Traverser
 		/// <inheritdoc cref="ITraverser{TAdapter}.OnCanceled(Action)" />
 		IAdapterTraverser<TAdapter, TConvertible> OnCanceled(Action action);
 
+		/// <inheritdoc cref="ITraverser{TAdapter}.OnFailure{T}(Action{T})" />
+		IAdapterTraverser<TAdapter, TConvertible> OnFailure<T>(Action<T> action) where T : Exception;
+
 		/// <inheritdoc cref="ITraverser{TAdapter}.OnFailure{T}(Func{T, bool})" />
 		IAdapterTraverser<TAdapter, TConvertible> OnFailure<T>(Func<T, bool> action)
 			where T : Exception;

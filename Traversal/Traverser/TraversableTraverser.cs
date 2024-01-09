@@ -68,41 +68,13 @@ namespace Bertiooo.Traversal.Traverser
 			this.Selector.Add(node);
 		}
 
-		protected virtual void PrepareTraversal()
-		{
-			this.Selector.Reset();
-			this.AddToSelector(this.root);
-
-			this.Preparation?.Invoke();
-		}
-
-		protected virtual void FinishTraversal()
-		{
-			this.Finalization?.Invoke();
-		}
-
-		protected virtual void VisitNode(TNode node)
-		{
-			if ((this.DisabledNodes == null || this.DisabledNodes.Contains(node) == false) &&
-				(this.DisabledPredicates == null || this.DisabledPredicates.Any(x => x.Invoke(node)) == false))
-			{
-				this.Callbacks?.Invoke(node);
-			}
-
-			foreach (var child in node.Children)
-			{
-				this.AddToSelector(child);
-			}
-		}
-
 		protected virtual bool CheckForCancellation(TNode node)
 		{
 			if (this.CancellationToken.IsCancellationRequested)
 			{
-				this.CanceledCallback?.Invoke();
-
 				if (this.ThrowIfCancellationRequested)
 				{
+					this.CanceledCallback?.Invoke();
 					this.CancellationToken.ThrowIfCancellationRequested();
 				}
 				else
@@ -113,11 +85,22 @@ namespace Bertiooo.Traversal.Traverser
 
 			if (this.CancelPredicates != null && this.CancelPredicates.Any(x => x.Invoke(node)))
 			{
-				this.CanceledCallback?.Invoke();
 				return true;
 			}
 
 			return false;
+		}
+
+		protected virtual bool AreCallbacksEnabledFor(TNode node)
+		{
+			return (this.DisabledNodes == null || this.DisabledNodes.Contains(node) == false) &&
+				(this.DisabledPredicates == null || this.DisabledPredicates.Any(x => x.Invoke(node)) == false);
+		}
+
+		protected virtual bool IsNodeExcluded(TNode node)
+		{
+			return (this.ExcludeNodes != null && this.ExcludeNodes.Contains(node)) ||
+				(this.ExcludePredicates != null && this.ExcludePredicates.Any(x => x.Invoke(node)));
 		}
 
 		public void Execute()
@@ -135,54 +118,61 @@ namespace Bertiooo.Traversal.Traverser
 		{
 			try
 			{
-				try
-				{
-					this.PrepareTraversal();
-				}
-				catch (Exception e)
-				{
-					var handled = this.FailureCallback?.Invoke(e);
+				this.Preparation?.Invoke();
 
-					if (handled.HasValue == false || handled.Value == false)
-						throw;
-				}
+				var canceled = false;
+
+				this.Selector.Reset();
+				this.AddToSelector(this.root);
 
 				while (this.Selector.HasItems)
 				{
-					TNode node = null;
-					bool includeNode = true;
+					var node = this.Selector.Next();
 
-					try
+					if (this.CheckForCancellation(node))
 					{
-						node = this.Selector.Next();
-
-						includeNode = (this.ExcludeNodes == null || this.ExcludeNodes.Contains(node) == false) &&
-							(this.ExcludePredicates == null || this.ExcludePredicates.Any(x => x.Invoke(node)) == false);
-
-						if (this.CheckForCancellation(node))
-							break;
-
-						this.VisitNode(node);
-					}
-					catch (Exception e)
-					{
-						var handled = this.FailureCallback?.Invoke(e);
-
-						if (handled.HasValue == false || handled.Value == false)
-							throw;
+						canceled = true;
+						break;
 					}
 
-					if (includeNode)
+					if (this.AreCallbacksEnabledFor(node))
+					{
+						try
+						{
+							this.Callbacks?.Invoke(node);
+						}
+						catch (Exception e)
+						{
+							var handled = this.FailureCallback?.Invoke(e);
+
+							if (handled.HasValue == false || handled.Value == false)
+								throw;
+						}
+					}
+
+					foreach (var child in node.Children)
+					{
+						this.AddToSelector(child);
+					}
+
+					if (this.IsNodeExcluded(node) == false)
 					{
 						yield return node;
 					}
 				}
 
-				this.SuccessCallback?.Invoke();
+				if(canceled)
+				{
+					this.CanceledCallback?.Invoke();
+				}
+				else
+				{
+					this.SuccessCallback?.Invoke();
+				}
 			}
 			finally
 			{
-				this.FinishTraversal();
+				this.Finalization?.Invoke();
 			}
 		}
 
@@ -527,6 +517,20 @@ namespace Bertiooo.Traversal.Traverser
 		{
 			this.SuccessCallback += action;
 			return this;
+		}
+
+		public ITraverser<TNode> OnFailure<T>(Action<T> action) where T : Exception
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			Func<T, bool> wrapper = e =>
+			{
+				action.Invoke(e);
+				return false;
+			};
+
+			return this.OnFailure<T>(wrapper);
 		}
 
 		public ITraverser<TNode> OnFailure<T>(Func<T, bool> action) where T : Exception

@@ -151,12 +151,21 @@ namespace Bertiooo.Traversal.Traverser
 		/// </remarks>
 		ITraverser<TNode> OnCanceled(Action action);
 
+		/// <summary>
+		/// Invokes the given action when an exception occurs on an action that has been registered via <see cref="WithAction(Action)"/>. 
+		/// After this, the exception will be thrown again.
+		/// </summary>
+		ITraverser<TNode> OnFailure<T>(Action<T> action) where T : Exception;
+
+		/// <summary>
+		/// Invokes the given action when an exception occurs on an action that has been registered via <see cref="WithAction(Action)"/>. 
+		/// </summary>
 		/// <param name="action">A function returning whether the exception is being handled or should be thrown again.</param>
 		ITraverser<TNode> OnFailure<T>(Func<T, bool> action)
 			where T : Exception;
 
 		/// <summary>
-		/// Defining a success action, which will only be called if and only if no cancellation or exception occurred.
+		/// Defining a success action, which will be called if and only if no cancellation or exception occurred.
 		/// </summary>
 		ITraverser<TNode> OnSuccess(Action action);
 
