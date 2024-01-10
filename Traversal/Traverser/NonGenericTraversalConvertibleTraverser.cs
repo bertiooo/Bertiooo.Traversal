@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Bertiooo.Traversal.Traverser
 {
     internal class NonGenericTraversalConvertibleTraverser<TConvertible> 
-		: AbstractAdapterTraverser<TConvertible>, IAdapterTraverser<TConvertible>
+		: AbstractAdapterTraverser<TConvertible>
 		where TConvertible : class, ITraversalConvertible
 	{
 		private readonly Func<TConvertible, IEnumerable<TConvertible>> getChildrenFunc;

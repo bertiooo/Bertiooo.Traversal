@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Bertiooo.Traversal.Traverser
 {
-	internal class TraversableTraverser<TNode> : ITraverser<TNode>
+	public class TraversableTraverser<TNode> : AbstractTraverser<TNode>
 		where TNode : class, IChildrenProvider<TNode>
 	{
 		private readonly TNode root;
@@ -27,7 +27,7 @@ namespace Bertiooo.Traversal.Traverser
 
 		protected Action CanceledCallback { get; set; }
 
-		protected Func<Exception, bool> FailureCallback { get; set; }
+		protected IList<Func<Exception, TNode, bool>> FailureCallbacks { get; set; }
 
 		protected Action SuccessCallback { get; set; }
 
@@ -56,6 +56,8 @@ namespace Bertiooo.Traversal.Traverser
 		#endregion
 
 		#region Methods
+
+		#region Protected Methods
 
 		protected virtual void AddToSelector(TNode node)
 		{
@@ -97,24 +99,112 @@ namespace Bertiooo.Traversal.Traverser
 				(this.DisabledPredicates == null || this.DisabledPredicates.Any(x => x.Invoke(node)) == false);
 		}
 
-		protected virtual bool IsNodeExcluded(TNode node)
+		protected virtual bool IsNodeIncluded(TNode node)
 		{
-			return (this.ExcludeNodes != null && this.ExcludeNodes.Contains(node)) ||
-				(this.ExcludePredicates != null && this.ExcludePredicates.Any(x => x.Invoke(node)));
+			return (this.ExcludeNodes == null || this.ExcludeNodes.Contains(node) == false) &&
+				(this.ExcludePredicates == null || this.ExcludePredicates.Any(x => x.Invoke(node)) == false);
 		}
 
-		public void Execute()
+		#endregion
+
+		#region Public Methods
+
+		public override ITraverser<TNode> CancelIf(Func<TNode, bool> predicate)
+		{
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
+			if (this.CancelPredicates == null)
+			{
+				this.CancelPredicates = new List<Func<TNode, bool>>();
+			}
+
+			this.CancelPredicates.Add(predicate);
+			return this;
+		}
+
+		public override ITraverser<TNode> Catch(Func<Exception, TNode, bool> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			if (this.FailureCallbacks == null)
+			{
+				this.FailureCallbacks = new List<Func<Exception, TNode, bool>>();
+			}
+
+			this.FailureCallbacks.Add(action);
+			return this;
+		}
+
+		public override ITraverser<TNode> DisableCallbacksFor(TNode node)
+		{
+			if (this.DisabledNodes == null)
+			{
+				this.DisabledNodes = new List<TNode>();
+			}
+
+			this.DisabledNodes.Add(node);
+			return this;
+		}
+
+		public override ITraverser<TNode> DisableCallbacksFor(Func<TNode, bool> predicate)
+		{
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
+			if (this.DisabledPredicates == null)
+			{
+				this.DisabledPredicates = new List<Func<TNode, bool>>();
+			}
+
+			this.DisabledPredicates.Add(predicate);
+			return this;
+		}
+
+		public override ITraverser<TNode> Exclude(TNode node)
+		{
+			if (this.ExcludeNodes == null)
+			{
+				this.ExcludeNodes = new List<TNode>();
+			}
+
+			this.ExcludeNodes.Add(node);
+			return this;
+		}
+
+		public override ITraverser<TNode> Exclude(Func<TNode, bool> predicate)
+		{
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
+			if (this.ExcludePredicates == null)
+			{
+				this.ExcludePredicates = new List<Func<TNode, bool>>();
+			}
+
+			this.ExcludePredicates.Add(predicate);
+			return this;
+		}
+
+		public override void Execute()
 		{
 			var enumerator = this.GetNodes().GetEnumerator();
 			while (enumerator.MoveNext());
 		}
 
-		public Task ExecuteAsync()
+		public override Task ExecuteAsync()
 		{
 			return Task.Factory.StartNew(this.Execute, this.CancellationToken);
 		}
 
-		public IEnumerable<TNode> GetNodes()
+		public override ITraverser<TNode> Finish(Action action)
+		{
+			this.Finalization += action;
+			return this;
+		}
+
+		public override IEnumerable<TNode> GetNodes()
 		{
 			try
 			{
@@ -143,9 +233,20 @@ namespace Bertiooo.Traversal.Traverser
 						}
 						catch (Exception e)
 						{
-							var handled = this.FailureCallback?.Invoke(e);
+							if (this.FailureCallbacks == null)
+								throw;
 
-							if (handled.HasValue == false || handled.Value == false)
+							bool throwException = true;
+
+							foreach(var callback in this.FailureCallbacks)
+							{
+								var handled = callback.Invoke(e, node);
+
+								if (handled)
+									throwException = false;
+							}
+
+							if (throwException)
 								throw;
 						}
 					}
@@ -155,7 +256,7 @@ namespace Bertiooo.Traversal.Traverser
 						this.AddToSelector(child);
 					}
 
-					if (this.IsNodeExcluded(node) == false)
+					if (this.IsNodeIncluded(node))
 					{
 						yield return node;
 					}
@@ -176,195 +277,30 @@ namespace Bertiooo.Traversal.Traverser
 			}
 		}
 
-		public Task<IList<TNode>> GetNodesAsync()
+		public override Task<IList<TNode>> GetNodesAsync()
 		{
 			return Task<IList<TNode>>.Factory.StartNew(() => this.GetNodes().ToList(), this.CancellationToken);
 		}
 
-		public ITraverser<TNode> DisableCallbacksFor(TNode node)
+		public override ITraverser<TNode> OnCanceled(Action action)
 		{
-			if(this.DisabledNodes == null)
-			{
-				this.DisabledNodes = new List<TNode>();
-			}
-
-			this.DisabledNodes.Add(node);
+			this.CanceledCallback += action;
 			return this;
 		}
 
-		public ITraverser<TNode> DisableCallbacksFor(IEnumerable<TNode> nodes)
+		public override ITraverser<TNode> OnSuccess(Action action)
 		{
-			if (this.DisabledNodes == null)
-			{
-				this.DisabledNodes = new List<TNode>();
-			}
-
-			foreach (var node in nodes)
-			{
-				this.DisabledNodes.Add(node);
-			}
-
+			this.SuccessCallback += action;
 			return this;
 		}
 
-		public ITraverser<TNode> DisableCallbacksFor(Func<TNode, bool> predicate)
+		public override ITraverser<TNode> Prepare(Action action)
 		{
-			if (predicate == null)
-				throw new ArgumentNullException(nameof(predicate));
-
-			if (this.DisabledPredicates == null)
-			{
-				this.DisabledPredicates = new List<Func<TNode, bool>>();
-			}
-
-			this.DisabledPredicates.Add(predicate);
+			this.Preparation += action;
 			return this;
 		}
 
-		public ITraverser<TNode> DisableCallbacksFor<T>() where T : class, TNode
-		{
-			return this.DisableCallbacksFor(x => x is T);
-		}
-
-		public ITraverser<TNode> DisableCallbacksFor<T>(Func<T, bool> predicate)
-			where T : class, TNode
-		{
-			if (predicate == null)
-				throw new ArgumentNullException(nameof(predicate));
-
-			Func<TNode, bool> wrapper = node =>
-			{
-				var derivative = node as T;
-
-				if(derivative != null)
-				{
-					return predicate.Invoke(derivative);
-				}
-
-				return false;
-			};
-
-			return this.DisableCallbacksFor(wrapper);
-		}
-
-		public ITraverser<TNode> Exclude(TNode node)
-		{
-			if(this.ExcludeNodes == null)
-			{
-				this.ExcludeNodes = new List<TNode>();
-			}
-
-			this.ExcludeNodes.Add(node);
-			return this;
-		}
-
-		public ITraverser<TNode> Exclude(IEnumerable<TNode> nodes)
-		{
-			if (this.ExcludeNodes == null)
-			{
-				this.ExcludeNodes = new List<TNode>();
-			}
-
-			foreach (var node in nodes)
-			{
-				this.ExcludeNodes.Add(node);
-			}
-
-			return this;
-		}
-
-		public ITraverser<TNode> Exclude(Func<TNode, bool> predicate)
-		{
-			if (predicate == null)
-				throw new ArgumentNullException(nameof(predicate));
-
-			if (this.ExcludePredicates == null)
-			{
-				this.ExcludePredicates = new List<Func<TNode, bool>>();
-			}
-
-			this.ExcludePredicates.Add(predicate);
-			return this;
-		}
-
-		public ITraverser<TNode> Exclude<T>() where T : class, TNode
-		{
-			return this.Exclude(x => x is T);
-		}
-
-		public ITraverser<TNode> Exclude<T>(Func<T, bool> predicate) where T : class, TNode
-		{
-			if (predicate == null)
-				throw new ArgumentNullException(nameof(predicate));
-
-			Func<TNode, bool> wrapper = node =>
-			{
-				var derivative = node as T;
-
-				if (derivative != null)
-				{
-					return predicate.Invoke(derivative);
-				}
-
-				return false;
-			};
-
-			return this.Exclude(wrapper);
-		}
-
-		public ITraverser<TNode> Finish(Action action)
-		{
-			this.Finalization += action;
-			return this;
-		}
-
-		public ITraverser<TNode> Ignore(TNode node)
-		{
-			this.DisableCallbacksFor(node);
-			this.Exclude(node);
-
-			return this;
-		}
-
-		public ITraverser<TNode> Ignore(IEnumerable<TNode> nodes)
-		{
-			this.DisableCallbacksFor(nodes);
-			this.Exclude(nodes);
-
-			return this;
-		}
-
-		public ITraverser<TNode> Ignore(Func<TNode, bool> predicate)
-		{
-			if (predicate == null)
-				throw new ArgumentNullException(nameof(predicate));
-
-			this.DisableCallbacksFor(predicate);
-			this.Exclude(predicate);
-
-			return this;
-		}
-
-		public ITraverser<TNode> Ignore<T>() where T : class, TNode
-		{
-			this.DisableCallbacksFor<T>();
-			this.Exclude<T>();
-
-			return this;
-		}
-
-		public ITraverser<TNode> Ignore<T>(Func<T, bool> predicate) where T : class, TNode
-		{
-			if (predicate == null)
-				throw new ArgumentNullException(nameof(predicate));
-
-			this.DisableCallbacksFor(predicate);
-			this.Exclude(predicate);
-
-			return this;
-		}
-
-		public ITraverser<TNode> Skip(TNode node)
+		public override ITraverser<TNode> Skip(TNode node)
 		{
 			if(this.SkipNodes == null)
 			{
@@ -375,22 +311,7 @@ namespace Bertiooo.Traversal.Traverser
 			return this;
 		}
 
-		public ITraverser<TNode> Skip(IEnumerable<TNode> nodes)
-		{
-			if (this.SkipNodes == null)
-			{
-				this.SkipNodes = new List<TNode>();
-			}
-
-			foreach (var node in nodes)
-			{
-				this.SkipNodes.Add(node);
-			}
-
-			return this;
-		}
-
-		public ITraverser<TNode> Skip(Func<TNode, bool> predicate)
+		public override ITraverser<TNode> Skip(Func<TNode, bool> predicate)
 		{
 			if (predicate == null)
 				throw new ArgumentNullException(nameof(predicate));
@@ -404,32 +325,7 @@ namespace Bertiooo.Traversal.Traverser
 			return this;
 		}
 
-		public ITraverser<TNode> Skip<T>() where T : class, TNode
-		{
-			return this.Skip(x => x is T);
-		}
-
-		public ITraverser<TNode> Skip<T>(Func<T, bool> predicate) where T : class, TNode
-		{
-			if (predicate == null)
-				throw new ArgumentNullException(nameof(predicate));
-
-			Func<TNode, bool> wrapper = node =>
-			{
-				var derivative = node as T;
-
-				if (derivative != null)
-				{
-					return predicate.Invoke(derivative);
-				}
-
-				return false;
-			};
-
-			return this.Skip(wrapper);
-		}
-
-		public ITraverser<TNode> Use(ICandidateSelector<TNode> selector)
+		public override ITraverser<TNode> Use(ICandidateSelector<TNode> selector)
 		{
 			if (selector == null)
 				throw new ArgumentNullException(nameof(selector));
@@ -438,7 +334,7 @@ namespace Bertiooo.Traversal.Traverser
 			return this;
 		}
 
-		public ITraverser<TNode> Use(TraversalMode mode)
+		public override ITraverser<TNode> Use(TraversalMode mode)
 		{
 			ICandidateSelector<TNode> candidateSelector;
 
@@ -459,7 +355,7 @@ namespace Bertiooo.Traversal.Traverser
 			return this.Use(candidateSelector);
 		}
 
-		public ITraverser<TNode> Use(CancellationToken cancellationToken, bool throwException = true)
+		public override ITraverser<TNode> Use(CancellationToken cancellationToken, bool throwException = true)
 		{
 			this.CancellationToken = cancellationToken;
 			this.ThrowIfCancellationRequested = throwException;
@@ -467,132 +363,13 @@ namespace Bertiooo.Traversal.Traverser
 			return this;
 		}
 
-		public ITraverser<TNode> WithAction(Action action)
-		{
-			if (action == null)
-				throw new ArgumentNullException(nameof(action));
-
-			Action<TNode> wrapper = node => action.Invoke();
-			return this.WithAction(wrapper);
-		}
-
-		public ITraverser<TNode> WithAction(Action<TNode> action)
+		public override ITraverser<TNode> WithAction(Action<TNode> action)
 		{
 			this.Callbacks += action;
 			return this;
 		}
 
-		public ITraverser<TNode> WithAction<T>(Action<T> action) 
-			where T : class, TNode
-		{
-			if (action == null)
-				throw new ArgumentNullException(nameof(action));
-
-			Action<TNode> wrapper = node =>
-			{
-				var derivative = node as T;
-
-				if(derivative != null)
-				{
-					action.Invoke(derivative);
-				}
-			};
-			
-			return this.WithAction(wrapper);
-		}
-
-		public ITraverser<TNode> Prepare(Action action)
-		{
-			this.Preparation += action;
-			return this;
-		}
-
-		public ITraverser<TNode> OnCanceled(Action action)
-		{
-			this.CanceledCallback += action;
-			return this;
-		}
-
-		public ITraverser<TNode> OnSuccess(Action action)
-		{
-			this.SuccessCallback += action;
-			return this;
-		}
-
-		public ITraverser<TNode> OnFailure<T>(Action<T> action) where T : Exception
-		{
-			if (action == null)
-				throw new ArgumentNullException(nameof(action));
-
-			Func<T, bool> wrapper = e =>
-			{
-				action.Invoke(e);
-				return false;
-			};
-
-			return this.OnFailure<T>(wrapper);
-		}
-
-		public ITraverser<TNode> OnFailure<T>(Func<T, bool> action) where T : Exception
-		{
-			if (action == null)
-				throw new ArgumentNullException(nameof(action));
-
-			this.FailureCallback += (Exception e) =>
-			{
-				var derivation = e as T;
-
-				if (derivation != null)
-					return action.Invoke(derivation);
-
-				return false;
-			};
-
-			return this;
-		}
-
-		public ITraverser<TNode> CancelIf(Func<bool> predicate)
-		{
-			if (predicate == null)
-				throw new ArgumentNullException(nameof(predicate));
-
-			Func<TNode, bool> wrapper = node => predicate.Invoke();
-			return this.CancelIf(wrapper);
-		}
-
-		public ITraverser<TNode> CancelIf(Func<TNode, bool> predicate)
-		{
-			if (predicate == null)
-				throw new ArgumentNullException(nameof(predicate));
-
-			if (this.CancelPredicates == null)
-			{
-				this.CancelPredicates = new List<Func<TNode, bool>>();
-			}
-
-			this.CancelPredicates.Add(predicate);
-			return this;
-		}
-
-		public ITraverser<TNode> CancelIf<T>(Func<T, bool> predicate) where T : class, TNode
-		{
-			if (predicate == null)
-				throw new ArgumentNullException(nameof(predicate));
-
-			Func<TNode, bool> wrapper = node =>
-			{
-				var derivative = node as T;
-
-				if(derivative != null)
-				{
-					return predicate.Invoke(derivative);
-				}
-
-				return false;
-			};
-
-			return this.CancelIf(wrapper);
-		}
+		#endregion
 
 		#endregion
 	}

@@ -1,6 +1,6 @@
 # Bertiooo's Traversal Library
 
-This library provides extension methods to traverse hierarchy structures. It may work for other graph types as well.
+This C# lightweight library provides extension methods to traverse hierarchy structures. It may work for other graph types as well.
 
 It targets .Net Standard 2.0, which means you can use it with .NET Core and .NET Framework.
 
@@ -111,7 +111,7 @@ ITraverser<Node> traverser = node.Traverse()
 	.CancelIf(tmpNode => someCondition())
 	.WithAction(tmpNode => action(tmpNode))
 	.Prepare(action)
-	.OnFailure<InvalidOperationException>(e => Debug(e))
+	.Catch<InvalidOperationException>(e => Debug(e))
 	.OnCanceled(action)
 	.OnSuccess(action)
 	.Finish(action);

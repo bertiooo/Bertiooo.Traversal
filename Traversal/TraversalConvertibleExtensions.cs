@@ -189,7 +189,7 @@ namespace Bertiooo.Traversal
 
         #region Traverse Methods
 
-        public static IAdapterTraverser<TNode> Traverse<TNode>(
+        public static ITraverser<TNode> Traverse<TNode>(
             this TNode node,
             Func<TNode, IEnumerable<TNode>> selectChildren)
             where TNode : class, ITraversalConvertible

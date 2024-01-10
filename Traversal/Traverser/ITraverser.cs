@@ -26,6 +26,73 @@ namespace Bertiooo.Traversal.Traverser
 			where T : class, TNode;
 
 		/// <summary>
+		/// Invokes the given action when an exception occurs on an action that has been registered via <see cref="WithAction(Action)"/>. 
+		/// Exceptions that occur during traversal will not be catched.
+		/// After invoking, the exception will be thrown again.
+		/// </summary>
+		ITraverser<TNode> Catch(Action<Exception> action);
+
+		/// <summary>
+		/// Invokes the given action when an exception occurs on an action that has been registered via <see cref="WithAction(Action)"/>. 
+		/// Exceptions that occur during traversal will not be catched.
+		/// After invoking, the exception will be thrown again.
+		/// </summary>
+		/// <param name="action">A callback with the exception and the node on which the exception occurred.</param>
+		ITraverser<TNode> Catch(Action<Exception, TNode> action);
+
+		/// <summary>
+		/// Invokes the given action when an exception occurs on an action that has been registered via <see cref="WithAction(Action)"/>. 
+		/// Exceptions that occur during traversal will not be catched.
+		/// After invoking, the exception will be thrown again.
+		/// </summary>
+		ITraverser<TNode> Catch<T>(Action<T> action) where T : Exception;
+
+		/// <summary>
+		/// Invokes the given action when an exception occurs on an action that has been registered via <see cref="WithAction(Action)"/>. 
+		/// Exceptions that occur during traversal will not be catched.
+		/// After invoking, the exception will be thrown again.
+		/// </summary>
+		/// <param name="action">A callback with the exception and the node on which the exception occurred.</param>
+		ITraverser<TNode> Catch<T>(Action<T, TNode> action) where T : Exception;
+
+		/// <summary>
+		/// Invokes the given action when an exception occurs on an action that has been registered via <see cref="WithAction(Action)"/>. 
+		/// Exceptions that occur during traversal will not be catched.
+		/// </summary>
+		/// <param name="action">A function returning whether the exception is being handled or should be thrown again.</param>
+		ITraverser<TNode> Catch(Func<Exception, bool> action);
+
+		/// <summary>
+		/// Invokes the given action when an exception occurs on an action that has been registered via <see cref="WithAction(Action)"/>. 
+		/// Exceptions that occur during traversal will not be catched.
+		/// </summary>
+		/// <param name="action">A function returning whether the exception is being handled or should be thrown again.</param>
+		ITraverser<TNode> Catch(Func<Exception, TNode, bool> action);
+
+		/// <summary>
+		/// Invokes the given action when an exception occurs on an action that has been registered via <see cref="WithAction(Action)"/>. 
+		/// Exceptions that occur during traversal will not be catched.
+		/// </summary>
+		/// <param name="action">A function returning whether the exception is being handled or should be thrown again.</param>
+		ITraverser<TNode> Catch<T>(Func<T, bool> action)
+			where T : Exception;
+
+		/// <summary>
+		/// Invokes the given action when an exception occurs on an action that has been registered via <see cref="WithAction(Action)"/>. 
+		/// Exceptions that occur during traversal will not be catched.
+		/// </summary>
+		/// <param name="action">A function returning whether the exception is being handled or should be thrown again.</param>
+		ITraverser<TNode> Catch<T>(Func<T, TNode, bool> action)
+			where T : Exception;
+
+		/// <summary>
+		/// With this method you can define nodes for which the callbacks installed with <see cref="WithAction(Action)"/> won't be invoked. 
+		/// Still, the nodes will be traversed and be included in the <see cref="IEnumerable{TNode}"/> returned by <see cref="GetNodes"/>.
+		/// </summary>
+		ITraverser<TNode> DisableCallbacksFor<T>()
+			where T : class, TNode;
+
+		/// <summary>
 		/// With this method you can define nodes for which the callbacks installed with <see cref="WithAction(Action)"/> won't be invoked. 
 		/// Still, the nodes will be traversed and be included in the <see cref="IEnumerable{TNode}"/> returned by <see cref="GetNodes"/>.
 		/// </summary>
@@ -47,15 +114,14 @@ namespace Bertiooo.Traversal.Traverser
 		/// With this method you can define nodes for which the callbacks installed with <see cref="WithAction(Action)"/> won't be invoked. 
 		/// Still, the nodes will be traversed and be included in the <see cref="IEnumerable{TNode}"/> returned by <see cref="GetNodes"/>.
 		/// </summary>
-		ITraverser<TNode> DisableCallbacksFor<T>()
+		ITraverser<TNode> DisableCallbacksFor<T>(Func<T, bool> predicate)
 			where T : class, TNode;
 
 		/// <summary>
-		/// With this method you can define nodes for which the callbacks installed with <see cref="WithAction(Action)"/> won't be invoked. 
-		/// Still, the nodes will be traversed and be included in the <see cref="IEnumerable{TNode}"/> returned by <see cref="GetNodes"/>.
+		/// This method will cause the defined nodes of the specified type not to be included in the <see cref="IEnumerable{TNode}"/> returned by <see cref="GetNodes"/>. 
+		/// But the traversal still continues on the node's descendants and also the callbacks will be invoked.
 		/// </summary>
-		ITraverser<TNode> DisableCallbacksFor<T>(Func<T, bool> predicate)
-			where T : class, TNode;
+		ITraverser<TNode> Exclude<T>() where T : class, TNode;
 
 		/// <summary>
 		/// This method will cause the defined nodes not to be included in the <see cref="IEnumerable{TNode}"/> returned by <see cref="GetNodes"/>. 
@@ -74,12 +140,6 @@ namespace Bertiooo.Traversal.Traverser
 		/// But the traversal still continues on the node's descendants and also the callbacks will be invoked.
 		/// </summary>
 		ITraverser<TNode> Exclude(Func<TNode, bool> predicate);
-
-		/// <summary>
-		/// This method will cause the defined nodes of the specified type not to be included in the <see cref="IEnumerable{TNode}"/> returned by <see cref="GetNodes"/>. 
-		/// But the traversal still continues on the node's descendants and also the callbacks will be invoked.
-		/// </summary>
-		ITraverser<TNode> Exclude<T>() where T : class, TNode;
 
 		/// <summary>
 		/// This method will cause the defined nodes of the specified type not to be included in the <see cref="IEnumerable{TNode}"/> returned by <see cref="GetNodes"/>. 
@@ -108,6 +168,13 @@ namespace Bertiooo.Traversal.Traverser
 		Task<IList<TNode>> GetNodesAsync();
 
 		/// <summary>
+		/// This method combines <see cref="Exclude{T}()"/> and <see cref="DisableCallbacksFor{T}()"/>. 
+		/// Thus, the defined nodes won't be included in the <see cref="IEnumerable{TNode}"/> returned by <see cref="GetNodes"/>
+		/// and no callbacks will be invoked for them.
+		/// </summary>
+		ITraverser<TNode> Ignore<T>() where T : class, TNode;
+
+		/// <summary>
 		/// This method combines <see cref="Exclude(TNode)"/> and <see cref="DisableCallbacksFor(TNode)"/>. 
 		/// Thus, the defined nodes won't be included in the <see cref="IEnumerable{TNode}"/> returned by <see cref="GetNodes"/>
 		/// and no callbacks will be invoked for them.
@@ -129,13 +196,6 @@ namespace Bertiooo.Traversal.Traverser
 		ITraverser<TNode> Ignore(Func<TNode, bool> predicate);
 
 		/// <summary>
-		/// This method combines <see cref="Exclude{T}()"/> and <see cref="DisableCallbacksFor{T}()"/>. 
-		/// Thus, the defined nodes won't be included in the <see cref="IEnumerable{TNode}"/> returned by <see cref="GetNodes"/>
-		/// and no callbacks will be invoked for them.
-		/// </summary>
-		ITraverser<TNode> Ignore<T>() where T : class, TNode;
-
-		/// <summary>
 		/// This method combines <see cref="Exclude{T}(Func{T, bool})"/> and <see cref="DisableCallbacksFor{T}(Func{T, bool})"/>. 
 		/// Thus, the defined nodes won't be included in the <see cref="IEnumerable{TNode}"/> returned by <see cref="GetNodes"/>
 		/// and no callbacks will be invoked for them.
@@ -152,19 +212,6 @@ namespace Bertiooo.Traversal.Traverser
 		ITraverser<TNode> OnCanceled(Action action);
 
 		/// <summary>
-		/// Invokes the given action when an exception occurs on an action that has been registered via <see cref="WithAction(Action)"/>. 
-		/// After this, the exception will be thrown again.
-		/// </summary>
-		ITraverser<TNode> OnFailure<T>(Action<T> action) where T : Exception;
-
-		/// <summary>
-		/// Invokes the given action when an exception occurs on an action that has been registered via <see cref="WithAction(Action)"/>. 
-		/// </summary>
-		/// <param name="action">A function returning whether the exception is being handled or should be thrown again.</param>
-		ITraverser<TNode> OnFailure<T>(Func<T, bool> action)
-			where T : Exception;
-
-		/// <summary>
 		/// Defining a success action, which will be called if and only if no cancellation or exception occurred.
 		/// </summary>
 		ITraverser<TNode> OnSuccess(Action action);
@@ -173,6 +220,13 @@ namespace Bertiooo.Traversal.Traverser
 		/// This action will be invoked at the very beginning of the traversal.
 		/// </summary>
 		ITraverser<TNode> Prepare(Action action);
+
+		/// <summary>
+		/// When a node is specified to be skipped, then the node doesn't get added to the candidate selector, 
+		/// i.e. the node itself and its descendants won't be traversed at all.
+		/// Thus, there will be no callbacks for the node and its descendants and <see cref="GetNodes"/> won't return those nodes.
+		/// </summary>
+		ITraverser<TNode> Skip<T>() where T : class, TNode;
 
 		/// <summary>
 		/// When a node is specified to be skipped, then the node doesn't get added to the candidate selector, 
@@ -194,13 +248,6 @@ namespace Bertiooo.Traversal.Traverser
 		/// Thus, there will be no callbacks for the node and its descendants and <see cref="GetNodes"/> won't return those nodes.
 		/// </summary>
 		ITraverser<TNode> Skip(Func<TNode, bool> predicate);
-
-		/// <summary>
-		/// When a node is specified to be skipped, then the node doesn't get added to the candidate selector, 
-		/// i.e. the node itself and its descendants won't be traversed at all.
-		/// Thus, there will be no callbacks for the node and its descendants and <see cref="GetNodes"/> won't return those nodes.
-		/// </summary>
-		ITraverser<TNode> Skip<T>() where T : class, TNode;
 
 		/// <summary>
 		/// When a node is specified to be skipped, then the node doesn't get added to the candidate selector, 

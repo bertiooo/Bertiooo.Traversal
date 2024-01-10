@@ -180,7 +180,7 @@ namespace Tests
 					if (node.Equals(secondChild))
 						throw new InvalidOperationException();
 				})
-				.OnFailure<InvalidOperationException>(e => 
+				.Catch<InvalidOperationException>(e => 
 				{
 					failureInvoked = true;
 					return true;
@@ -197,7 +197,7 @@ namespace Tests
 						if (node.Equals(secondChild))
 							throw new InvalidOperationException();
 					})
-					.OnFailure<InvalidOperationException>(e =>
+					.Catch<InvalidOperationException>(e =>
 					{
 						return false;
 					})

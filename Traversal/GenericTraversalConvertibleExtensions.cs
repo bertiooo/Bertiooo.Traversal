@@ -185,7 +185,7 @@ namespace Bertiooo.Traversal
 		#region Traverse Methods
 
 		/// <inheritdoc cref="TraversableExtensions.Traverse{TNode}(TNode)"/>
-		public static IAdapterTraverser<TAdapter, TConvertible> Traverse<TAdapter, TConvertible>(
+		public static ITraverser<TConvertible> Traverse<TAdapter, TConvertible>(
 			this ITraversalConvertible<TAdapter, TConvertible> convertible)
 			where TAdapter : class, ITraversable<TAdapter>, IInstanceProvider<TConvertible>
 			where TConvertible : ITraversalConvertible<TAdapter, TConvertible>
