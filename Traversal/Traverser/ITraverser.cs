@@ -30,7 +30,8 @@ namespace Bertiooo.Traversal.Traverser
 		/// Exceptions that occur during traversal will not be catched.
 		/// After invoking, the exception will be thrown again.
 		/// </summary>
-		ITraverser<TNode> Catch(Action<Exception> action);
+		/// <param name="throwException">Whether to throw the exception after the action has been invoked. Default true.</param>
+		ITraverser<TNode> Catch(Action<Exception> action, bool throwException = true);
 
 		/// <summary>
 		/// Invokes the given action when an exception occurs on an action that has been registered via <see cref="WithAction(Action)"/>. 
@@ -38,14 +39,16 @@ namespace Bertiooo.Traversal.Traverser
 		/// After invoking, the exception will be thrown again.
 		/// </summary>
 		/// <param name="action">A callback with the exception and the node on which the exception occurred.</param>
-		ITraverser<TNode> Catch(Action<Exception, TNode> action);
+		/// <param name="throwException">Whether to throw the exception after the action has been invoked. Default true.</param>
+		ITraverser<TNode> Catch(Action<Exception, TNode> action, bool throwException = true);
 
 		/// <summary>
 		/// Invokes the given action when an exception occurs on an action that has been registered via <see cref="WithAction(Action)"/>. 
 		/// Exceptions that occur during traversal will not be catched.
 		/// After invoking, the exception will be thrown again.
 		/// </summary>
-		ITraverser<TNode> Catch<T>(Action<T> action) where T : Exception;
+		/// <param name="throwException">Whether to throw the exception after the action has been invoked. Default true.</param>
+		ITraverser<TNode> Catch<T>(Action<T> action, bool throwException = true) where T : Exception;
 
 		/// <summary>
 		/// Invokes the given action when an exception occurs on an action that has been registered via <see cref="WithAction(Action)"/>. 
@@ -53,7 +56,8 @@ namespace Bertiooo.Traversal.Traverser
 		/// After invoking, the exception will be thrown again.
 		/// </summary>
 		/// <param name="action">A callback with the exception and the node on which the exception occurred.</param>
-		ITraverser<TNode> Catch<T>(Action<T, TNode> action) where T : Exception;
+		/// <param name="throwException">Whether to throw the exception after the action has been invoked. Default true.</param>
+		ITraverser<TNode> Catch<T>(Action<T, TNode> action, bool throwException = true) where T : Exception;
 
 		/// <summary>
 		/// Invokes the given action when an exception occurs on an action that has been registered via <see cref="WithAction(Action)"/>. 

@@ -39,7 +39,7 @@ namespace Bertiooo.Traversal.Traverser
 			return this.CancelIf(wrapper);
 		}
 
-		public virtual ITraverser<TNode> Catch(Action<Exception> action)
+		public virtual ITraverser<TNode> Catch(Action<Exception> action, bool throwException = true)
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
@@ -47,13 +47,13 @@ namespace Bertiooo.Traversal.Traverser
 			Func<Exception, TNode, bool> wrapper = (e, n) =>
 			{
 				action.Invoke(e);
-				return false;
+				return throwException == false;
 			};
 
 			return this.Catch(wrapper);
 		}
 
-		public virtual ITraverser<TNode> Catch(Action<Exception, TNode> action)
+		public virtual ITraverser<TNode> Catch(Action<Exception, TNode> action, bool throwException = true)
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
@@ -61,13 +61,13 @@ namespace Bertiooo.Traversal.Traverser
 			Func<Exception, TNode, bool> wrapper = (e, n) =>
 			{
 				action.Invoke(e, n);
-				return false;
+				return throwException == false;
 			};
 
 			return this.Catch(wrapper);
 		}
 
-		public ITraverser<TNode> Catch<T>(Action<T> action) where T : Exception
+		public ITraverser<TNode> Catch<T>(Action<T> action, bool throwException = true) where T : Exception
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
@@ -81,13 +81,13 @@ namespace Bertiooo.Traversal.Traverser
 					action.Invoke(derivative);
 				}
 
-				return false;
+				return throwException == false;
 			};
 
 			return this.Catch(wrapper);
 		}
 
-		public ITraverser<TNode> Catch<T>(Action<T, TNode> action) where T : Exception
+		public ITraverser<TNode> Catch<T>(Action<T, TNode> action, bool throwException = true) where T : Exception
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
@@ -101,7 +101,7 @@ namespace Bertiooo.Traversal.Traverser
 					action.Invoke(derivative, n);
 				}
 
-				return false;
+				return throwException == false;
 			};
 
 			return this.Catch(wrapper);
