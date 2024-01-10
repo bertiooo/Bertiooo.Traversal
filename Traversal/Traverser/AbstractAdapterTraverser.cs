@@ -2,10 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Bertiooo.Traversal.Traverser
 {
@@ -156,7 +154,7 @@ namespace Bertiooo.Traversal.Traverser
 
 		public override ITraverser<TConvertible> Use(ICandidateSelector<TConvertible> selector)
 		{
-			var adapterSelector = new AdapterSelector<TAdapter, TConvertible>(selector, this.GetAdapter);
+			var adapterSelector = new AdapterSelector<TAdapter, TConvertible>(selector);
 			_traverser.Use(adapterSelector);
 
 			return this;

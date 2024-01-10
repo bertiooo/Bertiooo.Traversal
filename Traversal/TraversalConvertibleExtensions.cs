@@ -194,7 +194,7 @@ namespace Bertiooo.Traversal
             Func<TNode, IEnumerable<TNode>> selectChildren)
             where TNode : class, ITraversalConvertible
         {
-            return new NonGenericTraversalConvertibleTraverser<TNode>(node, selectChildren);
+            return new TraversalConvertibleTraverser<TNode>(node, selectChildren);
         }
 
         public static void Traverse<TNode>(

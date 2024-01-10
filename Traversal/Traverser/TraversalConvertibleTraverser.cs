@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace Bertiooo.Traversal.Traverser
 {
-    internal class NonGenericTraversalConvertibleTraverser<TConvertible> 
+	internal class TraversalConvertibleTraverser<TConvertible> 
 		: AbstractAdapterTraverser<TConvertible>
 		where TConvertible : class, ITraversalConvertible
 	{
 		private readonly Func<TConvertible, IEnumerable<TConvertible>> getChildrenFunc;
 
-		public NonGenericTraversalConvertibleTraverser(
+		public TraversalConvertibleTraverser(
 			TConvertible root,
 			Func<TConvertible, IEnumerable<TConvertible>> getChildrenFunc) 
 			: base(root.AsChildrenProvider(getChildrenFunc))

@@ -1,46 +1,55 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Bertiooo.Traversal.Selectors
 {
 	public class AdapterSelector<TAdapter, TConvertible> : ICandidateSelector<TAdapter>
 		where TAdapter : IInstanceProvider<TConvertible>
 	{
-		private readonly ICandidateSelector<TConvertible> _selector;
-		private readonly Func<TConvertible, TAdapter> _createAdapterFunc;
+		protected readonly ICandidateSelector<TConvertible> Selector;
+		protected readonly IDictionary<TConvertible, TAdapter> Adapters;
 
-		public AdapterSelector(
-			ICandidateSelector<TConvertible> selector, 
-			Func<TConvertible, TAdapter> createAdapterFunc) 
+		public AdapterSelector(ICandidateSelector<TConvertible> selector)
 		{
-			if(selector == null) 
+			if (selector == null)
 				throw new ArgumentNullException(nameof(selector));
 
-			if(createAdapterFunc == null)
-				throw new ArgumentNullException(nameof(createAdapterFunc));
-
-			_selector = selector;
-			_createAdapterFunc = createAdapterFunc;
+			this.Selector = selector;
+			this.Adapters = new Dictionary<TConvertible, TAdapter>();
 		}
 
-		public bool HasItems => _selector.HasItems;
+		public virtual bool HasItems => this.Selector.HasItems;
 
-		public void Add(TAdapter item)
+		public virtual void Add(TAdapter item)
 		{
-			if(item == null)
+			if (item == null)
 				throw new ArgumentNullException(nameof(item));
 
-			_selector.Add(item.Instance);
+			this.Selector.Add(item.Instance);
+			this.Adapters.Add(item.Instance, item);
 		}
 
-		public TAdapter Next()
+		public virtual TAdapter Next()
 		{
-			var next = _selector.Next();
-			return _createAdapterFunc.Invoke(next);
+			var next = this.Selector.Next();
+			TAdapter adapter;
+
+			if(this.Adapters.ContainsKey(next))
+			{
+				adapter = this.Adapters[next];
+				this.Adapters.Remove(next);
+			}
+			else
+			{
+				throw new InvalidOperationException($"The item '{next?.ToString() ?? string.Empty}' was not added to the candidate selector.");
+			}
+
+			return adapter;
 		}
 
-		public void Reset()
+		public virtual void Reset()
 		{
-			_selector.Reset();
+			this.Selector.Reset();
 		}
 	}
 }
