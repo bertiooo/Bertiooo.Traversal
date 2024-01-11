@@ -18,8 +18,7 @@
 + Common abstract traverser for TraversableTraverser and AdapterTraverser
 + Renamed OnFailure to Catch
 + Added Catch overloads
-+ Added Use overload on traverser with comparer parameter
-+ Added TraversalMode DefaultComparer
++ Added overloads on traverse methods with comparer parameter
 + Added extensions methods Leaves, InnerNodes and WithInnerNodes</PackageReleaseNotes>
     <Copyright>Copyright 2024 Alberto Puig Rodríguez</Copyright>
   </PropertyGroup>

@@ -152,26 +152,38 @@ namespace Bertiooo.Traversal
         public static IEnumerable<TNode> Descendants<TNode>(this TNode node, Func<TNode, IEnumerable<TNode>> selectChildren, TraversalMode traversalMode = TraversalMode.DepthFirst)
             where TNode : class, ITraversalConvertible
         {
-            return node.AsChildrenProvider(selectChildren).Descendants(traversalMode).Select(x => x.Instance);
-        }
+			return node.Traverse(selectChildren).Use(traversalMode).Exclude(node).GetNodes();
+		}
 
-        public static IEnumerable<TNode> Descendants<TNode>(this TNode node, Func<TNode, IEnumerable<TNode>> selectChildren, ICandidateSelector<AbstractTraversableAdapter<TNode>> candidateSelector)
+		public static IEnumerable<TNode> Descendants<TNode>(this TNode node, Func<TNode, IEnumerable<TNode>> selectChildren, IComparer<TNode> comparer, bool ascending = false)
+			where TNode : class, ITraversalConvertible
+		{
+			return node.Traverse(selectChildren).Use(comparer, ascending).Exclude(node).GetNodes();
+		}
+
+		public static IEnumerable<TNode> Descendants<TNode>(this TNode node, Func<TNode, IEnumerable<TNode>> selectChildren, ICandidateSelector<TNode> candidateSelector)
             where TNode : class, ITraversalConvertible
         {
-            return node.AsChildrenProvider(selectChildren).Descendants(candidateSelector).Select(x => x.Instance);
-        }
+			return node.Traverse(selectChildren).Use(candidateSelector).Exclude(node).GetNodes();
+		}
 
         public static IEnumerable<TNode> WithDescendants<TNode>(this TNode node, Func<TNode, IEnumerable<TNode>> selectChildren, TraversalMode traversalMode = TraversalMode.DepthFirst)
             where TNode : class, ITraversalConvertible
         {
-            return node.AsChildrenProvider(selectChildren).WithDescendants(traversalMode).Select(x => x.Instance);
-        }
+			return node.Traverse(selectChildren).Use(traversalMode).GetNodes();
+		}
 
-        public static IEnumerable<TNode> WithDescendants<TNode>(this TNode node, Func<TNode, IEnumerable<TNode>> selectChildren, ICandidateSelector<AbstractTraversableAdapter<TNode>> candidateSelector)
+		public static IEnumerable<TNode> WithDescendants<TNode>(this TNode node, Func<TNode, IEnumerable<TNode>> selectChildren, IComparer<TNode> comparer, bool ascending = false)
+			where TNode : class, ITraversalConvertible
+		{
+			return node.Traverse(selectChildren).Use(comparer, ascending).GetNodes();
+		}
+
+		public static IEnumerable<TNode> WithDescendants<TNode>(this TNode node, Func<TNode, IEnumerable<TNode>> selectChildren, ICandidateSelector<TNode> candidateSelector)
             where TNode : class, ITraversalConvertible
         {
-            return node.AsChildrenProvider(selectChildren).WithDescendants(candidateSelector).Select(x => x.Instance);
-        }
+			return node.Traverse(selectChildren).Use(candidateSelector).GetNodes();
+		}
 
         public static IEnumerable<TNode> Ancestors<TNode>(this TNode node, Func<TNode, TNode> selectParent)
             where TNode : class, ITraversalConvertible
@@ -224,17 +236,37 @@ namespace Bertiooo.Traversal
             TraversalMode traversalMode = TraversalMode.DepthFirst)
             where TNode : class, ITraversalConvertible
         {
-			node.AsChildrenProvider(selectChildren).Traverse(x => callback.Invoke(x.Instance), traversalMode);
-        }
+			node.Traverse(selectChildren)
+				.Use(traversalMode)
+				.WithAction(callback)
+				.Execute();
+		}
 
-        public static void Traverse<TNode>(
+		public static void Traverse<TNode>(
+			this TNode node,
+			Action<TNode> callback,
+			Func<TNode, IEnumerable<TNode>> selectChildren,
+			IComparer<TNode> comparer,
+            bool ascending = false)
+			where TNode : class, ITraversalConvertible
+		{
+			node.Traverse(selectChildren)
+				.Use(comparer, ascending)
+				.WithAction(callback)
+				.Execute();
+		}
+
+		public static void Traverse<TNode>(
             this TNode node,
             Action<TNode> callback,
             Func<TNode, IEnumerable<TNode>> selectChildren,
-            ICandidateSelector<AbstractTraversableAdapter<TNode>> candidateSelector)
+            ICandidateSelector<TNode> candidateSelector)
             where TNode : class, ITraversalConvertible
         {
-			node.AsChildrenProvider(selectChildren).Traverse(x => callback.Invoke(x.Instance), candidateSelector);
+			node.Traverse(selectChildren)
+				.Use(candidateSelector)
+				.WithAction(callback)
+				.Execute();
 		}
 
         public static Task TraverseAsync<TNode>(
@@ -245,21 +277,31 @@ namespace Bertiooo.Traversal
             CancellationToken cancellationToken = default)
             where TNode : class, ITraversalConvertible
         {
-			return node.AsChildrenProvider(selectChildren)
-                .TraverseAsync(x => callback.Invoke(x.Instance), traversalMode, cancellationToken);
-        }
+			return Task.Factory.StartNew(() => node.Traverse(callback, selectChildren, traversalMode), cancellationToken);
+		}
 
-        public static Task TraverseAsync<TNode>(
+		public static Task TraverseAsync<TNode>(
+			this TNode node,
+			Action<TNode> callback,
+			Func<TNode, IEnumerable<TNode>> selectChildren,
+			IComparer<TNode> comparer,
+            bool ascending = false,
+			CancellationToken cancellationToken = default)
+			where TNode : class, ITraversalConvertible
+		{
+			return Task.Factory.StartNew(() => node.Traverse(callback, selectChildren, comparer, ascending), cancellationToken);
+		}
+
+		public static Task TraverseAsync<TNode>(
             this TNode node,
             Action<TNode> callback,
             Func<TNode, IEnumerable<TNode>> selectChildren,
-            ICandidateSelector<AbstractTraversableAdapter<TNode>> candidateSelector,
+            ICandidateSelector<TNode> candidateSelector,
             CancellationToken cancellationToken = default)
             where TNode : class, ITraversalConvertible
         {
-            return node.AsChildrenProvider(selectChildren)
-                .TraverseAsync(x => callback.Invoke(x.Instance), candidateSelector, cancellationToken);
-        }
+			return Task.Factory.StartNew(() => node.Traverse(callback, selectChildren, candidateSelector), cancellationToken);
+		}
 
         #endregion
 

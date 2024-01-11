@@ -170,20 +170,7 @@ namespace Bertiooo.Traversal.Traverser
 
 		public override ITraverser<TConvertible> Use(TraversalMode mode)
 		{
-			switch(mode)
-			{
-				case TraversalMode.DefaultComparer:
-
-					var comparer = Comparer<TConvertible>.Default;
-					this.Use(comparer, false);
-
-					break;
-
-				default:
-					_traverser.Use(mode);
-					break;
-			}
-
+			_traverser.Use(mode);
 			return this;
 		}
 

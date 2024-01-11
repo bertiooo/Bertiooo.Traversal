@@ -403,14 +403,6 @@ namespace Tests
 				.GetNodes();
 
 			Assert.Equal(expected, actual);
-
-			// should be the same
-			actual = root.Traverse()
-				.Use(TraversalMode.DefaultComparer)
-				.GetNodes()
-				.ToList();
-
-			Assert.Equal(expected, actual);
 		}
 	}
 }

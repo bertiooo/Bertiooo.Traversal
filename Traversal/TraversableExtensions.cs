@@ -197,6 +197,13 @@ namespace Bertiooo.Traversal
 			return node.Traverse().Use(traversalMode).Exclude(node).GetNodes();
 		}
 
+		/// <param name="comparer">Define which node to prefer over the other in the order of traversal.</param>
+		public static IEnumerable<TNode> Descendants<TNode>(this TNode node, IComparer<TNode> comparer, bool ascending = false)
+			where TNode : class, IChildrenProvider<TNode>
+		{
+			return node.Traverse().Use(comparer, ascending).Exclude(node).GetNodes();
+		}
+
 		public static IEnumerable<TNode> Descendants<TNode>(this TNode node, ICandidateSelector<TNode> candidateSelector)
 			where TNode : class, IChildrenProvider<TNode>
 		{
@@ -207,6 +214,13 @@ namespace Bertiooo.Traversal
 			where TNode : class, IChildrenProvider<TNode>
 		{
 			return node.Traverse().Use(traversalMode).GetNodes();
+		}
+
+		/// <param name="comparer">Define which node to prefer over the other in the order of traversal.</param>
+		public static IEnumerable<TNode> WithDescendants<TNode>(this TNode node, IComparer<TNode> comparer, bool ascending = false)
+			where TNode : class, IChildrenProvider<TNode>
+		{
+			return node.Traverse().Use(comparer, ascending).GetNodes();
 		}
 
 		public static IEnumerable<TNode> WithDescendants<TNode>(this TNode node, ICandidateSelector<TNode> candidateSelector)
@@ -291,6 +305,19 @@ namespace Bertiooo.Traversal
 		public static void Traverse<TNode>(
 			this TNode node,
 			Action<TNode> callback,
+			IComparer<TNode> comparer,
+			bool ascending = false)
+			where TNode : class, IChildrenProvider<TNode>
+		{
+			node.Traverse()
+				.Use(comparer, ascending)
+				.WithAction(callback)
+				.Execute();
+		}
+
+		public static void Traverse<TNode>(
+			this TNode node,
+			Action<TNode> callback,
 			ICandidateSelector<TNode> candidateSelector)
 			where TNode : class, IChildrenProvider<TNode>
 		{
@@ -308,6 +335,17 @@ namespace Bertiooo.Traversal
 			where TNode : class, IChildrenProvider<TNode>
 		{
 			return Task.Factory.StartNew(() => node.Traverse(callback, traversalMode), cancellationToken);
+		}
+
+		public static Task TraverseAsync<TNode>(
+			this TNode node,
+			Action<TNode> callback,
+			IComparer<TNode> comparer,
+			bool ascending = false,
+			CancellationToken cancellationToken = default)
+			where TNode : class, IChildrenProvider<TNode>
+		{
+			return Task.Factory.StartNew(() => node.Traverse(callback, comparer, ascending), cancellationToken);
 		}
 
 		public static Task TraverseAsync<TNode>(

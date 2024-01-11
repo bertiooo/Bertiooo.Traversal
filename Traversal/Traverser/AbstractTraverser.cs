@@ -365,15 +365,6 @@ namespace Bertiooo.Traversal.Traverser
 					candidateSelector = new BreadthFirstSelector<TNode>();
 					break;
 
-				case TraversalMode.DefaultComparer:
-
-					var comparer = Comparer<TNode>.Default;
-					var inverseComparer = new InverseComparer<TNode>(comparer);
-
-					candidateSelector = new DefaultCandidateSelector<TNode>(inverseComparer);
-
-					break;
-
 				default:
 					throw new NotImplementedException($"No candidate selector implementation for traversal mode '{mode}' exists.");
 			}
