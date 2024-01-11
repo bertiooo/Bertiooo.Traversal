@@ -88,10 +88,13 @@ Action<Node> action = n => n.DoSomething();
 node.Traverse(action); // per default depth first traversal
 node.Traverse(action, TraversalMode.BreadthFirst);
 
+IComparer<Node> customComparer = new CustomComparer();
+node.Traverse(action, comparer);
+
 ICandidateSelector<Node> customSelector = new CustomCandidateSelector();
 node.Traverse(action, customSelector);
 ```
-See [How to implement a custom candidate selector](https://github.com/bertiooo/Bertiooo.Traversal/wiki/How-to-implement-a-custom-candidate-selector) for more details about how to influence the order in which the nodes will be traversed.
+See [How to change the traversal order](https://github.com/bertiooo/Bertiooo.Traversal/wiki/How-to-change-the-traversal-order) for more details about how to influence the order in which the nodes will be traversed.
 ```
 CancellationToken token;
 await node.TraverseAsync(action, cancellationToken: token);
