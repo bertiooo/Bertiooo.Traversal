@@ -160,9 +160,30 @@ namespace Bertiooo.Traversal.Traverser
 			return this;
 		}
 
+		public override ITraverser<TConvertible> Use(IComparer<TConvertible> comparer, bool ascending = false)
+		{
+			var adapterComparer = new AdapterComparer<TAdapter, TConvertible>(comparer);
+			_traverser.Use(adapterComparer, ascending);
+
+			return this;
+		}
+
 		public override ITraverser<TConvertible> Use(TraversalMode mode)
 		{
-			_traverser.Use(mode);
+			switch(mode)
+			{
+				case TraversalMode.DefaultComparer:
+
+					var comparer = Comparer<TConvertible>.Default;
+					this.Use(comparer, false);
+
+					break;
+
+				default:
+					_traverser.Use(mode);
+					break;
+			}
+
 			return this;
 		}
 

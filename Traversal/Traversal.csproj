@@ -7,17 +7,19 @@
     <Title>Bertiooo's Traversal Library</Title>
     <Authors>bertiooo</Authors>
     <Description>This C# lightweight library provides extension methods to traverse hierarchy structures. It may work for other graph types as well.</Description>
-    <PackageTags>traversal; hierarchy; tree</PackageTags>
+    <PackageTags>traversal; hierarchy; tree; nodes</PackageTags>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/bertiooo/Bertiooo.Traversal/</RepositoryUrl>
-    <VersionPrefix>1.0.7</VersionPrefix>
+    <VersionPrefix>1.0.8</VersionPrefix>
     <PackageReleaseNotes>+ Made Traverser public
 + Removed interface IAdapterTraverser
 + Common abstract traverser for TraversableTraverser and AdapterTraverser
 + Renamed OnFailure to Catch
-+ Added Catch overloads</PackageReleaseNotes>
++ Added Catch overloads
++ Added Use overload on traverser with comparer parameter
++ Added TraversalMode DefaultComparer</PackageReleaseNotes>
     <Copyright>Copyright 2024 Alberto Puig Rodríguez</Copyright>
   </PropertyGroup>
 

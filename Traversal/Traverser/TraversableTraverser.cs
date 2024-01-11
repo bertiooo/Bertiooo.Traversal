@@ -334,27 +334,6 @@ namespace Bertiooo.Traversal.Traverser
 			return this;
 		}
 
-		public override ITraverser<TNode> Use(TraversalMode mode)
-		{
-			ICandidateSelector<TNode> candidateSelector;
-
-			switch (mode)
-			{
-				case TraversalMode.DepthFirst:
-					candidateSelector = new DepthFirstSelector<TNode>();
-					break;
-
-				case TraversalMode.BreadthFirst:
-					candidateSelector = new BreadthFirstSelector<TNode>();
-					break;
-
-				default:
-					throw new NotImplementedException($"No candidate selector implementation for traversal mode '{mode}' exists.");
-			}
-
-			return this.Use(candidateSelector);
-		}
-
 		public override ITraverser<TNode> Use(CancellationToken cancellationToken, bool throwException = true)
 		{
 			this.CancellationToken = cancellationToken;

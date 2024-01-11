@@ -22,7 +22,7 @@ namespace Bertiooo.Traversal.Selectors
 
 		public virtual void Add(TAdapter item)
 		{
-			if (item == null)
+			if(item == null)
 				throw new ArgumentNullException(nameof(item));
 
 			this.Selector.Add(item.Instance);
@@ -32,18 +32,16 @@ namespace Bertiooo.Traversal.Selectors
 		public virtual TAdapter Next()
 		{
 			var next = this.Selector.Next();
-			TAdapter adapter;
 
-			if(this.Adapters.ContainsKey(next))
-			{
-				adapter = this.Adapters[next];
-				this.Adapters.Remove(next);
-			}
-			else
+			TAdapter adapter;
+			var success = this.Adapters.TryGetValue(next, out adapter);
+
+			if(success == false)
 			{
 				throw new InvalidOperationException($"The item '{next?.ToString() ?? string.Empty}' was not added to the candidate selector.");
 			}
 
+			this.Adapters.Remove(next);
 			return adapter;
 		}
 

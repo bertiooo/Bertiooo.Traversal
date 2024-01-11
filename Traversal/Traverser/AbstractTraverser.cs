@@ -351,9 +351,47 @@ namespace Bertiooo.Traversal.Traverser
 
 		public abstract ITraverser<TNode> Use(ICandidateSelector<TNode> selector);
 
-		public abstract ITraverser<TNode> Use(TraversalMode mode);
+		public virtual ITraverser<TNode> Use(TraversalMode mode)
+		{
+			ICandidateSelector<TNode> candidateSelector;
+
+			switch (mode)
+			{
+				case TraversalMode.DepthFirst:
+					candidateSelector = new DepthFirstSelector<TNode>();
+					break;
+
+				case TraversalMode.BreadthFirst:
+					candidateSelector = new BreadthFirstSelector<TNode>();
+					break;
+
+				case TraversalMode.DefaultComparer:
+
+					var comparer = Comparer<TNode>.Default;
+					var inverseComparer = new InverseComparer<TNode>(comparer);
+
+					candidateSelector = new DefaultCandidateSelector<TNode>(inverseComparer);
+
+					break;
+
+				default:
+					throw new NotImplementedException($"No candidate selector implementation for traversal mode '{mode}' exists.");
+			}
+
+			return this.Use(candidateSelector);
+		}
 
 		public abstract ITraverser<TNode> Use(CancellationToken cancellationToken, bool throwException = true);
+
+		public virtual ITraverser<TNode> Use(IComparer<TNode> comparer, bool ascending = false)
+		{
+			IComparer<TNode> finalComparer = ascending
+				? comparer
+				: new InverseComparer<TNode>(comparer);
+
+			var selector = new DefaultCandidateSelector<TNode>(finalComparer);
+			return this.Use(selector);
+		}
 
 		public virtual ITraverser<TNode> WithAction(Action action)
 		{

@@ -1,4 +1,5 @@
 ﻿using Bertiooo.Traversal;
+using Bertiooo.Traversal.Selectors;
 using System.Diagnostics;
 using Tests.Fixtures;
 using Tests.Model;
@@ -366,6 +367,50 @@ namespace Tests
 			task.Wait();
 
 			Assert.True(canceledInvoked);
+		}
+
+		[Fact]
+		public void TraverserUsesAdapterSelector()
+		{
+			var root = this.fixture.Root;
+			var selector = new DepthFirstSelector<GenericConvertible>();
+
+			root.Traverse()
+				.Use(selector)
+				.Execute();
+		}
+
+		[Fact]
+		public void TraverserUsesAdapterComparer()
+		{
+			var root = this.fixture.Root;
+
+			var firstChild = root.Children.First();
+			var secondChild = root.Children.Last();
+
+			var expected = new List<GenericConvertible>() { root };
+
+			expected.Add(secondChild);
+			expected.AddRange(secondChild.Children.OrderByDescending(x => x.Name));
+
+			expected.Add(firstChild);
+			expected.AddRange(firstChild.Children.OrderByDescending(x => x.Name));
+
+			var comparer = Comparer<GenericConvertible>.Default;
+
+			var actual = root.Traverse()
+				.Use(comparer, false)
+				.GetNodes();
+
+			Assert.Equal(expected, actual);
+
+			// should be the same
+			actual = root.Traverse()
+				.Use(TraversalMode.DefaultComparer)
+				.GetNodes()
+				.ToList();
+
+			Assert.Equal(expected, actual);
 		}
 	}
 }

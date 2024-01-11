@@ -260,6 +260,15 @@ namespace Bertiooo.Traversal.Traverser
 		/// </summary>
 		ITraverser<TNode> Skip<T>(Func<T, bool> predicate) where T : class, TNode;
 
+		/// <summary>
+		/// Define a comparer stating which nodes should be preferred over the other during traversal.
+		/// </summary>
+		/// <param name="ascending">
+		/// When true, the nodes will be retrieved in ascending order. Default false. 
+		/// That is, the nodes with the highest values will be traversed first.
+		/// </param>
+		ITraverser<TNode> Use(IComparer<TNode> comparer, bool ascending = false);
+
 		ITraverser<TNode> Use(ICandidateSelector<TNode> selector);
 
 		ITraverser<TNode> Use(TraversalMode mode);
