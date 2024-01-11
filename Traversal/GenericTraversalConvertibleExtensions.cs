@@ -180,6 +180,26 @@ namespace Bertiooo.Traversal
 			return convertible.AsTraversable().WithAncestors().Select(x => x.Instance);
 		}
 
+		/// <inheritdoc cref="TraversableExtensions.Leaves{TNode}(TNode)"/>
+		public static IEnumerable<TConvertible> Leaves<TAdapter, TConvertible>(this ITraversalConvertible<TAdapter, TConvertible> convertible)
+			where TAdapter : class, ITraversable<TAdapter>, IInstanceProvider<TConvertible>
+		{
+			return convertible.AsTraversable().Leaves().Select(x => x.Instance);
+		}
+
+		/// <inheritdoc cref="TraversableExtensions.InnerNodes{TNode}(TNode)"/>
+		public static IEnumerable<TConvertible> InnerNodes<TAdapter, TConvertible>(this ITraversalConvertible<TAdapter, TConvertible> convertible)
+			where TAdapter : class, ITraversable<TAdapter>, IInstanceProvider<TConvertible>
+		{
+			return convertible.AsTraversable().InnerNodes().Select(x => x.Instance);
+		}
+
+		public static IEnumerable<TConvertible> WithInnerNodes<TAdapter, TConvertible>(this ITraversalConvertible<TAdapter, TConvertible> convertible)
+			where TAdapter : class, ITraversable<TAdapter>, IInstanceProvider<TConvertible>
+		{
+			return convertible.AsTraversable().WithInnerNodes().Select(x => x.Instance);
+		}
+
 		#endregion
 
 		#region Traverse Methods

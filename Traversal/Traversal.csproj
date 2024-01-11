@@ -19,7 +19,8 @@
 + Renamed OnFailure to Catch
 + Added Catch overloads
 + Added Use overload on traverser with comparer parameter
-+ Added TraversalMode DefaultComparer</PackageReleaseNotes>
++ Added TraversalMode DefaultComparer
++ Added extensions methods Leaves, InnerNodes and WithInnerNodes</PackageReleaseNotes>
     <Copyright>Copyright 2024 Alberto Puig Rodríguez</Copyright>
   </PropertyGroup>
 

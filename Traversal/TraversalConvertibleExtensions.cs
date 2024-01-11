@@ -185,11 +185,31 @@ namespace Bertiooo.Traversal
             return node.AsParentProvider(selectParent).WithAncestors().Select(x => x.Instance);
         }
 
-        #endregion
+		/// <inheritdoc cref="TraversableExtensions.Leaves{TNode}(TNode)"/>
+		public static IEnumerable<TNode> Leaves<TNode>(this TNode node, Func<TNode, IEnumerable<TNode>> selectChildren)
+			where TNode : class, ITraversalConvertible
+		{
+			return node.AsChildrenProvider(selectChildren).Leaves().Select(x => x.Instance);
+		}
 
-        #region Traverse Methods
+		/// <inheritdoc cref="TraversableExtensions.InnerNodes{TNode}(TNode)"/>
+		public static IEnumerable<TNode> InnerNodes<TNode>(this TNode node, Func<TNode, IEnumerable<TNode>> selectChildren)
+			where TNode : class, ITraversalConvertible
+		{
+			return node.AsChildrenProvider(selectChildren).InnerNodes().Select(x => x.Instance);
+		}
 
-        public static ITraverser<TNode> Traverse<TNode>(
+		public static IEnumerable<TNode> WithInnerNodes<TNode>(this TNode node, Func<TNode, IEnumerable<TNode>> selectChildren)
+			where TNode : class, ITraversalConvertible
+		{
+			return node.AsChildrenProvider(selectChildren).WithInnerNodes().Select(x => x.Instance);
+		}
+
+		#endregion
+
+		#region Traverse Methods
+
+		public static ITraverser<TNode> Traverse<TNode>(
             this TNode node,
             Func<TNode, IEnumerable<TNode>> selectChildren)
             where TNode : class, ITraversalConvertible

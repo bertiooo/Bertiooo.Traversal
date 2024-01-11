@@ -236,6 +236,32 @@ namespace Bertiooo.Traversal
 				yield return ancestor;
 		}
 
+		/// <summary>
+		/// Returns all descendants that are a leaf.
+		/// If the node itself is a leaf, than the node is returned.
+		/// </summary>
+		public static IEnumerable<TNode> Leaves<TNode>(this TNode node)
+			where TNode : class, IChildrenProvider<TNode>
+		{
+			return node.WithDescendants().Where(x => x.IsLeaf());
+		}
+
+		/// <summary>
+		/// Returns all descendants that are inner nodes.
+		/// The node itself is not included.
+		/// </summary>
+		public static IEnumerable<TNode> InnerNodes<TNode>(this TNode node)
+			where TNode : class, IChildrenProvider<TNode>
+		{
+			return node.Descendants().Where(x => x.IsInnerNode());
+		}
+
+		public static IEnumerable<TNode> WithInnerNodes<TNode>(this TNode node)
+			where TNode : class, IChildrenProvider<TNode>
+		{
+			return node.WithDescendants().Where(x => x.IsInnerNode());
+		}
+
 		#endregion
 
 		#region Traverse Methods

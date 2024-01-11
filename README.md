@@ -76,6 +76,8 @@ result = node.Descendants();
 result = node.WithDescendants();
 result = node.Ancestors();
 result = node.WithAncestors();
+result = node.Leaves();
+result = node.InnerNodes();
 ```
 
 #### Traverse extensions
