@@ -205,7 +205,7 @@ namespace Tests
 					if (node.Equals(secondChild))
 						throw new InvalidOperationException();
 				})
-				.Catch<InvalidOperationException>(e => 
+				.Catch<InvalidOperationException>(e =>
 				{
 					failureInvoked = true;
 					return true;
@@ -242,7 +242,7 @@ namespace Tests
 			Assert.True(expectedTotalCalls > 0);
 
 			var actualCalls = 0;
-			var actualTotalCalls = 0;			
+			var actualTotalCalls = 0;
 
 			root.Traverse()
 				.WithAction(x => actualTotalCalls++)
@@ -400,6 +400,26 @@ namespace Tests
 
 			var actual = root.Traverse()
 				.Use(comparer, false)
+				.GetNodes();
+
+			Assert.Equal(expected, actual);
+		}
+
+		[Fact]
+		public void TraverserReversesOrderOfChildNodes()
+		{
+			var root = this.fixture.Root;
+
+			var firstChild = root.Children.First();
+			var secondChild = root.Children.Last();
+
+			var expected = new List<GenericConvertible>() { root, secondChild, firstChild };
+			expected.AddRange(secondChild.Children.Reverse());
+			expected.AddRange(firstChild.Children.Reverse());
+
+			var actual = root.Traverse()
+				.Use(TraversalMode.BreadthFirst)
+				.ReverseOrder()
 				.GetNodes();
 
 			Assert.Equal(expected, actual);

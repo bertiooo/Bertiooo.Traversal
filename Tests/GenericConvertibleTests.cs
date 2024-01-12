@@ -4,6 +4,10 @@ using Tests.Model;
 
 namespace Tests
 {
+	/// <summary>
+	/// Tests extensions on <see cref="ITraversalConvertible{TAdapter, TConvertible}"/> 
+	/// from static class <see cref="GenericTraversalConvertibleExtensions"/>.
+	/// </summary>
 	public class GenericConvertibleTests : IClassFixture<GenericConvertibleFixture>
 	{
 		private readonly GenericConvertibleFixture fixture;
@@ -110,6 +114,18 @@ namespace Tests
 
 			ancestors.Remove(grandchild);
 			Assert.Equal(ancestors, grandchild.Ancestors());
+
+			var innerNodes = new List<GenericConvertible>() { firstChild, secondChild };
+			innerNodes.Reverse();
+
+			Assert.Equal(innerNodes, root.InnerNodes());
+
+			var leaves = new List<GenericConvertible>();
+			leaves.AddRange(firstChild.Children);
+			leaves.AddRange(secondChild.Children);
+			leaves.Reverse();
+
+			Assert.Equal(leaves, root.Leaves());
 		}
 	}
 }

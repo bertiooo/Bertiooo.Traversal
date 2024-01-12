@@ -19,7 +19,9 @@
 + Renamed OnFailure to Catch
 + Added Catch overloads
 + Added overloads on traverse methods with comparer parameter
-+ Added extensions methods Leaves, InnerNodes and WithInnerNodes</PackageReleaseNotes>
++ Added extensions methods Leaves, InnerNodes and WithInnerNodes
++ Made Parent and Children virtual in AbstractTraversableAdapter
++ Added ReverseOrder API method to Traverser</PackageReleaseNotes>
     <Copyright>Copyright 2024 Alberto Puig Rodríguez</Copyright>
   </PropertyGroup>
 

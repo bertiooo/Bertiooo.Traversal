@@ -3,7 +3,11 @@ using Tests.Model;
 
 namespace Tests
 {
-    public class ConvertibleTests : IClassFixture<ConvertibleFixture>
+	/// <summary>
+	/// Tests extensions on <see cref="ITraversalConvertible"/> 
+	/// from static class <see cref="TraversalConvertibleExtensions"/>.
+	/// </summary>
+	public class ConvertibleTests : IClassFixture<ConvertibleFixture>
 	{
 		private readonly ConvertibleFixture fixture;
 
@@ -109,6 +113,18 @@ namespace Tests
 
 			ancestors.Remove(grandchild);
 			Assert.Equal(ancestors, grandchild.Ancestors(x => x.Parent));
+
+			var innerNodes = new List<Convertible>() { firstChild, secondChild };
+			innerNodes.Reverse();
+
+			Assert.Equal(innerNodes, root.InnerNodes(x => x.Children));
+
+			var leaves = new List<Convertible>();
+			leaves.AddRange(firstChild.Children);
+			leaves.AddRange(secondChild.Children);
+			leaves.Reverse();
+
+			Assert.Equal(leaves, root.Leaves(x => x.Children));
 		}
 	}
 }

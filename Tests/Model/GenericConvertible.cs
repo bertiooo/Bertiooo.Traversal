@@ -8,7 +8,7 @@ namespace Tests.Model
 
 		public string? Name { get; set; }
 
-		public GenericConvertible? Parent { get; set; }
+		public GenericConvertible Parent { get; set; }
 
 		public IList<GenericConvertible> Children { get; set; } = new List<GenericConvertible>();
 

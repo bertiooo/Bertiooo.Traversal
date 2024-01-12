@@ -36,7 +36,7 @@ namespace Bertiooo.Traversal
 
 		public TConvertible Instance => this.convertible;
 
-		public TAdapter Parent 
+		public virtual TAdapter Parent
 		{
 			get
 			{
@@ -60,7 +60,7 @@ namespace Bertiooo.Traversal
 			}
 		}
 
-		public IEnumerable<TAdapter> Children
+		public virtual IEnumerable<TAdapter> Children
 		{
 			get
 			{

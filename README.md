@@ -108,6 +108,7 @@ For further control over the traversal process, use the fluent API.
 ITraverser<Node> traverser = node.Traverse()
 	.Use(TraversalMode.BreadthFirst) // per default depth-first traversal
 	.Use(candidateSelector)
+	.ReverseOrder()
 	.Use(cancellationToken)
 	.Skip(someNode) 
 	.Ignore(someNodes)

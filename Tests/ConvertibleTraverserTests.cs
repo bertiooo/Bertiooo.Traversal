@@ -297,5 +297,25 @@ namespace Tests
 
 			Assert.True(canceledInvoked);
 		}
+
+		[Fact]
+		public void TraverserReversesOrderOfChildNodes()
+		{
+			var root = this.fixture.Root;
+
+			var firstChild = root.Children.First();
+			var secondChild = root.Children.Last();
+
+			var expected = new List<Convertible>() { root, secondChild, firstChild };
+			expected.AddRange(secondChild.Children.Reverse());
+			expected.AddRange(firstChild.Children.Reverse());
+
+			var actual = root.Traverse(x => x.Children)
+				.Use(TraversalMode.BreadthFirst)
+				.ReverseOrder()
+				.GetNodes();
+
+			Assert.Equal(expected, actual);
+		}
 	}
 }

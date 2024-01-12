@@ -133,6 +133,12 @@ namespace Bertiooo.Traversal.Traverser
 			return this;
 		}
 
+		public override ITraverser<TConvertible> ReverseOrder()
+		{
+			_traverser.ReverseOrder();
+			return this;
+		}
+
 		public override ITraverser<TConvertible> Skip(TConvertible node)
 		{
 			var adapter = this.GetAdapter(node);

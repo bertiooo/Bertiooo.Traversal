@@ -35,6 +35,8 @@ namespace Bertiooo.Traversal.Traverser
 
 		protected bool ThrowIfCancellationRequested { get; set; }
 
+		protected bool ReverseOrderOfChildNodes { get; set; }
+
 		protected CancellationToken CancellationToken { get; set; } = CancellationToken.None;
 
 		protected IList<Func<TNode, bool>> CancelPredicates { get; set; }
@@ -58,6 +60,17 @@ namespace Bertiooo.Traversal.Traverser
 		#region Methods
 
 		#region Protected Methods
+
+		protected virtual void AddToSelector(IEnumerable<TNode> nodes)
+		{
+			var orderedNodes = this.ReverseOrderOfChildNodes
+				? nodes.Reverse() : nodes;
+
+			foreach (var child in orderedNodes)
+			{
+				this.AddToSelector(child);
+			}
+		}
 
 		protected virtual void AddToSelector(TNode node)
 		{
@@ -251,10 +264,7 @@ namespace Bertiooo.Traversal.Traverser
 						}
 					}
 
-					foreach (var child in node.Children)
-					{
-						this.AddToSelector(child);
-					}
+					this.AddToSelector(node.Children);
 
 					if (this.IsNodeIncluded(node))
 					{
@@ -297,6 +307,12 @@ namespace Bertiooo.Traversal.Traverser
 		public override ITraverser<TNode> Prepare(Action action)
 		{
 			this.Preparation += action;
+			return this;
+		}
+
+		public override ITraverser<TNode> ReverseOrder()
+		{
+			this.ReverseOrderOfChildNodes = true;
 			return this;
 		}
 

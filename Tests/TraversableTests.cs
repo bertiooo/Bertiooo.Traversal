@@ -5,6 +5,9 @@ using Tests.Model;
 
 namespace Tests
 {
+	/// <summary>
+	/// Tests extensions on <see cref="ITraversable{TNode}"/> from static class <see cref="TraversableExtensions"/>.
+	/// </summary>
     public class TraversableTests : IClassFixture<TraversableFixture>
 	{
 		private readonly TraversableFixture fixture;
@@ -111,6 +114,18 @@ namespace Tests
 
 			ancestors.Remove(grandchild);
 			Assert.Equal(ancestors, grandchild.Ancestors());
+
+			var innerNodes = new List<Traversable>() { firstChild, secondChild };
+			innerNodes.Reverse();
+
+			Assert.Equal(innerNodes, root.InnerNodes());
+
+			var leaves = new List<Traversable>();
+			leaves.AddRange(firstChild.Children);
+			leaves.AddRange(secondChild.Children);
+			leaves.Reverse();
+
+			Assert.Equal(leaves, root.Leaves());
 		}
 	}
 }

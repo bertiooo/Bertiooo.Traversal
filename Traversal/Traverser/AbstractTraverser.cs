@@ -307,6 +307,8 @@ namespace Bertiooo.Traversal.Traverser
 
 		public abstract ITraverser<TNode> Prepare(Action action);
 
+		public abstract ITraverser<TNode> ReverseOrder();
+
 		public abstract ITraverser<TNode> Skip(TNode node);
 
 		public virtual ITraverser<TNode> Skip(IEnumerable<TNode> nodes)

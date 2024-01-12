@@ -226,6 +226,12 @@ namespace Bertiooo.Traversal.Traverser
 		ITraverser<TNode> Prepare(Action action);
 
 		/// <summary>
+		/// Reverses the order the children of a node are added to the candidate selector.
+		/// Calling this action twice won't restore the initial order.
+		/// </summary>
+		ITraverser<TNode> ReverseOrder();
+
+		/// <summary>
 		/// When a node is specified to be skipped, then the node doesn't get added to the candidate selector, 
 		/// i.e. the node itself and its descendants won't be traversed at all.
 		/// Thus, there will be no callbacks for the node and its descendants and <see cref="GetNodes"/> won't return those nodes.
