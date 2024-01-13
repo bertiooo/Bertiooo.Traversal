@@ -73,7 +73,7 @@ namespace Bertiooo.Traversal
 				}
 
 				// remove each adapter with no corresponding instance
-				var obsoleteAdapters = this.childAdapters.Where(x => childInstances.Contains(x.Instance) == false);
+				var obsoleteAdapters = this.childAdapters.Where(x => childInstances.Contains(x.Instance) == false).ToList();
 			
 				foreach(var adapter in obsoleteAdapters)
 				{

@@ -39,7 +39,7 @@ namespace Bertiooo.Traversal.Traverser
 			return this.CancelIf(wrapper);
 		}
 
-		public virtual ITraverser<TNode> Catch(Action<Exception> action, bool throwException = true)
+		public virtual ITraverser<TNode> Catch(Action<Exception> action, bool throwException = false)
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
@@ -53,7 +53,7 @@ namespace Bertiooo.Traversal.Traverser
 			return this.Catch(wrapper);
 		}
 
-		public virtual ITraverser<TNode> Catch(Action<Exception, TNode> action, bool throwException = true)
+		public virtual ITraverser<TNode> Catch(Action<Exception, TNode> action, bool throwException = false)
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
@@ -67,7 +67,7 @@ namespace Bertiooo.Traversal.Traverser
 			return this.Catch(wrapper);
 		}
 
-		public ITraverser<TNode> Catch<T>(Action<T> action, bool throwException = true) where T : Exception
+		public ITraverser<TNode> Catch<T>(Action<T> action, bool throwException = false) where T : Exception
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
@@ -87,7 +87,7 @@ namespace Bertiooo.Traversal.Traverser
 			return this.Catch(wrapper);
 		}
 
-		public ITraverser<TNode> Catch<T>(Action<T, TNode> action, bool throwException = true) where T : Exception
+		public ITraverser<TNode> Catch<T>(Action<T, TNode> action, bool throwException = false) where T : Exception
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));

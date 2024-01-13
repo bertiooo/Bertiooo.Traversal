@@ -45,7 +45,7 @@ namespace Bertiooo.Traversal
 		public static bool HasSiblings<TNode>(this TNode node)
 			where TNode : ITraversable<TNode>
 		{
-			if (node.Parent == null)
+			if (node.Parent == null || node.Parent.Children == null)
 				return false;
 
 			return node.Parent.Children.Where(x => Equals(x, node) == false).Any();
@@ -162,14 +162,17 @@ namespace Bertiooo.Traversal
 		{
 			yield return node;
 
-			foreach(var child in node.Children)
+			if (node.Children == null)
+				yield break;
+
+            foreach (var child in node.Children)
 				yield return child;
 		}
 
 		public static IEnumerable<TNode> Siblings<TNode>(this TNode node)
 			where TNode : ITraversable<TNode>
 		{
-			if (node.Parent == null)
+			if (node.Parent == null || node.Parent.Children == null)
 				return Enumerable.Empty<TNode>();
 
 			return node.Parent.Children.Where(x => Equals(x, node) == false);

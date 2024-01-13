@@ -118,6 +118,35 @@ namespace Bertiooo.Traversal.Traverser
 				(this.ExcludePredicates == null || this.ExcludePredicates.Any(x => x.Invoke(node)) == false);
 		}
 
+		protected virtual void VisitNode(TNode node)
+		{
+			if (this.AreCallbacksEnabledFor(node) == false)
+				return;
+
+			try
+			{
+				this.Callbacks?.Invoke(node);
+			}
+			catch (Exception e)
+			{
+				if (this.FailureCallbacks == null)
+					throw;
+
+				bool throwException = true;
+
+				foreach (var callback in this.FailureCallbacks)
+				{
+					var handled = callback.Invoke(e, node);
+
+					if (handled)
+						throwException = false;
+				}
+
+				if (throwException)
+					throw;
+			}
+		}
+
 		#endregion
 
 		#region Public Methods
@@ -238,37 +267,16 @@ namespace Bertiooo.Traversal.Traverser
 						break;
 					}
 
-					if (this.AreCallbacksEnabledFor(node))
-					{
-						try
-						{
-							this.Callbacks?.Invoke(node);
-						}
-						catch (Exception e)
-						{
-							if (this.FailureCallbacks == null)
-								throw;
-
-							bool throwException = true;
-
-							foreach(var callback in this.FailureCallbacks)
-							{
-								var handled = callback.Invoke(e, node);
-
-								if (handled)
-									throwException = false;
-							}
-
-							if (throwException)
-								throw;
-						}
-					}
-
-					this.AddToSelector(node.Children);
+					this.VisitNode(node);
 
 					if (this.IsNodeIncluded(node))
 					{
 						yield return node;
+					}
+
+					if(node.Children != null)
+					{
+						this.AddToSelector(node.Children);
 					}
 				}
 

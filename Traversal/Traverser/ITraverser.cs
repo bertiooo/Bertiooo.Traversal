@@ -30,8 +30,8 @@ namespace Bertiooo.Traversal.Traverser
 		/// Exceptions that occur during traversal will not be catched.
 		/// After invoking, the exception will be thrown again.
 		/// </summary>
-		/// <param name="throwException">Whether to throw the exception after the action has been invoked. Default true.</param>
-		ITraverser<TNode> Catch(Action<Exception> action, bool throwException = true);
+		/// <param name="throwException">Whether to throw the exception after the action has been invoked. Default false.</param>
+		ITraverser<TNode> Catch(Action<Exception> action, bool throwException = false);
 
 		/// <summary>
 		/// Invokes the given action when an exception occurs on an action that has been registered via <see cref="WithAction(Action)"/>. 
@@ -39,16 +39,16 @@ namespace Bertiooo.Traversal.Traverser
 		/// After invoking, the exception will be thrown again.
 		/// </summary>
 		/// <param name="action">A callback with the exception and the node on which the exception occurred.</param>
-		/// <param name="throwException">Whether to throw the exception after the action has been invoked. Default true.</param>
-		ITraverser<TNode> Catch(Action<Exception, TNode> action, bool throwException = true);
+		/// <param name="throwException">Whether to throw the exception after the action has been invoked. Default false.</param>
+		ITraverser<TNode> Catch(Action<Exception, TNode> action, bool throwException = false);
 
 		/// <summary>
 		/// Invokes the given action when an exception occurs on an action that has been registered via <see cref="WithAction(Action)"/>. 
 		/// Exceptions that occur during traversal will not be catched.
 		/// After invoking, the exception will be thrown again.
 		/// </summary>
-		/// <param name="throwException">Whether to throw the exception after the action has been invoked. Default true.</param>
-		ITraverser<TNode> Catch<T>(Action<T> action, bool throwException = true) where T : Exception;
+		/// <param name="throwException">Whether to throw the exception after the action has been invoked. Default false.</param>
+		ITraverser<TNode> Catch<T>(Action<T> action, bool throwException = false) where T : Exception;
 
 		/// <summary>
 		/// Invokes the given action when an exception occurs on an action that has been registered via <see cref="WithAction(Action)"/>. 
@@ -56,28 +56,28 @@ namespace Bertiooo.Traversal.Traverser
 		/// After invoking, the exception will be thrown again.
 		/// </summary>
 		/// <param name="action">A callback with the exception and the node on which the exception occurred.</param>
-		/// <param name="throwException">Whether to throw the exception after the action has been invoked. Default true.</param>
-		ITraverser<TNode> Catch<T>(Action<T, TNode> action, bool throwException = true) where T : Exception;
+		/// <param name="throwException">Whether to throw the exception after the action has been invoked. Default false.</param>
+		ITraverser<TNode> Catch<T>(Action<T, TNode> action, bool throwException = false) where T : Exception;
 
 		/// <summary>
 		/// Invokes the given action when an exception occurs on an action that has been registered via <see cref="WithAction(Action)"/>. 
 		/// Exceptions that occur during traversal will not be catched.
 		/// </summary>
-		/// <param name="action">A function returning whether the exception is being handled or should be thrown again.</param>
+		/// <param name="action">A function returning whether the exception is being handled (return true) or should be thrown again (return false).</param>
 		ITraverser<TNode> Catch(Func<Exception, bool> action);
 
 		/// <summary>
 		/// Invokes the given action when an exception occurs on an action that has been registered via <see cref="WithAction(Action)"/>. 
 		/// Exceptions that occur during traversal will not be catched.
 		/// </summary>
-		/// <param name="action">A function returning whether the exception is being handled or should be thrown again.</param>
+		/// <param name="action">A function returning whether the exception is being handled (return true) or should be thrown again (return false).</param>
 		ITraverser<TNode> Catch(Func<Exception, TNode, bool> action);
 
 		/// <summary>
 		/// Invokes the given action when an exception occurs on an action that has been registered via <see cref="WithAction(Action)"/>. 
 		/// Exceptions that occur during traversal will not be catched.
 		/// </summary>
-		/// <param name="action">A function returning whether the exception is being handled or should be thrown again.</param>
+		/// <param name="action">A function returning whether the exception is being handled (return true) or should be thrown again (return false).</param>
 		ITraverser<TNode> Catch<T>(Func<T, bool> action)
 			where T : Exception;
 
@@ -85,7 +85,7 @@ namespace Bertiooo.Traversal.Traverser
 		/// Invokes the given action when an exception occurs on an action that has been registered via <see cref="WithAction(Action)"/>. 
 		/// Exceptions that occur during traversal will not be catched.
 		/// </summary>
-		/// <param name="action">A function returning whether the exception is being handled or should be thrown again.</param>
+		/// <param name="action">A function returning whether the exception is being handled (return true) or should be thrown again (return false).</param>
 		ITraverser<TNode> Catch<T>(Func<T, TNode, bool> action)
 			where T : Exception;
 
