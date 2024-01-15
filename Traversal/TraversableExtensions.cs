@@ -120,6 +120,9 @@ namespace Bertiooo.Traversal
 		public static bool IsAncestorOf<TNode>(this TNode node, TNode other)
 			where TNode : IParentProvider<TNode>
 		{
+			if (other == null)
+				throw new ArgumentNullException(nameof(other));
+
 			return other.Ancestors().Any(x => Equals(node, x));
 		}
 
