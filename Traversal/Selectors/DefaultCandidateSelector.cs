@@ -10,11 +10,19 @@ namespace Bertiooo.Traversal.Selectors
 	/// </summary>
 	public class DefaultCandidateSelector<T> : ICandidateSelector<T>
 	{
+		private readonly IComparer<T> _comparer;
 		private readonly SortedSet<T> _candidates;
 
 		public DefaultCandidateSelector(IComparer<T> comparer)
 		{
+			_comparer = comparer;
 			_candidates = new SortedSet<T>(comparer);
+		}
+
+		public DefaultCandidateSelector(IEnumerable<T> items, IComparer<T> comparer)
+		{
+			_comparer = comparer;
+			_candidates = new SortedSet<T>(items, comparer);
 		}
 
 		public bool HasItems => _candidates.Count > 0;
@@ -35,6 +43,11 @@ namespace Bertiooo.Traversal.Selectors
 		public void Reset()
 		{
 			_candidates.Clear();
+		}
+
+		public object Clone()
+		{
+			return new DefaultCandidateSelector<T>(_candidates, _comparer);
 		}
 	}
 }

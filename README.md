@@ -119,7 +119,8 @@ ITraverser<Node> traverser = node.Traverse()
 	.Catch<InvalidOperationException>(e => Debug(e))
 	.OnCanceled(action)
 	.OnSuccess(action)
-	.Finish(action);
+	.Finish(action)
+	.Clone();
 ```
 
 See [Difference between Skip, Exclude, Ignore and DisableCallbacksFor](https://github.com/bertiooo/Bertiooo.Traversal/wiki/Difference-between-Skip,-Exclude,-Ignore-and-DisableCallbacksFor) for more information about those methods.

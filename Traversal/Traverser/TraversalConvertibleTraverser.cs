@@ -17,6 +17,16 @@ namespace Bertiooo.Traversal.Traverser
 			this.getChildrenFunc = getChildrenFunc;
 		}
 
+		protected TraversalConvertibleTraverser(ITraverser<AbstractTraversableAdapter<TConvertible>> traverser)
+			: base(traverser)
+		{
+		}
+
+		public override ITraverser<TConvertible> Clone()
+		{
+			return new TraversalConvertibleTraverser<TConvertible>(this.Traverser.Clone());
+		}
+
 		protected override AbstractTraversableAdapter<TConvertible> GetAdapter(TConvertible convertible)
 		{
 			if (convertible == null)

@@ -18,6 +18,18 @@ namespace Bertiooo.Traversal.Selectors
 			this.Adapters = new Dictionary<TConvertible, TAdapter>();
 		}
 
+		protected AdapterSelector(ICandidateSelector<TConvertible> selector, IDictionary<TConvertible, TAdapter> adapters)
+		{
+			if (selector == null)
+				throw new ArgumentNullException(nameof(selector));
+
+			if (adapters == null)
+				throw new ArgumentNullException(nameof(adapters));
+
+			this.Selector = selector;
+			this.Adapters = new Dictionary<TConvertible, TAdapter>(adapters);
+		}
+
 		public virtual bool HasItems => this.Selector.HasItems;
 
 		public virtual void Add(TAdapter item)
@@ -48,6 +60,12 @@ namespace Bertiooo.Traversal.Selectors
 		public virtual void Reset()
 		{
 			this.Selector.Reset();
+		}
+
+		public virtual object Clone()
+		{
+			var selectorClone = this.Selector.Clone() as ICandidateSelector<TConvertible>;
+			return new AdapterSelector<TAdapter, TConvertible>(selectorClone, this.Adapters);
 		}
 	}
 }

@@ -10,6 +10,16 @@ namespace Bertiooo.Traversal.Traverser
 		{
 		}
 
+		protected GenericTraversalConvertibleTraverser(ITraverser<TAdapter> traverser)
+			: base(traverser)
+		{
+		}
+
+		public override ITraverser<TConvertible> Clone()
+		{
+			return new GenericTraversalConvertibleTraverser<TAdapter, TConvertible>(this.Traverser.Clone());
+		}
+
 		protected override TAdapter GetAdapter(TConvertible convertible)
 		{
 			if (convertible == null)

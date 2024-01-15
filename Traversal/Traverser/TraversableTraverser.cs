@@ -92,10 +92,8 @@ namespace Bertiooo.Traversal.Traverser
 					this.CanceledCallback?.Invoke();
 					this.CancellationToken.ThrowIfCancellationRequested();
 				}
-				else
-				{
-					return true;
-				}
+
+				return true;
 			}
 
 			if (this.CancelPredicates != null && this.CancelPredicates.Any(x => x.Invoke(node)))
@@ -177,6 +175,30 @@ namespace Bertiooo.Traversal.Traverser
 
 			this.FailureCallbacks.Add(action);
 			return this;
+		}
+
+		public override ITraverser<TNode> Clone()
+		{
+			return new TraversableTraverser<TNode>(this.Root)
+			{
+				Preparation = this.Preparation?.Clone() as Action,
+				Finalization = this.Finalization?.Clone() as Action,
+				CanceledCallback = this.CanceledCallback?.Clone() as Action,
+				FailureCallbacks = this.FailureCallbacks == null ? null : new List<Func<Exception, TNode, bool>>(this.FailureCallbacks),
+				SuccessCallback = this.SuccessCallback?.Clone() as Action,
+				Callbacks = this.Callbacks?.Clone() as Action<TNode>,
+				ThrowIfCancellationRequested = this.ThrowIfCancellationRequested,
+				ReverseOrderOfChildNodes = this.ReverseOrderOfChildNodes,
+				CancellationToken = this.CancellationToken,
+				CancelPredicates = this.CancelPredicates == null ? null : new List<Func<TNode, bool>>(this.CancelPredicates),
+				SkipNodes = this.SkipNodes == null ? null : new List<TNode>(this.SkipNodes),
+				SkipPredicates = this.SkipPredicates == null ? null : new List<Func<TNode, bool>>(this.SkipPredicates),
+				DisabledNodes = this.DisabledNodes == null ? null : new List<TNode>(this.DisabledNodes),
+				DisabledPredicates = this.DisabledPredicates == null ? null : new List<Func<TNode, bool>>(this.DisabledPredicates),
+				ExcludeNodes = this.ExcludeNodes == null ? null : new List<TNode>(this.ExcludeNodes),
+				ExcludePredicates = this.ExcludePredicates == null ? null : new List<Func<TNode, bool>>(this.ExcludePredicates),
+				Selector = this.Selector.Clone() as ICandidateSelector<TNode>,
+			};
 		}
 
 		public override ITraverser<TNode> DisableCallbacksFor(TNode node)

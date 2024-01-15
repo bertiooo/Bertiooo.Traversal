@@ -1,4 +1,5 @@
-﻿using Bertiooo.Traversal.Selectors;
+﻿using Bertiooo.Traversal.Comparers;
+using Bertiooo.Traversal.Selectors;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -67,7 +68,7 @@ namespace Bertiooo.Traversal.Traverser
 			return this.Catch(wrapper);
 		}
 
-		public ITraverser<TNode> Catch<T>(Action<T> action, bool throwException = false) where T : Exception
+		public virtual ITraverser<TNode> Catch<T>(Action<T> action, bool throwException = false) where T : Exception
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
@@ -87,7 +88,7 @@ namespace Bertiooo.Traversal.Traverser
 			return this.Catch(wrapper);
 		}
 
-		public ITraverser<TNode> Catch<T>(Action<T, TNode> action, bool throwException = false) where T : Exception
+		public virtual ITraverser<TNode> Catch<T>(Action<T, TNode> action, bool throwException = false) where T : Exception
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
@@ -118,7 +119,7 @@ namespace Bertiooo.Traversal.Traverser
 
 		public abstract ITraverser<TNode> Catch(Func<Exception, TNode, bool> action);
 
-		public ITraverser<TNode> Catch<T>(Func<T, bool> action) where T : Exception
+		public virtual ITraverser<TNode> Catch<T>(Func<T, bool> action) where T : Exception
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
@@ -138,7 +139,7 @@ namespace Bertiooo.Traversal.Traverser
 			return this.Catch(wrapper);
 		}
 
-		public ITraverser<TNode> Catch<T>(Func<T, TNode, bool> action) where T : Exception
+		public virtual ITraverser<TNode> Catch<T>(Func<T, TNode, bool> action) where T : Exception
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
@@ -157,6 +158,8 @@ namespace Bertiooo.Traversal.Traverser
 
 			return this.Catch(wrapper);
 		}
+
+		public abstract ITraverser<TNode> Clone();
 
 		public abstract ITraverser<TNode> DisableCallbacksFor(TNode node);
 

@@ -317,5 +317,30 @@ namespace Tests
 
 			Assert.Equal(expected, actual);
 		}
+
+		[Fact]
+		public void TraverserActsOnSeparateClones()
+		{
+			var root = this.fixture.Root;
+
+			var numberOfInvokesAction1 = 0;
+			var numberOfInvokesAction2 = 0;
+			var numberOfInvokesAction3 = 0;
+
+			var traverser = root.Traverse(x => x.Children)
+				.Prepare(() => numberOfInvokesAction1++);
+
+			traverser.Clone()
+				.Prepare(() => numberOfInvokesAction2++)
+				.Execute();
+
+			traverser.Clone()
+				.Prepare(() => numberOfInvokesAction3++)
+				.Execute();
+
+			Assert.Equal(2, numberOfInvokesAction1);
+			Assert.Equal(1, numberOfInvokesAction2);
+			Assert.Equal(1, numberOfInvokesAction3);
+		}
 	}
 }

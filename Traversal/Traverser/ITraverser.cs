@@ -90,6 +90,11 @@ namespace Bertiooo.Traversal.Traverser
 			where T : Exception;
 
 		/// <summary>
+		/// Creates a deep copy of the traverser instance.
+		/// </summary>
+		ITraverser<TNode> Clone();
+
+		/// <summary>
 		/// With this method you can define nodes for which the callbacks installed with <see cref="WithAction(Action)"/> won't be invoked. 
 		/// Still, the nodes will be traversed and be included in the <see cref="IEnumerable{TNode}"/> returned by <see cref="GetNodes"/>.
 		/// </summary>

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Bertiooo.Traversal.Selectors
 {
-    public interface ICandidateSelector<T>
+	public interface ICandidateSelector<T> : ICloneable
     {
         bool HasItems { get; }
 

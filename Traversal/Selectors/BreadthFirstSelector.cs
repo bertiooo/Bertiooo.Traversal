@@ -4,7 +4,17 @@ namespace Bertiooo.Traversal.Selectors
 {
 	public class BreadthFirstSelector<T> : ICandidateSelector<T>
     {
-        private readonly Queue<T> _queue = new Queue<T>();
+        private readonly Queue<T> _queue;
+
+        public BreadthFirstSelector()
+        {
+			_queue = new Queue<T>();
+		}
+
+		public BreadthFirstSelector(IEnumerable<T> items)
+        {
+			_queue = new Queue<T>(items);
+        }
 
         public bool HasItems => _queue.Count > 0;
 
@@ -22,5 +32,10 @@ namespace Bertiooo.Traversal.Selectors
         {
             return _queue.Dequeue();
         }
-    }
+
+		public object Clone()
+		{
+            return new BreadthFirstSelector<T>(_queue);
+		}
+	}
 }

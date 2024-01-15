@@ -1,4 +1,5 @@
-﻿using Bertiooo.Traversal.Selectors;
+﻿using Bertiooo.Traversal.Comparers;
+using Bertiooo.Traversal.Selectors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,16 +15,26 @@ namespace Bertiooo.Traversal.Traverser
 		protected AbstractAdapterTraverser(AbstractTraversableAdapter<TConvertible> root) : base(root)
 		{
 		}
+
+		protected AbstractAdapterTraverser(ITraverser<AbstractTraversableAdapter<TConvertible>> traverser)
+			: base(traverser)
+		{
+		}
 	}
 
 	internal abstract class AbstractAdapterTraverser<TAdapter, TConvertible> : AbstractTraverser<TConvertible>
 		where TAdapter : class, IInstanceProvider<TConvertible>, IChildrenProvider<TAdapter>
 	{
-		private readonly ITraverser<TAdapter> _traverser;
+		protected readonly ITraverser<TAdapter> Traverser;
 
 		public AbstractAdapterTraverser(TAdapter root)
 		{
-			_traverser = new TraversableTraverser<TAdapter>(root);
+			this.Traverser = new TraversableTraverser<TAdapter>(root);
+		}
+
+		protected AbstractAdapterTraverser(ITraverser<TAdapter> traverser)
+		{
+			this.Traverser = traverser;
 		}
 
 		protected abstract TAdapter GetAdapter(TConvertible convertible);
@@ -34,7 +45,7 @@ namespace Bertiooo.Traversal.Traverser
 				throw new ArgumentNullException(nameof(predicate));
 
 			Func<TAdapter, bool> wrapper = adapter => predicate.Invoke(adapter.Instance);
-			_traverser.CancelIf(wrapper);
+			this.Traverser.CancelIf(wrapper);
 
 			return this;
 		}
@@ -45,7 +56,7 @@ namespace Bertiooo.Traversal.Traverser
 				throw new ArgumentNullException(nameof(action));
 
 			Func<Exception, TAdapter, bool> wrapper = (e, n) => action.Invoke(e, n.Instance);
-			_traverser.Catch(wrapper);
+			this.Traverser.Catch(wrapper);
 
 			return this;
 		}
@@ -53,7 +64,7 @@ namespace Bertiooo.Traversal.Traverser
 		public override ITraverser<TConvertible> DisableCallbacksFor(TConvertible node)
 		{
 			var adapter = this.GetAdapter(node);
-			_traverser.DisableCallbacksFor(adapter);
+			this.Traverser.DisableCallbacksFor(adapter);
 
 			return this;
 		}
@@ -64,7 +75,7 @@ namespace Bertiooo.Traversal.Traverser
 				throw new ArgumentNullException(nameof(predicate));
 
 			Func<TAdapter, bool> wrapper = adapter => predicate.Invoke(adapter.Instance);
-			_traverser.DisableCallbacksFor(wrapper);
+			this.Traverser.DisableCallbacksFor(wrapper);
 
 			return this;
 		}
@@ -72,7 +83,7 @@ namespace Bertiooo.Traversal.Traverser
 		public override ITraverser<TConvertible> Exclude(TConvertible node)
 		{
 			var adapter = this.GetAdapter(node);
-			_traverser.Exclude(adapter);
+			this.Traverser.Exclude(adapter);
 
 			return this;
 		}
@@ -83,66 +94,66 @@ namespace Bertiooo.Traversal.Traverser
 				throw new ArgumentNullException(nameof(predicate));
 
 			Func<TAdapter, bool> wrapper = adapter => predicate.Invoke(adapter.Instance);
-			_traverser.Exclude(wrapper);
+			this.Traverser.Exclude(wrapper);
 
 			return this;
 		}
 
 		public override void Execute()
 		{
-			_traverser.Execute();
+			this.Traverser.Execute();
 		}
 
 		public override Task ExecuteAsync()
 		{
-			return _traverser.ExecuteAsync();
+			return this.Traverser.ExecuteAsync();
 		}
 
 		public override ITraverser<TConvertible> Finish(Action action)
 		{
-			_traverser.Finish(action);
+			this.Traverser.Finish(action);
 			return this;
 		}
 
 		public override IEnumerable<TConvertible> GetNodes()
 		{
-			return _traverser.GetNodes().Select(x => x.Instance);
+			return this.Traverser.GetNodes().Select(x => x.Instance);
 		}
 
 		public override async Task<IList<TConvertible>> GetNodesAsync()
 		{
-			var nodes = await _traverser.GetNodesAsync();
+			var nodes = await this.Traverser.GetNodesAsync();
 			return nodes.Select(x => x.Instance).ToList();
 		}
 
 		public override ITraverser<TConvertible> OnCanceled(Action action)
 		{
-			_traverser.OnCanceled(action);
+			this.Traverser.OnCanceled(action);
 			return this;
 		}
 
 		public override ITraverser<TConvertible> OnSuccess(Action action)
 		{
-			_traverser.OnSuccess(action);
+			this.Traverser.OnSuccess(action);
 			return this;
 		}
 
 		public override ITraverser<TConvertible> Prepare(Action action)
 		{
-			_traverser.Prepare(action);
+			this.Traverser.Prepare(action);
 			return this;
 		}
 
 		public override ITraverser<TConvertible> ReverseOrder()
 		{
-			_traverser.ReverseOrder();
+			this.Traverser.ReverseOrder();
 			return this;
 		}
 
 		public override ITraverser<TConvertible> Skip(TConvertible node)
 		{
 			var adapter = this.GetAdapter(node);
-			_traverser.Skip(adapter);
+			this.Traverser.Skip(adapter);
 
 			return this;
 		}
@@ -153,7 +164,7 @@ namespace Bertiooo.Traversal.Traverser
 				throw new ArgumentNullException(nameof(predicate));
 
 			Func<TAdapter, bool> wrapper = adapter => predicate.Invoke(adapter.Instance);
-			_traverser.Skip(wrapper);
+			this.Traverser.Skip(wrapper);
 
 			return this;
 		}
@@ -161,7 +172,7 @@ namespace Bertiooo.Traversal.Traverser
 		public override ITraverser<TConvertible> Use(ICandidateSelector<TConvertible> selector)
 		{
 			var adapterSelector = new AdapterSelector<TAdapter, TConvertible>(selector);
-			_traverser.Use(adapterSelector);
+			this.Traverser.Use(adapterSelector);
 
 			return this;
 		}
@@ -169,20 +180,20 @@ namespace Bertiooo.Traversal.Traverser
 		public override ITraverser<TConvertible> Use(IComparer<TConvertible> comparer, bool ascending = false)
 		{
 			var adapterComparer = new AdapterComparer<TAdapter, TConvertible>(comparer);
-			_traverser.Use(adapterComparer, ascending);
+			this.Traverser.Use(adapterComparer, ascending);
 
 			return this;
 		}
 
 		public override ITraverser<TConvertible> Use(TraversalMode mode)
 		{
-			_traverser.Use(mode);
+			this.Traverser.Use(mode);
 			return this;
 		}
 
 		public override ITraverser<TConvertible> Use(CancellationToken cancellationToken, bool throwException = true)
 		{
-			_traverser.Use(cancellationToken, throwException);
+			this.Traverser.Use(cancellationToken, throwException);
 			return this;
 		}
 
@@ -192,7 +203,7 @@ namespace Bertiooo.Traversal.Traverser
 				throw new ArgumentNullException(nameof(action));
 
 			Action<TAdapter> wrapper = adapter => action.Invoke(adapter.Instance);
-			_traverser.WithAction(wrapper);
+			this.Traverser.WithAction(wrapper);
 
 			return this;
 		}
