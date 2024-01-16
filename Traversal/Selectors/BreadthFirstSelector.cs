@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Bertiooo.Traversal.Selectors
 {
-	public class BreadthFirstSelector<T> : ICandidateSelector<T>
+	public class BreadthFirstSelector<T> : ICandidateSelector<T>, ICloneable
     {
         private readonly Queue<T> _queue;
 

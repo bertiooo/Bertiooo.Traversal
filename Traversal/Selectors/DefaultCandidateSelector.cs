@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Bertiooo.Traversal.Selectors
@@ -8,7 +9,7 @@ namespace Bertiooo.Traversal.Selectors
 	/// as the next item to traverse. The <see cref="IComparer{T}"/> given as parameter in the constructor
 	/// should therefore mark items as lesser for those who should appear in order first.
 	/// </summary>
-	public class DefaultCandidateSelector<T> : ICandidateSelector<T>
+	public class DefaultCandidateSelector<T> : ICandidateSelector<T>, ICloneable
 	{
 		private readonly IComparer<T> _comparer;
 		private readonly SortedSet<T> _candidates;

@@ -16,6 +16,10 @@ namespace Bertiooo.Traversal.Traverser
 		{
 		}
 
+		protected AbstractAdapterTraverser(IEnumerable<AbstractTraversableAdapter<TConvertible>> startNodes) : base(startNodes)
+		{
+		}
+
 		protected AbstractAdapterTraverser(ITraverser<AbstractTraversableAdapter<TConvertible>> traverser)
 			: base(traverser)
 		{
@@ -27,9 +31,14 @@ namespace Bertiooo.Traversal.Traverser
 	{
 		protected readonly ITraverser<TAdapter> Traverser;
 
-		public AbstractAdapterTraverser(TAdapter root)
+		protected AbstractAdapterTraverser(TAdapter root)
 		{
 			this.Traverser = new TraversableTraverser<TAdapter>(root);
+		}
+
+		protected AbstractAdapterTraverser(IEnumerable<TAdapter> startNodes)
+		{
+			this.Traverser = new TraversableTraverser<TAdapter>(startNodes);
 		}
 
 		protected AbstractAdapterTraverser(ITraverser<TAdapter> traverser)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Bertiooo.Traversal.Selectors
 {
-	public class AdapterSelector<TAdapter, TConvertible> : ICandidateSelector<TAdapter>
+	public class AdapterSelector<TAdapter, TConvertible> : ICandidateSelector<TAdapter>, ICloneable
 		where TAdapter : IInstanceProvider<TConvertible>
 	{
 		protected readonly ICandidateSelector<TConvertible> Selector;
@@ -31,6 +31,21 @@ namespace Bertiooo.Traversal.Selectors
 		}
 
 		public virtual bool HasItems => this.Selector.HasItems;
+
+		protected virtual ICandidateSelector<TConvertible> GetSelectorClone()
+		{
+			var cloneable = this.Selector as ICloneable;
+
+			if (cloneable == null)
+				return this.Selector;
+
+			var clone = cloneable.Clone() as ICandidateSelector<TConvertible>;
+
+			if (clone == null)
+				return this.Selector;
+
+			return clone;
+		}
 
 		public virtual void Add(TAdapter item)
 		{
@@ -64,7 +79,7 @@ namespace Bertiooo.Traversal.Selectors
 
 		public virtual object Clone()
 		{
-			var selectorClone = this.Selector.Clone() as ICandidateSelector<TConvertible>;
+			var selectorClone = this.GetSelectorClone();
 			return new AdapterSelector<TAdapter, TConvertible>(selectorClone, this.Adapters);
 		}
 	}

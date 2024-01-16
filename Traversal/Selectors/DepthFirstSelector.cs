@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Bertiooo.Traversal.Selectors
 {
-	public class DepthFirstSelector<T> : ICandidateSelector<T>
+	public class DepthFirstSelector<T> : ICandidateSelector<T>, ICloneable
     {
         private readonly Stack<T> _stack;
 

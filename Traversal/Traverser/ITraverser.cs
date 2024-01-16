@@ -91,6 +91,7 @@ namespace Bertiooo.Traversal.Traverser
 
 		/// <summary>
 		/// Creates a deep copy of the traverser instance.
+		/// The candidate selector is only cloned if it implements the interface <see cref="ICloneable"/>. Otherwise the reference is copied.
 		/// </summary>
 		ITraverser<TNode> Clone();
 

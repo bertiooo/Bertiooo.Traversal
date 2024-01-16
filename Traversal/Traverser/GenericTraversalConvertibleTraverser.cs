@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Bertiooo.Traversal.Traverser
 {
@@ -7,6 +8,10 @@ namespace Bertiooo.Traversal.Traverser
 		where TConvertible : ITraversalConvertible<TAdapter, TConvertible>
 	{
 		public GenericTraversalConvertibleTraverser(TAdapter root) : base(root)
+		{
+		}
+
+		public GenericTraversalConvertibleTraverser(IEnumerable<TAdapter> startNodes) : base(startNodes)
 		{
 		}
 

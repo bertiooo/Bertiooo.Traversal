@@ -232,6 +232,16 @@ namespace Bertiooo.Traversal
 			return new GenericTraversalConvertibleTraverser<TAdapter, TConvertible>(adapter);
 		}
 
+		/// <inheritdoc cref="TraversableExtensions.Traverse{TNode}(IEnumerable{TNode})"/>
+		public static ITraverser<TConvertible> Traverse<TAdapter, TConvertible>(
+			this IEnumerable<ITraversalConvertible<TAdapter, TConvertible>> convertibles)
+			where TAdapter : class, ITraversable<TAdapter>, IInstanceProvider<TConvertible>
+			where TConvertible : ITraversalConvertible<TAdapter, TConvertible>
+		{
+			var adapters = convertibles.Select(x => x.AsTraversable());
+			return new GenericTraversalConvertibleTraverser<TAdapter, TConvertible>(adapters);
+		}
+
 		public static void Traverse<TAdapter, TConvertible>(
 			this ITraversalConvertible<TAdapter, TConvertible> convertible,
 			Action<TConvertible> callback,

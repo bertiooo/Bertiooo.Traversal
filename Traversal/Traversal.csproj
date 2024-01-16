@@ -16,7 +16,9 @@
     <PackageReleaseNotes>+ Changed default parameter throwException of API method Catch to value false
 + Bugfix TraversableAdapter while removing obsolete adapters from cache
 + Changed order of adding child nodes to selector and yielding visited node
-+ Added Clone API to Traverser</PackageReleaseNotes>
++ Added Clone API to Traverser
++ Multiple starting nodes for traversal
++ Reset candidate selector after traversal</PackageReleaseNotes>
     <Copyright>Copyright 2024 Alberto Puig Rodríguez</Copyright>
   </PropertyGroup>
 

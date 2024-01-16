@@ -200,20 +200,20 @@ namespace Bertiooo.Traversal
 		public static IEnumerable<TNode> Descendants<TNode>(this TNode node, TraversalMode traversalMode = TraversalMode.DepthFirst)
 			where TNode : class, IChildrenProvider<TNode>
 		{
-			return node.Traverse().Use(traversalMode).Exclude(node).GetNodes();
+			return node.Children.Traverse().Use(traversalMode).GetNodes();
 		}
 
 		/// <param name="comparer">Define which node to prefer over the other in the order of traversal.</param>
 		public static IEnumerable<TNode> Descendants<TNode>(this TNode node, IComparer<TNode> comparer, bool ascending = false)
 			where TNode : class, IChildrenProvider<TNode>
 		{
-			return node.Traverse().Use(comparer, ascending).Exclude(node).GetNodes();
+			return node.Children.Traverse().Use(comparer, ascending).GetNodes();
 		}
 
 		public static IEnumerable<TNode> Descendants<TNode>(this TNode node, ICandidateSelector<TNode> candidateSelector)
 			where TNode : class, IChildrenProvider<TNode>
 		{
-			return node.Traverse().Use(candidateSelector).Exclude(node).GetNodes();
+			return node.Children.Traverse().Use(candidateSelector).GetNodes();
 		}
 
 		public static IEnumerable<TNode> WithDescendants<TNode>(this TNode node, TraversalMode traversalMode = TraversalMode.DepthFirst)
@@ -294,6 +294,16 @@ namespace Bertiooo.Traversal
 			where TNode : class, IChildrenProvider<TNode>
 		{
 			return new TraversableTraverser<TNode>(node);
+		}
+
+		/// <summary>
+		/// Initiates a new traversal process that can be configured via fluent API with multiple nodes as starting point.
+		/// </summary>
+		public static ITraverser<TNode> Traverse<TNode>(
+			this IEnumerable<TNode> nodes)
+			where TNode : class, IChildrenProvider<TNode>
+		{
+			return new TraversableTraverser<TNode>(nodes);
 		}
 
 		public static void Traverse<TNode>(

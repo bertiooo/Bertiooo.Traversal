@@ -2,7 +2,7 @@
 
 namespace Bertiooo.Traversal.Selectors
 {
-	public interface ICandidateSelector<T> : ICloneable
+	public interface ICandidateSelector<T>
     {
         bool HasItems { get; }
 

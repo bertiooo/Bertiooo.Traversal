@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Bertiooo.Traversal.Traverser
 {
@@ -13,6 +14,14 @@ namespace Bertiooo.Traversal.Traverser
 			TConvertible root,
 			Func<TConvertible, IEnumerable<TConvertible>> getChildrenFunc) 
 			: base(root.AsChildrenProvider(getChildrenFunc))
+		{
+			this.getChildrenFunc = getChildrenFunc;
+		}
+
+		public TraversalConvertibleTraverser(
+			IEnumerable<TConvertible> startNodes,
+			Func<TConvertible, IEnumerable<TConvertible>> getChildrenFunc)
+			: base(startNodes.Select(x => x.AsChildrenProvider(getChildrenFunc)))
 		{
 			this.getChildrenFunc = getChildrenFunc;
 		}

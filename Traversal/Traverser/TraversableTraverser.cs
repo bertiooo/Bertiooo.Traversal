@@ -10,16 +10,21 @@ namespace Bertiooo.Traversal.Traverser
 	public class TraversableTraverser<TNode> : AbstractTraverser<TNode>
 		where TNode : class, IChildrenProvider<TNode>
 	{
-		private readonly TNode root;
+		private readonly IEnumerable<TNode> startNodes;
 
 		public TraversableTraverser(TNode root)
 		{
-			this.root = root;
+			this.startNodes = new TNode[] { root };
+		}
+
+		public TraversableTraverser(IEnumerable<TNode> startNodes)
+		{
+			this.startNodes = startNodes;
 		}
 
 		#region Properties
 
-		protected TNode Root => root;
+		protected IEnumerable<TNode> StartNodes => startNodes;
 
 		protected Action Preparation { get; set; }
 
@@ -145,6 +150,21 @@ namespace Bertiooo.Traversal.Traverser
 			}
 		}
 
+		protected virtual ICandidateSelector<TNode> GetSelectorClone()
+		{
+			var cloneable = this.Selector as ICloneable;
+
+			if (cloneable == null)
+				return this.Selector;
+
+			var clone = cloneable.Clone() as ICandidateSelector<TNode>;
+
+			if (clone == null)
+				return this.Selector;
+
+			return clone;
+        }
+
 		#endregion
 
 		#region Public Methods
@@ -179,7 +199,7 @@ namespace Bertiooo.Traversal.Traverser
 
 		public override ITraverser<TNode> Clone()
 		{
-			return new TraversableTraverser<TNode>(this.Root)
+			return new TraversableTraverser<TNode>(this.startNodes)
 			{
 				Preparation = this.Preparation?.Clone() as Action,
 				Finalization = this.Finalization?.Clone() as Action,
@@ -197,7 +217,7 @@ namespace Bertiooo.Traversal.Traverser
 				DisabledPredicates = this.DisabledPredicates == null ? null : new List<Func<TNode, bool>>(this.DisabledPredicates),
 				ExcludeNodes = this.ExcludeNodes == null ? null : new List<TNode>(this.ExcludeNodes),
 				ExcludePredicates = this.ExcludePredicates == null ? null : new List<Func<TNode, bool>>(this.ExcludePredicates),
-				Selector = this.Selector.Clone() as ICandidateSelector<TNode>,
+				Selector = this.GetSelectorClone(),
 			};
 		}
 
@@ -277,7 +297,7 @@ namespace Bertiooo.Traversal.Traverser
 				var canceled = false;
 
 				this.Selector.Reset();
-				this.AddToSelector(this.root);
+				this.AddToSelector(this.startNodes);
 
 				while (this.Selector.HasItems)
 				{
@@ -313,6 +333,7 @@ namespace Bertiooo.Traversal.Traverser
 			}
 			finally
 			{
+				this.Selector.Reset();
 				this.Finalization?.Invoke();
 			}
 		}

@@ -221,6 +221,7 @@ namespace Bertiooo.Traversal
 
 		#region Traverse Methods
 
+		/// <inheritdoc cref="TraversableExtensions.Traverse{TNode}(TNode)"/>
 		public static ITraverser<TNode> Traverse<TNode>(
             this TNode node,
             Func<TNode, IEnumerable<TNode>> selectChildren)
@@ -229,7 +230,16 @@ namespace Bertiooo.Traversal
             return new TraversalConvertibleTraverser<TNode>(node, selectChildren);
         }
 
-        public static void Traverse<TNode>(
+		/// <inheritdoc cref="TraversableExtensions.Traverse{TNode}(IEnumerable{TNode})"/>
+		public static ITraverser<TNode> Traverse<TNode>(
+			this IEnumerable<TNode> nodes,
+			Func<TNode, IEnumerable<TNode>> selectChildren)
+			where TNode : class, ITraversalConvertible
+		{
+			return new TraversalConvertibleTraverser<TNode>(nodes, selectChildren);
+		}
+
+		public static void Traverse<TNode>(
             this TNode node,
             Action<TNode> callback,
             Func<TNode, IEnumerable<TNode>> selectChildren,
