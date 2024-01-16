@@ -161,21 +161,21 @@ namespace Bertiooo.Traversal
 			where TAdapter : ITraversable<TAdapter>, IInstanceProvider<TConvertible>
 			where TConvertible : ITraversalConvertible<TAdapter, TConvertible>
 		{
-			return convertible.Traverse().Use(traversalMode).GetNodes().Where(x => Equals(x, convertible) == false);
+			return convertible.Children().Traverse<TAdapter, TConvertible>().Use(traversalMode).GetNodes();
 		}
 
 		public static IEnumerable<TConvertible> Descendants<TAdapter, TConvertible>(this ITraversalConvertible<TAdapter, TConvertible> convertible, IComparer<TConvertible> comparer, bool ascending = false)
 			where TAdapter : ITraversable<TAdapter>, IInstanceProvider<TConvertible>
 			where TConvertible : ITraversalConvertible<TAdapter, TConvertible>
 		{
-			return convertible.Traverse().Use(comparer, ascending).GetNodes().Where(x => Equals(x, convertible) == false);
+			return convertible.Children().Traverse<TAdapter, TConvertible>().Use(comparer, ascending).GetNodes();
 		}
 
 		public static IEnumerable<TConvertible> Descendants<TAdapter, TConvertible>(this ITraversalConvertible<TAdapter, TConvertible> convertible, ICandidateSelector<TConvertible> candidateSelector)
 			where TAdapter : ITraversable<TAdapter>, IInstanceProvider<TConvertible>
 			where TConvertible : ITraversalConvertible<TAdapter, TConvertible>
 		{
-			return convertible.Traverse().Use(candidateSelector).GetNodes().Where(x => Equals(x, convertible) == false);
+			return convertible.Children().Traverse<TAdapter, TConvertible>().Use(candidateSelector).GetNodes();
 		}
 
 		public static IEnumerable<TConvertible> WithDescendants<TAdapter, TConvertible>(this ITraversalConvertible<TAdapter, TConvertible> convertible, TraversalMode traversalMode = TraversalMode.DepthFirst)
@@ -247,7 +247,7 @@ namespace Bertiooo.Traversal
 
 		/// <inheritdoc cref="TraversableExtensions.Traverse{TNode}(IEnumerable{TNode})"/>
 		public static ITraverser<TConvertible> Traverse<TAdapter, TConvertible>(
-			this IEnumerable<ITraversalConvertible<TAdapter, TConvertible>> convertibles)
+			this IEnumerable<TConvertible> convertibles)
 			where TAdapter : ITraversable<TAdapter>, IInstanceProvider<TConvertible>
 			where TConvertible : ITraversalConvertible<TAdapter, TConvertible>
 		{
