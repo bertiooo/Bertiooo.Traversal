@@ -81,7 +81,7 @@ namespace Tests
 			var secondChild = root.Children.ElementAt(1);
 			var grandchild = firstChild.Children.First();
 
-			Assert.Equal(root, grandchild.GetRoot());
+			Assert.Equal(root, grandchild.Root());
 
 			Assert.Equal(new Traversable[] { root }, root.WithParent());
 			Assert.Equal(new Traversable[] { grandchild, grandchild.Parent }, grandchild.WithParent());

@@ -5,7 +5,6 @@ namespace Bertiooo.Traversal
 {
 	public class DefaultTraversableAdapter<TConvertible> 
 		: AbstractTraversableAdapter<TConvertible>
-		where TConvertible : class
 	{
 		private readonly Func<TConvertible, TConvertible> getParentFunc;
 		private readonly Func<TConvertible, IEnumerable<TConvertible>> getChildrenFunc;

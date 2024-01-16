@@ -25,8 +25,8 @@ namespace Tests
 			var secondChild = root.Children.ElementAt(1);
 			var grandchild = child.Children.First();
 
-			Assert.True(root.Parent == null);
-			Assert.True(root.Children.Any());
+			Assert.True(root.Parent() == null);
+			Assert.True(root.Children().Any());
 			Assert.True(root.IsRoot());
 			Assert.True(root.IsInnerNode());
 			Assert.False(root.IsLeaf());
@@ -40,8 +40,8 @@ namespace Tests
 			Assert.True(root.IsAncestorOf(grandchild));
 			Assert.False(root.IsDescendantOf(grandchild));
 
-			Assert.True(child.Parent != null);
-			Assert.True(child.Children.Any());
+			Assert.True(child.Parent() != null);
+			Assert.True(child.Children().Any());
 			Assert.False(child.IsRoot());
 			Assert.True(child.IsInnerNode());
 			Assert.False(child.IsLeaf());
@@ -56,8 +56,8 @@ namespace Tests
 			Assert.True(child.IsAncestorOf(grandchild));
 			Assert.True(child.IsDescendantOf(root));
 
-			Assert.True(grandchild.Parent != null);
-			Assert.False(grandchild.Children.Any());
+			Assert.True(grandchild.Parent() != null);
+			Assert.False(grandchild.Children().Any());
 			Assert.False(grandchild.IsRoot());
 			Assert.False(grandchild.IsInnerNode());
 			Assert.True(grandchild.IsLeaf());
@@ -81,7 +81,7 @@ namespace Tests
 			var secondChild = root.Children.ElementAt(1);
 			var grandchild = firstChild.Children.First();
 
-			Assert.Equal(root, grandchild.GetRoot());
+			Assert.Equal(root, grandchild.Root());
 
 			Assert.Equal(new GenericConvertible[] { root }, root.WithParent());
 			Assert.Equal(new GenericConvertible[] { grandchild, grandchild.Parent }, grandchild.WithParent());

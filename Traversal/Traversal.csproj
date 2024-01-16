@@ -18,7 +18,10 @@
 + Changed order of adding child nodes to selector and yielding visited node
 + Added Clone API to Traverser
 + Multiple starting nodes for traversal
-+ Reset candidate selector after traversal</PackageReleaseNotes>
++ Reset candidate selector after traversal
++ Renamed extension GetRoot to Root
++ Added extensions for parent and children retrieval
++ Removed unnecessary class constraints</PackageReleaseNotes>
     <Copyright>Copyright 2024 Alberto Puig Rodríguez</Copyright>
   </PropertyGroup>
 

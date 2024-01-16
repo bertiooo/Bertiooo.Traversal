@@ -8,7 +8,7 @@ using System.Linq;
 namespace Bertiooo.Traversal.Traverser
 {
 	public class TraversableTraverser<TNode> : AbstractTraverser<TNode>
-		where TNode : class, IChildrenProvider<TNode>
+		where TNode : IChildrenProvider<TNode>
 	{
 		private readonly IEnumerable<TNode> startNodes;
 

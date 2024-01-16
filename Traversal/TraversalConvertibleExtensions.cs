@@ -13,7 +13,7 @@ namespace Bertiooo.Traversal
         #region Node Analysis
 
         public static bool IsRoot<TNode>(this TNode node, Func<TNode, TNode> selectParent)
-            where TNode : class, ITraversalConvertible
+            where TNode : ITraversalConvertible
         {
             return node.AsParentProvider(selectParent).IsRoot();
         }
@@ -31,7 +31,7 @@ namespace Bertiooo.Traversal
         }
 
         public static bool HasParent<TNode>(this TNode node, Func<TNode, TNode> selectParent)
-            where TNode : class, ITraversalConvertible
+            where TNode : ITraversalConvertible
         {
             return node.AsParentProvider(selectParent).HasParent();
         }
@@ -43,27 +43,27 @@ namespace Bertiooo.Traversal
         }
 
         public static bool HasSiblings<TNode>(this TNode node, Func<TNode, TNode> selectParent, Func<TNode, IEnumerable<TNode>> selectChildren)
-            where TNode : class, ITraversalConvertible
+            where TNode : ITraversalConvertible
         {
             return node.AsTraversable(selectParent, selectChildren).HasSiblings();
         }
 
         /// <inheritdoc cref="TraversableExtensions.GetLevel{TNode}(TNode)"/>
         public static int GetLevel<TNode>(this TNode node, Func<TNode, TNode> selectParent)
-            where TNode : class, ITraversalConvertible
+            where TNode : ITraversalConvertible
         {
             return node.AsParentProvider(selectParent).GetLevel();
         }
 
         /// <inheritdoc cref="TraversableExtensions.GetMaxDepth{TNode}(TNode)"/>
         public static int GetMaxDepth<TNode>(this TNode node, Func<TNode, TNode> selectParent, Func<TNode, IEnumerable<TNode>> selectChildren)
-            where TNode : class, ITraversalConvertible
+            where TNode : ITraversalConvertible
         {
             return node.AsTraversable(selectParent, selectChildren).GetMaxDepth();
         }
 
         public static bool IsChildOf<TNode>(this TNode node, TNode other, Func<TNode, TNode> selectParent)
-            where TNode : class, ITraversalConvertible
+            where TNode : ITraversalConvertible
         {
 			if (other == null)
 				throw new ArgumentNullException(nameof(other));
@@ -73,7 +73,7 @@ namespace Bertiooo.Traversal
         }
 
         public static bool IsParentOf<TNode>(this TNode node, TNode other, Func<TNode, TNode> selectParent)
-            where TNode : class, ITraversalConvertible
+            where TNode : ITraversalConvertible
         {
 			if (other == null)
 				throw new ArgumentNullException(nameof(other));
@@ -83,7 +83,7 @@ namespace Bertiooo.Traversal
         }
 
         public static bool IsSiblingOf<TNode>(this TNode node, TNode other, Func<TNode, TNode> selectParent)
-            where TNode : class, ITraversalConvertible
+            where TNode : ITraversalConvertible
         {
 			if (other == null)
 				throw new ArgumentNullException(nameof(other));
@@ -93,7 +93,7 @@ namespace Bertiooo.Traversal
         }
 
         public static bool IsDescendantOf<TNode>(this TNode node, TNode other, Func<TNode, TNode> selectParent)
-            where TNode : class, ITraversalConvertible
+            where TNode : ITraversalConvertible
         {
 			if (other == null)
 				throw new ArgumentNullException(nameof(other));
@@ -103,7 +103,7 @@ namespace Bertiooo.Traversal
         }
 
         public static bool IsAncestorOf<TNode>(this TNode node, TNode other, Func<TNode, TNode> selectParent)
-            where TNode : class, ITraversalConvertible
+            where TNode : ITraversalConvertible
         {
 			if (other == null)
 				throw new ArgumentNullException(nameof(other));
@@ -116,15 +116,27 @@ namespace Bertiooo.Traversal
 
         #region Related Nodes Retrieval
 
-        public static TNode GetRoot<TNode>(this TNode node, Func<TNode, TNode> selectParent)
-            where TNode : class, ITraversalConvertible
+        public static TNode Root<TNode>(this TNode node, Func<TNode, TNode> selectParent)
+            where TNode : ITraversalConvertible
         {
-            return node.AsParentProvider(selectParent).GetRoot().Instance;
+            return node.AsParentProvider(selectParent).Root().Instance;
         }
 
-        /// <inheritdoc cref="TraversableExtensions.WithParent{TNode}(TNode)"/>
-        public static IEnumerable<TNode> WithParent<TNode>(this TNode node, Func<TNode, TNode> selectParent)
-            where TNode : class, ITraversalConvertible
+		public static TNode Parent<TNode>(this TNode node, Func<TNode, TNode> selectParent)
+			where TNode : class, ITraversalConvertible
+		{
+			return node.AsParentProvider(selectParent).Parent?.Instance;
+		}
+
+		public static IEnumerable<TNode> Children<TNode>(this TNode node, Func<TNode, IEnumerable<TNode>> selectChildren)
+			where TNode : class, ITraversalConvertible
+		{
+			return node.AsChildrenProvider(selectChildren).Children.Select(x => x.Instance);
+		}
+
+		/// <inheritdoc cref="TraversableExtensions.WithParent{TNode}(TNode)"/>
+		public static IEnumerable<TNode> WithParent<TNode>(this TNode node, Func<TNode, TNode> selectParent)
+            where TNode : ITraversalConvertible
         {
             return node.AsParentProvider(selectParent).WithParent().Select(x => x.Instance);
         }
@@ -137,14 +149,14 @@ namespace Bertiooo.Traversal
         }
 
         public static IEnumerable<TNode> Siblings<TNode>(this TNode node, Func<TNode, TNode> selectParent, Func<TNode, IEnumerable<TNode>> selectChildren)
-            where TNode : class, ITraversalConvertible
+            where TNode : ITraversalConvertible
         {
             return node.AsTraversable(selectParent, selectChildren).Siblings().Select(x => x.Instance);
         }
 
         /// <inheritdoc cref="TraversableExtensions.WithSiblings{TNode}(TNode)"/>
         public static IEnumerable<TNode> WithSiblings<TNode>(this TNode node, Func<TNode, TNode> selectParent, Func<TNode, IEnumerable<TNode>> selectChildren)
-            where TNode : class, ITraversalConvertible
+            where TNode : ITraversalConvertible
         {
             return node.AsTraversable(selectParent, selectChildren).WithSiblings().Select(x => x.Instance);
         }
@@ -152,19 +164,19 @@ namespace Bertiooo.Traversal
         public static IEnumerable<TNode> Descendants<TNode>(this TNode node, Func<TNode, IEnumerable<TNode>> selectChildren, TraversalMode traversalMode = TraversalMode.DepthFirst)
             where TNode : class, ITraversalConvertible
         {
-			return node.Traverse(selectChildren).Use(traversalMode).Exclude(node).GetNodes();
+			return node.Children(selectChildren).Traverse(selectChildren).Use(traversalMode).GetNodes();
 		}
 
 		public static IEnumerable<TNode> Descendants<TNode>(this TNode node, Func<TNode, IEnumerable<TNode>> selectChildren, IComparer<TNode> comparer, bool ascending = false)
 			where TNode : class, ITraversalConvertible
 		{
-			return node.Traverse(selectChildren).Use(comparer, ascending).Exclude(node).GetNodes();
+			return node.Children(selectChildren).Traverse(selectChildren).Use(comparer, ascending).GetNodes();
 		}
 
 		public static IEnumerable<TNode> Descendants<TNode>(this TNode node, Func<TNode, IEnumerable<TNode>> selectChildren, ICandidateSelector<TNode> candidateSelector)
             where TNode : class, ITraversalConvertible
         {
-			return node.Traverse(selectChildren).Use(candidateSelector).Exclude(node).GetNodes();
+			return node.Children(selectChildren).Traverse(selectChildren).Use(candidateSelector).GetNodes();
 		}
 
         public static IEnumerable<TNode> WithDescendants<TNode>(this TNode node, Func<TNode, IEnumerable<TNode>> selectChildren, TraversalMode traversalMode = TraversalMode.DepthFirst)
@@ -186,13 +198,13 @@ namespace Bertiooo.Traversal
 		}
 
         public static IEnumerable<TNode> Ancestors<TNode>(this TNode node, Func<TNode, TNode> selectParent)
-            where TNode : class, ITraversalConvertible
+            where TNode : ITraversalConvertible
         {
 			return node.AsParentProvider(selectParent).Ancestors().Select(x => x.Instance);
 		}
 
         public static IEnumerable<TNode> WithAncestors<TNode>(this TNode node, Func<TNode, TNode> selectParent)
-            where TNode : class, ITraversalConvertible
+            where TNode : ITraversalConvertible
         {
             return node.AsParentProvider(selectParent).WithAncestors().Select(x => x.Instance);
         }
@@ -220,7 +232,7 @@ namespace Bertiooo.Traversal
 		#endregion
 
 		#region Traverse Methods
-
+        
 		/// <inheritdoc cref="TraversableExtensions.Traverse{TNode}(TNode)"/>
 		public static ITraverser<TNode> Traverse<TNode>(
             this TNode node,
@@ -321,7 +333,7 @@ namespace Bertiooo.Traversal
             this TConvertible convertible,
             Func<TConvertible, TConvertible> getParentFunc,
             Func<TConvertible, IEnumerable<TConvertible>> getChildrenFunc)
-            where TConvertible : class, ITraversalConvertible
+            where TConvertible : ITraversalConvertible
 		{
             return new DefaultTraversableAdapter<TConvertible>(convertible, getParentFunc, getChildrenFunc);
         }
@@ -329,7 +341,7 @@ namespace Bertiooo.Traversal
 		public static AbstractTraversableAdapter<TConvertible> AsParentProvider<TConvertible>(
 			this TConvertible convertible,
 			Func<TConvertible, TConvertible> getParentFunc)
-			where TConvertible : class, ITraversalConvertible
+			where TConvertible : ITraversalConvertible
 		{
 			return new DefaultTraversableAdapter<TConvertible>(convertible, getParentFunc, x => Enumerable.Empty<TConvertible>());
 		}

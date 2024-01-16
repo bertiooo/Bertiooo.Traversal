@@ -70,7 +70,7 @@ namespace Bertiooo.Traversal
 		/// in order to figure out the maximum depth.
 		/// </remarks>
 		public static int GetMaxDepth<TNode>(this TNode node)
-			where TNode : class, ITraversable<TNode>
+			where TNode : ITraversable<TNode>
 		{
 			var maxLevel = 0;
 			node.Traverse(x => maxLevel = Math.Max(maxLevel, x.GetLevel()));
@@ -130,7 +130,7 @@ namespace Bertiooo.Traversal
 
 		#region Related Nodes Retrieval
 
-		public static TNode GetRoot<TNode>(this TNode node)
+		public static TNode Root<TNode>(this TNode node)
 			where TNode : IParentProvider<TNode>
 		{
 			var tmpNode = node;
@@ -198,44 +198,44 @@ namespace Bertiooo.Traversal
 		}
 
 		public static IEnumerable<TNode> Descendants<TNode>(this TNode node, TraversalMode traversalMode = TraversalMode.DepthFirst)
-			where TNode : class, IChildrenProvider<TNode>
+			where TNode : IChildrenProvider<TNode>
 		{
 			return node.Children.Traverse().Use(traversalMode).GetNodes();
 		}
 
 		/// <param name="comparer">Define which node to prefer over the other in the order of traversal.</param>
 		public static IEnumerable<TNode> Descendants<TNode>(this TNode node, IComparer<TNode> comparer, bool ascending = false)
-			where TNode : class, IChildrenProvider<TNode>
+			where TNode : IChildrenProvider<TNode>
 		{
 			return node.Children.Traverse().Use(comparer, ascending).GetNodes();
 		}
 
 		public static IEnumerable<TNode> Descendants<TNode>(this TNode node, ICandidateSelector<TNode> candidateSelector)
-			where TNode : class, IChildrenProvider<TNode>
+			where TNode : IChildrenProvider<TNode>
 		{
 			return node.Children.Traverse().Use(candidateSelector).GetNodes();
 		}
 
 		public static IEnumerable<TNode> WithDescendants<TNode>(this TNode node, TraversalMode traversalMode = TraversalMode.DepthFirst)
-			where TNode : class, IChildrenProvider<TNode>
+			where TNode : IChildrenProvider<TNode>
 		{
 			return node.Traverse().Use(traversalMode).GetNodes();
 		}
 
 		/// <param name="comparer">Define which node to prefer over the other in the order of traversal.</param>
 		public static IEnumerable<TNode> WithDescendants<TNode>(this TNode node, IComparer<TNode> comparer, bool ascending = false)
-			where TNode : class, IChildrenProvider<TNode>
+			where TNode : IChildrenProvider<TNode>
 		{
 			return node.Traverse().Use(comparer, ascending).GetNodes();
 		}
 
 		public static IEnumerable<TNode> WithDescendants<TNode>(this TNode node, ICandidateSelector<TNode> candidateSelector)
-			where TNode : class, IChildrenProvider<TNode>
+			where TNode : IChildrenProvider<TNode>
 		{
 			return node.Traverse().Use(candidateSelector).GetNodes();
 		}
 
-		public static IEnumerable<TNode> Ancestors<TNode>(this TNode node)
+		public static IEnumerable<TNode> Ancestors<TNode>(this IParentProvider<TNode> node)
 			where TNode : IParentProvider<TNode>
 		{
 			var tmpNode = node.Parent;
@@ -261,7 +261,7 @@ namespace Bertiooo.Traversal
 		/// If the node itself is a leaf, than the node is returned.
 		/// </summary>
 		public static IEnumerable<TNode> Leaves<TNode>(this TNode node)
-			where TNode : class, IChildrenProvider<TNode>
+			where TNode : IChildrenProvider<TNode>
 		{
 			return node.WithDescendants().Where(x => x.IsLeaf());
 		}
@@ -271,13 +271,13 @@ namespace Bertiooo.Traversal
 		/// The node itself is not included.
 		/// </summary>
 		public static IEnumerable<TNode> InnerNodes<TNode>(this TNode node)
-			where TNode : class, IChildrenProvider<TNode>
+			where TNode : IChildrenProvider<TNode>
 		{
 			return node.Descendants().Where(x => x.IsInnerNode());
 		}
 
 		public static IEnumerable<TNode> WithInnerNodes<TNode>(this TNode node)
-			where TNode : class, IChildrenProvider<TNode>
+			where TNode : IChildrenProvider<TNode>
 		{
 			return node.WithDescendants().Where(x => x.IsInnerNode());
 		}
@@ -291,7 +291,7 @@ namespace Bertiooo.Traversal
 		/// </summary>
 		public static ITraverser<TNode> Traverse<TNode>(
 			this TNode node)
-			where TNode : class, IChildrenProvider<TNode>
+			where TNode : IChildrenProvider<TNode>
 		{
 			return new TraversableTraverser<TNode>(node);
 		}
@@ -301,7 +301,7 @@ namespace Bertiooo.Traversal
 		/// </summary>
 		public static ITraverser<TNode> Traverse<TNode>(
 			this IEnumerable<TNode> nodes)
-			where TNode : class, IChildrenProvider<TNode>
+			where TNode : IChildrenProvider<TNode>
 		{
 			return new TraversableTraverser<TNode>(nodes);
 		}
@@ -310,7 +310,7 @@ namespace Bertiooo.Traversal
 			this TNode node,
 			Action<TNode> callback,
 			TraversalMode traversalMode = TraversalMode.DepthFirst)
-			where TNode : class, IChildrenProvider<TNode>
+			where TNode : IChildrenProvider<TNode>
 		{
 			node.Traverse()
 				.Use(traversalMode)
@@ -323,7 +323,7 @@ namespace Bertiooo.Traversal
 			Action<TNode> callback,
 			IComparer<TNode> comparer,
 			bool ascending = false)
-			where TNode : class, IChildrenProvider<TNode>
+			where TNode : IChildrenProvider<TNode>
 		{
 			node.Traverse()
 				.Use(comparer, ascending)
@@ -335,7 +335,7 @@ namespace Bertiooo.Traversal
 			this TNode node,
 			Action<TNode> callback,
 			ICandidateSelector<TNode> candidateSelector)
-			where TNode : class, IChildrenProvider<TNode>
+			where TNode : IChildrenProvider<TNode>
 		{
 			node.Traverse()
 				.Use(candidateSelector)
@@ -348,7 +348,7 @@ namespace Bertiooo.Traversal
 			Action<TNode> callback,
 			TraversalMode traversalMode = TraversalMode.DepthFirst,
 			CancellationToken cancellationToken = default)
-			where TNode : class, IChildrenProvider<TNode>
+			where TNode : IChildrenProvider<TNode>
 		{
 			return Task.Factory.StartNew(() => node.Traverse(callback, traversalMode), cancellationToken);
 		}
@@ -359,7 +359,7 @@ namespace Bertiooo.Traversal
 			IComparer<TNode> comparer,
 			bool ascending = false,
 			CancellationToken cancellationToken = default)
-			where TNode : class, IChildrenProvider<TNode>
+			where TNode : IChildrenProvider<TNode>
 		{
 			return Task.Factory.StartNew(() => node.Traverse(callback, comparer, ascending), cancellationToken);
 		}
@@ -369,7 +369,7 @@ namespace Bertiooo.Traversal
 			Action<TNode> callback,
 			ICandidateSelector<TNode> candidateSelector,
 			CancellationToken cancellationToken = default)
-			where TNode : class, IChildrenProvider<TNode>
+			where TNode : IChildrenProvider<TNode>
 		{
 			return Task.Factory.StartNew(() => node.Traverse(callback, candidateSelector), cancellationToken);
 		}

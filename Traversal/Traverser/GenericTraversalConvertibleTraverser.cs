@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Bertiooo.Traversal.Traverser
 {
 	internal class GenericTraversalConvertibleTraverser<TAdapter, TConvertible> : AbstractAdapterTraverser<TAdapter, TConvertible>
-		where TAdapter : class, IInstanceProvider<TConvertible>, ITraversable<TAdapter>
+		where TAdapter : IInstanceProvider<TConvertible>, ITraversable<TAdapter>
 		where TConvertible : ITraversalConvertible<TAdapter, TConvertible>
 	{
 		public GenericTraversalConvertibleTraverser(TAdapter root) : base(root)

@@ -64,7 +64,7 @@ result = node.GetMaxDepth();
 ```
 Node result;
 
-result = node.GetRoot();
+result = node.Root();
 
 IEnumerable<Node> result;
 

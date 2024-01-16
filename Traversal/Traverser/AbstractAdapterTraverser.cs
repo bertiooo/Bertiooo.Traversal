@@ -10,7 +10,6 @@ namespace Bertiooo.Traversal.Traverser
 {
 	internal abstract class AbstractAdapterTraverser<TConvertible>
 		: AbstractAdapterTraverser<AbstractTraversableAdapter<TConvertible>, TConvertible>
-		where TConvertible : class
 	{
 		protected AbstractAdapterTraverser(AbstractTraversableAdapter<TConvertible> root) : base(root)
 		{
@@ -27,7 +26,7 @@ namespace Bertiooo.Traversal.Traverser
 	}
 
 	internal abstract class AbstractAdapterTraverser<TAdapter, TConvertible> : AbstractTraverser<TConvertible>
-		where TAdapter : class, IInstanceProvider<TConvertible>, IChildrenProvider<TAdapter>
+		where TAdapter : IInstanceProvider<TConvertible>, IChildrenProvider<TAdapter>
 	{
 		protected readonly ITraverser<TAdapter> Traverser;
 

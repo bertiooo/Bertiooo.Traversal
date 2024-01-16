@@ -5,7 +5,6 @@ namespace Bertiooo.Traversal
 {
 	public abstract class AbstractTraversableAdapter<TConvertible>
 		: AbstractTraversableAdapter<AbstractTraversableAdapter<TConvertible>, TConvertible>
-		where TConvertible : class
 	{
 		protected AbstractTraversableAdapter(TConvertible convertible) 
 			: base(convertible)
@@ -21,7 +20,6 @@ namespace Bertiooo.Traversal
 	public abstract class AbstractTraversableAdapter<TAdapter, TConvertible>
 		: ITraversable<TAdapter>, IInstanceProvider<TConvertible>
 		where TAdapter : class, ITraversable<TAdapter>, IInstanceProvider<TConvertible>
-		where TConvertible : class
 	{
 		private readonly TConvertible convertible;
 
