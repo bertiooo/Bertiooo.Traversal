@@ -128,6 +128,21 @@ namespace Bertiooo.Traversal.Traverser
 			where T : class, TNode;
 
 		/// <summary>
+		/// Disables the candidate selector being reset before and after traversal.
+		/// </summary>
+		ITraverser<TNode> DisableReset();
+
+		/// <summary>
+		/// Disables the candidate selector being reset before traversal.
+		/// </summary>
+		ITraverser<TNode> DisableResetBefore();
+
+		/// <summary>
+		/// Disables the candidate selector being reset after traversal.
+		/// </summary>
+		ITraverser<TNode> DisableResetAfter();
+
+		/// <summary>
 		/// This method will cause the defined nodes of the specified type not to be included in the <see cref="IEnumerable{TNode}"/> returned by <see cref="GetNodes"/>. 
 		/// But the traversal still continues on the node's descendants and also the callbacks will be invoked.
 		/// </summary>
@@ -281,6 +296,11 @@ namespace Bertiooo.Traversal.Traverser
 		/// </param>
 		ITraverser<TNode> Use(IComparer<TNode> comparer, bool ascending = false);
 
+		/// <summary>
+		/// Define a candidate selector which defines the order in which the nodes are being traversed.
+		/// By default, the candidate selector is reset before and after each traversal.
+		/// Use <see cref="DisableReset"/> to change this behaviour.
+		/// </summary>
 		ITraverser<TNode> Use(ICandidateSelector<TNode> selector);
 
 		ITraverser<TNode> Use(TraversalMode mode);

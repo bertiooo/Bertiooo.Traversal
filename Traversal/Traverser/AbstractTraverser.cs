@@ -203,6 +203,18 @@ namespace Bertiooo.Traversal.Traverser
 			return this.DisableCallbacksFor(wrapper);
 		}
 
+		public virtual ITraverser<TNode> DisableReset()
+		{
+			this.DisableResetBefore();
+			this.DisableResetAfter();
+
+			return this;
+		}
+
+		public abstract ITraverser<TNode> DisableResetAfter();
+
+		public abstract ITraverser<TNode> DisableResetBefore();
+
 		public abstract ITraverser<TNode> Exclude(TNode node);
 
 		public virtual ITraverser<TNode> Exclude(IEnumerable<TNode> nodes)

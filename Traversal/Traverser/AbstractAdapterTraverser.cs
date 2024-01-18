@@ -88,6 +88,24 @@ namespace Bertiooo.Traversal.Traverser
 			return this;
 		}
 
+		public override ITraverser<TConvertible> DisableReset()
+		{
+			this.Traverser.DisableReset();
+			return this;
+		}
+
+		public override ITraverser<TConvertible> DisableResetAfter()
+		{
+			this.Traverser.DisableResetAfter();
+			return this;
+		}
+
+		public override ITraverser<TConvertible> DisableResetBefore()
+		{
+			this.Traverser.DisableResetBefore();
+			return this;
+		}
+
 		public override ITraverser<TConvertible> Exclude(TConvertible node)
 		{
 			var adapter = this.GetAdapter(node);

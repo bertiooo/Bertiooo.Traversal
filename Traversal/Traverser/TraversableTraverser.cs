@@ -42,6 +42,10 @@ namespace Bertiooo.Traversal.Traverser
 
 		protected bool ReverseOrderOfChildNodes { get; set; }
 
+		protected bool DisableResetAfterProperty { get; set; }
+
+		protected bool DisableResetBeforeProperty { get; set; }
+
 		protected CancellationToken CancellationToken { get; set; } = CancellationToken.None;
 
 		protected IList<Func<TNode, bool>> CancelPredicates { get; set; }
@@ -207,6 +211,8 @@ namespace Bertiooo.Traversal.Traverser
 				FailureCallbacks = this.FailureCallbacks == null ? null : new List<Func<Exception, TNode, bool>>(this.FailureCallbacks),
 				SuccessCallback = this.SuccessCallback?.Clone() as Action,
 				Callbacks = this.Callbacks?.Clone() as Action<TNode>,
+				DisableResetAfterProperty = this.DisableResetAfterProperty,
+				DisableResetBeforeProperty = this.DisableResetBeforeProperty,
 				ThrowIfCancellationRequested = this.ThrowIfCancellationRequested,
 				ReverseOrderOfChildNodes = this.ReverseOrderOfChildNodes,
 				CancellationToken = this.CancellationToken,
@@ -243,6 +249,18 @@ namespace Bertiooo.Traversal.Traverser
 			}
 
 			this.DisabledPredicates.Add(predicate);
+			return this;
+		}
+
+		public override ITraverser<TNode> DisableResetAfter()
+		{
+			this.DisableResetAfterProperty = true;
+			return this;
+		}
+
+		public override ITraverser<TNode> DisableResetBefore()
+		{
+			this.DisableResetBeforeProperty = true;
 			return this;
 		}
 
@@ -296,7 +314,9 @@ namespace Bertiooo.Traversal.Traverser
 
 				var canceled = false;
 
-				this.Selector.Reset();
+				if(this.DisableResetBeforeProperty == false)
+					this.Selector.Reset();
+
 				this.AddToSelector(this.startNodes);
 
 				while (this.Selector.HasItems)
@@ -333,7 +353,9 @@ namespace Bertiooo.Traversal.Traverser
 			}
 			finally
 			{
-				this.Selector.Reset();
+				if(this.DisableResetAfterProperty == false)
+					this.Selector.Reset();
+
 				this.Finalization?.Invoke();
 			}
 		}
