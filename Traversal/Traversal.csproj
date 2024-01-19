@@ -22,7 +22,8 @@
 + Renamed extension GetRoot to Root
 + Added extensions for parent and children retrieval
 + Removed unnecessary class constraints
-+ Added DisableReset API to disable reset of candidate selector before and after each traversal</PackageReleaseNotes>
++ Added DisableReset API to disable reset of candidate selector before and after each traversal
++ Narrowed some extensions to interfaces</PackageReleaseNotes>
     <Copyright>Copyright 2024 Alberto Puig Rodríguez</Copyright>
   </PropertyGroup>
 

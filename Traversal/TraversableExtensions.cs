@@ -12,37 +12,37 @@ namespace Bertiooo.Traversal
 	{
 		#region Node Analysis
 
-		public static bool IsRoot<TNode>(this TNode node)
+		public static bool IsRoot<TNode>(this IParentProvider<TNode> node)
 			where TNode : IParentProvider<TNode>
 		{
 			return node.HasParent() == false;
 		}
 
-		public static bool IsInnerNode<TNode>(this TNode node)
+		public static bool IsInnerNode<TNode>(this IChildrenProvider<TNode> node)
 			where TNode : IChildrenProvider<TNode>
 		{
 			return node.HasChildren();
 		}
 
-		public static bool IsLeaf<TNode>(this TNode node)
+		public static bool IsLeaf<TNode>(this IChildrenProvider<TNode> node)
 			where TNode : IChildrenProvider<TNode>
 		{
 			return node.HasChildren() == false;
 		}
 
-		public static bool HasParent<TNode>(this TNode node)
+		public static bool HasParent<TNode>(this IParentProvider<TNode> node)
 			where TNode : IParentProvider<TNode>
 		{
 			return node.Parent != null;
 		}
 
-		public static bool HasChildren<TNode>(this TNode node)
+		public static bool HasChildren<TNode>(this IChildrenProvider<TNode> node)
 			where TNode : IChildrenProvider<TNode>
 		{
 			return node.Children != null && node.Children.Any();
 		}
 
-		public static bool HasSiblings<TNode>(this TNode node)
+		public static bool HasSiblings<TNode>(this ITraversable<TNode> node)
 			where TNode : ITraversable<TNode>
 		{
 			if (node.Parent == null || node.Parent.Children == null)
@@ -55,7 +55,7 @@ namespace Bertiooo.Traversal
 		/// Returns the zero-based level number. 
 		/// E.g. the root node level would be 0, its children would have level 1, its grandchildren level 2, etc.
 		/// </summary>
-		public static int GetLevel<TNode>(this TNode node)
+		public static int GetLevel<TNode>(this IParentProvider<TNode> node)
 			where TNode : IParentProvider<TNode>
 		{
 			return node.Ancestors().Count();
@@ -78,7 +78,7 @@ namespace Bertiooo.Traversal
 			return maxLevel - node.GetLevel();
 		}
 
-		public static bool IsChildOf<TNode>(this TNode node, TNode other)
+		public static bool IsChildOf<TNode>(this IParentProvider<TNode> node, TNode other)
 			where TNode : IParentProvider<TNode>
 		{
 			if (node.Parent == null)
@@ -87,7 +87,7 @@ namespace Bertiooo.Traversal
 			return node.Parent.Equals(other);
 		}
 
-		public static bool IsParentOf<TNode>(this TNode node, TNode other)
+		public static bool IsParentOf<TNode>(this TNode node, IParentProvider<TNode> other)
 			where TNode : IParentProvider<TNode>
 		{
 			if (other == null)
@@ -99,7 +99,7 @@ namespace Bertiooo.Traversal
 			return other.Parent.Equals(node);
 		}
 
-		public static bool IsSiblingOf<TNode>(this TNode node, TNode other)
+		public static bool IsSiblingOf<TNode>(this IParentProvider<TNode> node, IParentProvider<TNode> other)
 			where TNode : IParentProvider<TNode>
 		{
 			if (other == null)
@@ -111,13 +111,13 @@ namespace Bertiooo.Traversal
 			return node.Parent.Equals(other.Parent);
 		}
 
-		public static bool IsDescendantOf<TNode>(this TNode node, TNode other)
+		public static bool IsDescendantOf<TNode>(this IParentProvider<TNode> node, TNode other)
 			where TNode : IParentProvider<TNode>
 		{
 			return node.Ancestors().Any(x => Equals(other, x));
 		}
 
-		public static bool IsAncestorOf<TNode>(this TNode node, TNode other)
+		public static bool IsAncestorOf<TNode>(this TNode node, IParentProvider<TNode> other)
 			where TNode : IParentProvider<TNode>
 		{
 			if (other == null)
@@ -172,7 +172,7 @@ namespace Bertiooo.Traversal
 				yield return child;
 		}
 
-		public static IEnumerable<TNode> Siblings<TNode>(this TNode node)
+		public static IEnumerable<TNode> Siblings<TNode>(this ITraversable<TNode> node)
 			where TNode : ITraversable<TNode>
 		{
 			if (node.Parent == null || node.Parent.Children == null)
