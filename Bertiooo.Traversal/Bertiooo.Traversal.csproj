@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <AssemblyName>Bertiooo.$(MSBuildProjectName)</AssemblyName>
+    <RootNamespace>Bertiooo.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+    <Title>Bertiooo's Traversal Library</Title>
+    <Authors>bertiooo</Authors>
+    <Description>This C# lightweight library provides extension methods to traverse hierarchy structures.</Description>
+    <PackageTags>traversal; hierarchy; tree; nodes</PackageTags>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/bertiooo/Bertiooo.Traversal/</RepositoryUrl>
+    <VersionPrefix>2.0.0</VersionPrefix>
+    <PackageReleaseNotes>The purpose of this new major release is to make this library more simple and extendable.
++ Changed License to MIT
++ Added nullable reference operators
++ Root is not an inner node anymore
++ Using traversal strategies
++ Changed extension declarations
++ Removed fluent API</PackageReleaseNotes>
+    <Copyright>Copyright 2026 Alberto Puig Rodríguez</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE.txt">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>

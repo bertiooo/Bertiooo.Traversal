@@ -1,10 +1,7 @@
 # Bertiooo's Traversal Library
 
-This C# lightweight library provides extension methods to traverse hierarchy structures. It may work for other graph types as well.
-
-It targets .Net Standard 2.0, which means you can use it with .NET Core and .NET Framework.
-
-If you like this framework, I appreciate any donations on my [PayPal account](https://paypal.me/puigrodr).
+This C# lightweight library provides extension methods to traverse hierarchy structures. It targets .NET Standard 2.0.
+See [Wiki of its GitHub Repository](https://github.com/bertiooo/Bertiooo.Traversal/wiki) for more details on how to use this library.
 
 ## Usage
 
@@ -12,19 +9,65 @@ If you like this framework, I appreciate any donations on my [PayPal account](ht
 
 See [https://www.nuget.org/packages/Bertiooo.Traversal/](https://www.nuget.org/packages/Bertiooo.Traversal/)
 
-### Implement the ITraversable<T> interface
+### Prepare your node class
 
-In order to use the extension methods, you need a node class implementing the `ITraversable<T>` interface.
+There are several ways to make your classes suitable for traversal:
+
+#### Use extension overloads which define how to traverse your nodes.
+
+For example:
+
 ```
-public class Node : ITraversable<Node> 
+MyNode node;
+var descendants = node.Descendants(n => n.Children);
+var ancestors = node.Ancestors(n => n.Parent);
+```
+
+#### Create a custom strategy
+
+```
+var strategy = new MyTraversalStrategy(); // implements ITraversalStrategy<MyNode>
+
+MyNode node;
+var descendants = node.Descendants(strategy);
+var ancestors = node.Ancestors(strategy);
+```
+
+#### Implement `ITraversable<T>`
+
+```
+public class MyNode : ITraversable<MyNode> 
 {
-  public Node Parent { get; }
-  public IEnumerable<Node> Children { get; }
+  public MyNode Parent { get; }
+  public IEnumerable<MyNode> Children { get; }
 }
 ```
-Sometimes you will find it difficult to implement this interface, either because the property names of your class do not fit
-or because the collection type of the children property differs from `IEnumerable<T>`. In this case, it is recommended to use 
-an adapter as described in [How to adapt to ITraversable](https://github.com/bertiooo/Bertiooo.Traversal/wiki/How-to-adapt-to-ITraversable).
+
+#### Declare a strategy with an attribute
+
+```
+using Bertiooo.Traversal.Attributes;
+
+[TraversalStrategy(typeof(MyTraversalStrategy))]
+public class MyNode 
+{
+}
+```
+
+#### Declare attributes on your node's properties
+
+```
+using Bertiooo.Traversal.Attributes;
+
+public class MyNode 
+{
+	[Parent]
+	public MyNode? Parent { get;}
+
+	[Children]	
+	public IEnumerable<MyNode> Children { get; }
+}
+```
 
 ### Use the extension methods
 
@@ -96,49 +139,6 @@ node.Traverse(action, comparer);
 
 ICandidateSelector<Node> customSelector = new CustomCandidateSelector();
 node.Traverse(action, customSelector);
-```
-See [How to change the traversal order](https://github.com/bertiooo/Bertiooo.Traversal/wiki/How-to-change-the-traversal-order) for more details about how to influence the order in which the nodes will be traversed.
-
-### Use the fluent API
-
-For further control over the traversal process, use the fluent API. 
-
-```
-ITraverser<Node> traverser = node.Traverse()
-	.Use(TraversalMode.BreadthFirst) // per default depth-first traversal
-	.Use(candidateSelector)
-	.ReverseOrder()
-	.Use(cancellationToken)
-	.Skip(someNode) 
-	.Ignore(someNodes)
-	.Exclude(tmpNode => tmpNode.IsLeaf())
-	.DisableCallbacksFor<SubNode>()
-	.CancelIf(tmpNode => someCondition())
-	.WithAction(tmpNode => action(tmpNode))
-	.Prepare(action)
-	.Catch<InvalidOperationException>(e => Debug(e))
-	.OnCanceled(action)
-	.OnSuccess(action)
-	.Finish(action)
-	.Clone();
-```
-
-See [Difference between Skip, Exclude, Ignore and DisableCallbacksFor](https://github.com/bertiooo/Bertiooo.Traversal/wiki/Difference-between-Skip,-Exclude,-Ignore-and-DisableCallbacksFor) for more information about those methods.
-
-Then you have different options to execute the traversal:
-
-```
-// Execute() does not return a value
-traverser.Execute();
-await traverser.ExecuteAsync();
-
-// Be careful: Invoking GetNodes() alone won't cause the traverser to perform the traversal.
-// You need to iterate the nodes in order to proceed with the traversal.
-// In order to execute the complete traversal consider using ToList() after GetNodes()
-IEnumerable<Node> nodes = traverser.GetNodes();
-
-// The async method in contrast will turn the enumerable into a list by full traversal.
-IList<Node> nodes = await traverser.GetNodesAsync();
 ```
 
 

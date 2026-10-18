@@ -1,2 +1,2 @@
 Bertiooo's Traversal Library
-Copyright 2024 Alberto Puig Rodríguez
+Copyright 2026 Alberto Puig Rodríguez
